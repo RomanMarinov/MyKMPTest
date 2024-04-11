@@ -27,7 +27,6 @@ kotlin {
     }
     
     sourceSets {
-        
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
@@ -35,11 +34,23 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
+            //https://github.com/Tlaster/PreCompose/blob/master/docs/setup.md
+            api(compose.foundation)
+            api(compose.animation)
+            api(libs.precompose)
+           // api(libs.precompose.molecule) // For Molecule intergration
+            api(libs.precompose.viewmodel) // For ViewModel intergration
+            api(libs.precompose.koin) // For Koin intergration
+
+            //implementation("androidx.compose.material3.material3:1.1.1")
+            //implementation("androidx.compose.material3.material3-windows-size-class:1.1.1")
         }
+        task("testClasses")
     }
 }
 
