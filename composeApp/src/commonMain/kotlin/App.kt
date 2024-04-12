@@ -61,14 +61,7 @@ data class BottomNavigationItem(
 @Preview
 fun App() {
     MaterialTheme {
-
-
-
         PreComposeApp {
-
-
-//            val res = imageResource(Res.drawable.ic_navbar_map)
-//            val res = vectorResource(Res.drawable.ic_navbar_home)
 
             val scope = CoroutineScope(Dispatchers.IO)
             scope.launch  {
@@ -77,10 +70,6 @@ fun App() {
 
             var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
             val navigator = rememberNavigator()
-
-
-
-
 
             val items = listOf(
                 BottomNavigationItem(
@@ -139,11 +128,7 @@ fun App() {
                                     selected = selectedItemIndex == index,
                                     onClick = {
                                         selectedItemIndex = index
-
-
                                         navigator.navigate(item.route)
-
-
                                     },
                                     label = {
                                         Text(text = item.title)
@@ -185,9 +170,9 @@ fun App() {
 
                     // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
                     Box(
-                        modifier = Modifier
-                           // .background(colorResource(id = R.color.main_violet_light))
-                            .padding(paddingValues = paddingValues)
+//                        modifier = Modifier
+//                           // .background(colorResource(id = R.color.main_violet_light))
+//                            .padding(paddingValues = paddingValues)
                     ) {
                         // было
                        // Log.d("4444", " MainScreensActivity SetPermissionsAndNavigation box ")
