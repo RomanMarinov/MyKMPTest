@@ -49,6 +49,12 @@ kotlin {
 
             //implementation("androidx.compose.material3.material3:1.1.1")
             //implementation("androidx.compose.material3.material3-windows-size-class:1.1.1")
+            implementation(libs.accompanist.systemuicontroller)
+            //implementation(libs.accompanist.coil)
+            implementation(libs.accompanist.permissions)
+
+
+            implementation(libs.androidx.core.ktx)
         }
         task("testClasses")
     }
@@ -86,5 +92,9 @@ android {
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
     }
+}
+dependencies {
+//    implementation(libs.androidx.core)
+    //implementation(libs.androidx.core.ktx)
 }
 

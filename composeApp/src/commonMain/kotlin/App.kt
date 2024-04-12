@@ -1,4 +1,6 @@
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Badge
@@ -16,26 +18,43 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.launch
+
 import moe.tlaster.precompose.PreComposeApp
+import moe.tlaster.precompose.navigation.rememberNavigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_navbar_domofon
 import mykmptest.composeapp.generated.resources.ic_navbar_help
 import mykmptest.composeapp.generated.resources.ic_navbar_home
 import mykmptest.composeapp.generated.resources.ic_navbar_map
-import mykmptest.composeapp.generated.resources.ic_navbar_moi_dvor
+import mykmptest.composeapp.generated.resources.ic_navbar_outdoor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import util.ScreenRoute
 
 
 data class BottomNavigationItem(
     val title: String,
-    val selectedIcon: Painter,
-    val unSelectedIcon: Painter,
+    val selectedIcon: ImageVector,
+    val unSelectedIcon: ImageVector,
     val hasNews: Boolean,
-    val badgeCount: Int? = null
+    val badgeCount: Int? = null,
+    val route: String
 )
+
+//@OptIn(ExperimentalResourceApi::class)
+//@Composable
+//fun imageResource(resource: DrawableResource): ImageBitmap {
+//    val context = ContextAmbient.current
+//    val drawable = ContextCompat.getDrawable(context, resource) ?: error("Resource not found")
+//    val bitmap = (drawable as BitmapDrawable).bitmap
+//    return bitmap.asImageBitmap()
+//}
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -43,51 +62,70 @@ data class BottomNavigationItem(
 fun App() {
     MaterialTheme {
 
+
+
         PreComposeApp {
+
+
+//            val res = imageResource(Res.drawable.ic_navbar_map)
+//            val res = vectorResource(Res.drawable.ic_navbar_home)
+
+            val scope = CoroutineScope(Dispatchers.IO)
+            scope.launch  {
+               // val appName = getString(Res.string.hello)
+            }
+
             var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+            val navigator = rememberNavigator()
+
+
+
+
+
             val items = listOf(
                 BottomNavigationItem(
                     title = "Baza.net",
-                    selectedIcon = painterResource(Res.drawable.ic_navbar_home),
-                    unSelectedIcon = painterResource(Res.drawable.ic_navbar_home),
+                    selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
+                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
                     hasNews = false,
-                    badgeCount = null
+                    badgeCount = null,
+                    route = ScreenRoute.HomeScreen.route
                 ),
                 BottomNavigationItem(
                     title = "Мой двор",
-                    selectedIcon = painterResource(Res.drawable.ic_navbar_moi_dvor),
-                    unSelectedIcon = painterResource(Res.drawable.ic_navbar_moi_dvor),
+                    selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
+                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
                     hasNews = false,
-                    badgeCount = null
+                    badgeCount = null,
+                    route = ScreenRoute.OutdoorScreen.route
                 ),
                 BottomNavigationItem(
                     title = "Карта",
-                    selectedIcon = painterResource(Res.drawable.ic_navbar_map),
-                    unSelectedIcon = painterResource(Res.drawable.ic_navbar_map),
+                    selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
+                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
                     hasNews = false,
-                    badgeCount = null
+                    badgeCount = null,
+                    route = ScreenRoute.MapScreen.route
                 ),
 
                 BottomNavigationItem(
                     title = "Домофон",
-                    selectedIcon = painterResource(Res.drawable.ic_navbar_domofon),
-                    unSelectedIcon = painterResource(Res.drawable.ic_navbar_domofon),
+                    selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
+                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
                     hasNews = false,
-                    badgeCount = null
+                    badgeCount = null,
+                    route = ScreenRoute.DomofonScreen.route
                 ),
                 BottomNavigationItem(
-                    title = "huettins",
-                    selectedIcon = painterResource(Res.drawable.ic_navbar_help),
-                    unSelectedIcon = painterResource(Res.drawable.ic_navbar_help),
+                    title = "Помощь",
+
+                    selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
+                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
                     hasNews = false,
-                    badgeCount = null
+                    badgeCount = null,
+                    route = ScreenRoute.HelpScreen.route
                 )
             )
-
-
-
-
-
 
             Surface(
                 modifier = Modifier.fillMaxSize(),
@@ -101,7 +139,11 @@ fun App() {
                                     selected = selectedItemIndex == index,
                                     onClick = {
                                         selectedItemIndex = index
-                                        //  navController.navigate(item.title)
+
+
+                                        navigator.navigate(item.route)
+
+
                                     },
                                     label = {
                                         Text(text = item.title)
@@ -119,7 +161,7 @@ fun App() {
                                             }
                                         ) {
                                             Icon(
-                                                painter = if (index == selectedItemIndex) {
+                                                imageVector = if (index == selectedItemIndex) {
                                                     item.selectedIcon
                                                 } else item.unSelectedIcon,
                                                 contentDescription = item.title
@@ -130,49 +172,40 @@ fun App() {
                                 )
 
                             }
+
                         }
 
+
                     }
+
                 ) {
-                    // botto
+                        paddingValues ->
+
+
+
+                    // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
+                    Box(
+                        modifier = Modifier
+                           // .background(colorResource(id = R.color.main_violet_light))
+                            .padding(paddingValues = paddingValues)
+                    ) {
+                        // было
+                       // Log.d("4444", " MainScreensActivity SetPermissionsAndNavigation box ")
+                        //вызывается 3 раза
+
+                       // MainScreensNavigationGraph(navHostController = navController)
+
+                        Nav(navigator = navigator)
+                    }
                 }
             }
 
 
-
-//            var selectedItem by remember { mutableIntStateOf(0) }
-//            val items = listOf("Songs", "Artists", "Playlists")
-//
-//            NavigationBar {
-//                items.forEachIndexed { index, item ->
-//                    NavigationBarItem(
-//                        icon = { Icon(Icons.Filled.Favorite, contentDescription = item) },
-//                        label = { Text(item) },
-//                        selected = selectedItem == index,
-//                        onClick = { selectedItem = index }
-//                    )
-//                }
-//            }
-
             val lazyListState: LazyListState = rememberLazyListState()
 
 
+
+
         }
-
-
-//        var showContent by remember { mutableStateOf(false) }
-//        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//            Button(onClick = { showContent = !showContent }) {
-//                Text("Click me now!")
-//            }
-//            AnimatedVisibility(showContent) {
-//                val greeting = remember { Greeting().greet() }
-//                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-//                   // Image(painterResource(Res.drawable.compose_multiplatform), null)
-//                    Image(painterResource(Res.drawable.ic_navbar_domofon), null)
-//                    Text("Compose: $greeting")
-//                }
-//            }
-//        }
     }
 }
