@@ -30,6 +30,12 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(libs.koin.android)
+
+
+
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -45,16 +51,23 @@ kotlin {
             api(libs.precompose)
            // api(libs.precompose.molecule) // For Molecule intergration
             api(libs.precompose.viewmodel) // For ViewModel intergration
-            api(libs.precompose.koin) // For Koin intergration
+           // api(libs.precompose.koin) // For Koin intergration
 
-            //implementation("androidx.compose.material3.material3:1.1.1")
-            //implementation("androidx.compose.material3.material3-windows-size-class:1.1.1")
-            implementation(libs.accompanist.systemuicontroller)
-            //implementation(libs.accompanist.coil)
-            implementation(libs.accompanist.permissions)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negotiation)
 
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.serialization)
 
-            implementation(libs.androidx.core.ktx)
+           // implementation(libs.kermit) // с ошибкой
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            //implementation(libs.koin.android)
+          //  implementation(libs.koin.androidx.compose)
+
         }
         task("testClasses")
     }
@@ -96,5 +109,10 @@ android {
 dependencies {
 //    implementation(libs.androidx.core)
     //implementation(libs.androidx.core.ktx)
+      implementation(libs.koin.android)
+     implementation(libs.koin.androidx.compose)
+
+   // implementation(libs.koin.bom)
+    implementation(libs.koin.core)
 }
 

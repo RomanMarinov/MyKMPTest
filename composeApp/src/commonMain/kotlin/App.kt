@@ -1,6 +1,5 @@
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Badge
@@ -19,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import di.commonModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -35,6 +35,8 @@ import mykmptest.composeapp.generated.resources.ic_navbar_outdoor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.KoinApplication
+import org.koin.compose.KoinContext
 import util.ScreenRoute
 
 
@@ -60,137 +62,142 @@ data class BottomNavigationItem(
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        PreComposeApp {
 
-            val scope = CoroutineScope(Dispatchers.IO)
-            scope.launch  {
-               // val appName = getString(Res.string.hello)
-            }
+    KoinContext{
 
-            var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
-            val navigator = rememberNavigator()
+        MaterialTheme {
+            PreComposeApp {
 
-            val items = listOf(
-                BottomNavigationItem(
-                    title = "Baza.net",
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.HomeScreen.route
-                ),
-                BottomNavigationItem(
-                    title = "Мой двор",
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.OutdoorScreen.route
-                ),
-                BottomNavigationItem(
-                    title = "Карта",
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.MapScreen.route
-                ),
+                val scope = CoroutineScope(Dispatchers.IO)
+                scope.launch  {
+                    // val appName = getString(Res.string.hello)
+                }
 
-                BottomNavigationItem(
-                    title = "Домофон",
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.DomofonScreen.route
-                ),
-                BottomNavigationItem(
-                    title = "Помощь",
+                var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+                val navigator = rememberNavigator()
 
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.HelpScreen.route
+                val items = listOf(
+                    BottomNavigationItem(
+                        title = "Baza.net",
+                        selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
+                        unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
+                        hasNews = false,
+                        badgeCount = null,
+                        route = ScreenRoute.HomeScreen.route
+                    ),
+                    BottomNavigationItem(
+                        title = "Мой двор",
+                        selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
+                        unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
+                        hasNews = false,
+                        badgeCount = null,
+                        route = ScreenRoute.OutdoorScreen.route
+                    ),
+                    BottomNavigationItem(
+                        title = "Карта",
+                        selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
+                        unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
+                        hasNews = false,
+                        badgeCount = null,
+                        route = ScreenRoute.MapScreen.route
+                    ),
+
+                    BottomNavigationItem(
+                        title = "Домофон",
+                        selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
+                        unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
+                        hasNews = false,
+                        badgeCount = null,
+                        route = ScreenRoute.DomofonScreen.route
+                    ),
+                    BottomNavigationItem(
+                        title = "Помощь",
+
+                        selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
+                        unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
+                        hasNews = false,
+                        badgeCount = null,
+                        route = ScreenRoute.HelpScreen.route
+                    )
                 )
-            )
 
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
-                Scaffold(
-                    bottomBar = {
-                        NavigationBar {
-                            items.forEachIndexed { index, item ->
-                                NavigationBarItem(
-                                    selected = selectedItemIndex == index,
-                                    onClick = {
-                                        selectedItemIndex = index
-                                        navigator.navigate(item.route)
-                                    },
-                                    label = {
-                                        Text(text = item.title)
-                                    },
-                                    icon = {
-                                        BadgedBox(
-                                            badge = {
-                                                if (item.badgeCount != null) {
-                                                    Badge {
-                                                        Text(text = item.badgeCount.toString())
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Scaffold(
+                        bottomBar = {
+                            NavigationBar {
+                                items.forEachIndexed { index, item ->
+                                    NavigationBarItem(
+                                        selected = selectedItemIndex == index,
+                                        onClick = {
+                                            selectedItemIndex = index
+                                            navigator.navigate(item.route)
+                                        },
+                                        label = {
+                                            Text(text = item.title)
+                                        },
+                                        icon = {
+                                            BadgedBox(
+                                                badge = {
+                                                    if (item.badgeCount != null) {
+                                                        Badge {
+                                                            Text(text = item.badgeCount.toString())
+                                                        }
+                                                    } else if(item.hasNews) {
+                                                        Badge()
                                                     }
-                                                } else if(item.hasNews) {
-                                                    Badge()
                                                 }
-                                            }
-                                        ) {
-                                            Icon(
-                                                imageVector = if (index == selectedItemIndex) {
-                                                    item.selectedIcon
-                                                } else item.unSelectedIcon,
-                                                contentDescription = item.title
-                                            )
+                                            ) {
+                                                Icon(
+                                                    imageVector = if (index == selectedItemIndex) {
+                                                        item.selectedIcon
+                                                    } else item.unSelectedIcon,
+                                                    contentDescription = item.title
+                                                )
 
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+
+                                }
 
                             }
 
+
                         }
 
-
-                    }
-
-                ) {
-                        paddingValues ->
+                    ) {
+                            paddingValues ->
 
 
 
-                    // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
-                    Box(
+                        // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
+                        Box(
 //                        modifier = Modifier
 //                           // .background(colorResource(id = R.color.main_violet_light))
 //                            .padding(paddingValues = paddingValues)
-                    ) {
-                        // было
-                       // Log.d("4444", " MainScreensActivity SetPermissionsAndNavigation box ")
-                        //вызывается 3 раза
+                        ) {
+                            // было
+                            // Log.d("4444", " MainScreensActivity SetPermissionsAndNavigation box ")
+                            //вызывается 3 раза
 
-                       // MainScreensNavigationGraph(navHostController = navController)
+                            // MainScreensNavigationGraph(navHostController = navController)
 
-                        Nav(navigator = navigator)
+                            Nav(navigator = navigator)
+                        }
                     }
                 }
+
+
+                val lazyListState: LazyListState = rememberLazyListState()
+
+
+
+
             }
-
-
-            val lazyListState: LazyListState = rememberLazyListState()
-
-
-
-
         }
     }
+
 }

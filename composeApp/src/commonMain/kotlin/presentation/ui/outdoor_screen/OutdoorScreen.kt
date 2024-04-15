@@ -1,15 +1,9 @@
 package presentation.ui.outdoor_screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,31 +13,38 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_profile
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.koinInject
 import util.ScreenRoute
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OutdoorScreen(
     navigator: Navigator,
-    outdoorScreenViewModel: OutdoorScreenViewModel = OutdoorScreenViewModel()) {
+    viewModel: OutdoorScreenViewModel = koinInject()
+     // viewModel: OutdoorScreenViewModel = koinViewModel()
+   // viewModel: OutdoorScreenViewModel =
+
+) {
 
 // анимация топбара при скроле
     // https://www.youtube.com/watch?v=EqCvUETekjk
+
+//   val viewModel: OutdoorScreenViewModel by inj()
+
+    val outDoors = viewModel.outDoors.collectAsStateWithLifecycle()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -98,6 +99,7 @@ fun OutdoorScreen(
             }
         ) {
             Content()
+            println("::::::::::outDoors=" + outDoors.value)
         }
     }
 

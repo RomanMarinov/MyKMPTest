@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import moe.tlaster.precompose.navigation.Navigator
-import presentation.ui.outdoor_screen.MyTopBar
 
 @Composable
 fun HomeScreen(navigator: Navigator) {

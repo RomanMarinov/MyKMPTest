@@ -2,10 +2,41 @@ package data.outdoor.remote
 
 import domain.model.Dvr
 import domain.repository.OutdoorRepository
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.utils.EmptyContent.contentType
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
-class OutdoorRepositoryImpl : OutdoorRepository {
+class OutdoorRepositoryImpl(
+    private val httpClient: HttpClient
+) : OutdoorRepository {
 
     override suspend fun getOutdoors() = getFakeOutdoors()
+
+
+
+//    suspend fun getAllMessages(userPairChat: UserPairChat): List<Message> {
+//        return try {
+////            val response: HttpResponse = httpClient.get(ChatSocketRepository.Endpoints.GetAllMessages.url) {
+//            val response: HttpResponse = httpClient.get("") {
+//               // contentType(ContentType.Application.Json)
+//                //setBody(userPairChat)
+//            }
+//           // Log.d("4444", " getAllMessages response=" + response.status)
+//            val res = response.body<List<MessageDto>>().map {
+//                it.mapToDomain()
+//            }
+//            return res
+//        } catch (e: Exception) {
+//            println("4444  try catch ChatSocketRepositoryImpl getAllMessages e=" + e)
+//            //.d("4444", " try catch ChatSocketRepositoryImpl getAllMessages e=" + e)
+//            emptyList()
+//        }
+//    }
 
     private fun getFakeOutdoors(): List<Dvr> {
         return listOf(

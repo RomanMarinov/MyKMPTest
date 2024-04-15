@@ -12,10 +12,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
+
+//    private val module = module {
+//        single<ComponentContext> {  }
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         setContent {
+
 
             // https://stackoverflow.com/questions/78190854/status-bar-color-change-in-compose-multiplatform
             enableEdgeToEdge(
@@ -31,6 +38,9 @@ class MainActivity : ComponentActivity() {
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
             App()
+
+
+
         }
     }
 }
