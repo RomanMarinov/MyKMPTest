@@ -83,7 +83,7 @@ val networkModule = module {
                         //Log.d("HTTP Client", message)
                         // co.touchlab.kermit.Logger.d // https://www.youtube.com/watch?v=QztfvKcvIrs
                         // 14.47
-                        println("HTTP Client $message")
+                       // println("HTTP Client $message")
                     }
                 }
                 level = LogLevel.ALL

@@ -112,8 +112,8 @@ dependencies {
 
     // отключил для теста на работу koin
       implementation(libs.koin.android)
-     //implementation(libs.koin.androidx.compose)
-   // implementation(libs.koin.compose)
+     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.compose)
 
 
     // отключил для теста на работу koin
@@ -127,6 +127,6 @@ dependencies {
 
 
 
-    implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
+    //implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
 }
 

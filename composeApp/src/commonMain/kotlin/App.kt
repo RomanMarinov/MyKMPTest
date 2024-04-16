@@ -74,10 +74,10 @@ fun AppContent() {
         MaterialTheme {
             PreComposeApp {
 
-                val scope = CoroutineScope(Dispatchers.IO)
-                scope.launch  {
-                    // val appName = getString(Res.string.hello)
-                }
+//                val scope = CoroutineScope(Dispatchers.IO)
+//                scope.launch  {
+//                    // val appName = getString(Res.string.hello)
+//                }
 
                 var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
                 val navigator = rememberNavigator()
@@ -166,18 +166,12 @@ fun AppContent() {
                                             }
                                         }
                                     )
-
                                 }
-
                             }
-
-
                         }
 
                     ) {
                             paddingValues ->
-
-
 
                         // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
                         Box(
@@ -196,12 +190,7 @@ fun AppContent() {
                     }
                 }
 
-
                 val lazyListState: LazyListState = rememberLazyListState()
-
-
-
-
        //     }
         }
     }

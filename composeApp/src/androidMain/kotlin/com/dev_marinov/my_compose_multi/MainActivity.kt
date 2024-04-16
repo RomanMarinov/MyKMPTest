@@ -38,9 +38,6 @@ class MainActivity : ComponentActivity() {
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
             App()
-
-
-
         }
     }
 }
