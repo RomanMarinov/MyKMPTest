@@ -18,12 +18,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import di.commonModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
-
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.rememberNavigator
 import mykmptest.composeapp.generated.resources.Res
@@ -35,8 +33,8 @@ import mykmptest.composeapp.generated.resources.ic_navbar_outdoor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinApplication
 import org.koin.compose.KoinContext
+//import org.koin.compose.KoinContext
 import util.ScreenRoute
 
 
@@ -58,12 +56,20 @@ data class BottomNavigationItem(
 //    return bitmap.asImageBitmap()
 //}
 
+@Composable
+fun App() {
+    KoinContext {
+        AppContent()
+    }
+}
+
+
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 @Preview
-fun App() {
+fun AppContent() {
 
-    KoinContext{
+   // KoinContext{
 
         MaterialTheme {
             PreComposeApp {
@@ -196,7 +202,7 @@ fun App() {
 
 
 
-            }
+       //     }
         }
     }
 

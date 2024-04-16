@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
@@ -34,15 +37,16 @@ import util.ScreenRoute
 fun OutdoorScreen(
     navigator: Navigator,
     viewModel: OutdoorScreenViewModel = koinInject()
-     // viewModel: OutdoorScreenViewModel = koinViewModel()
+      //viewModel: OutdoorScreenViewModel = koinViewModel()
    // viewModel: OutdoorScreenViewModel =
 
 ) {
+    Logger.d {" 4444 OutdoorScreen opened"}
 
 // анимация топбара при скроле
     // https://www.youtube.com/watch?v=EqCvUETekjk
 
-//   val viewModel: OutdoorScreenViewModel by inj()
+   //val viewModel: OutdoorScreenViewModel by koin
 
     val outDoors = viewModel.outDoors.collectAsStateWithLifecycle()
 
@@ -99,7 +103,13 @@ fun OutdoorScreen(
             }
         ) {
             Content()
-            println("::::::::::outDoors=" + outDoors.value)
+            Logger.d {" 4444 OutdoorScreen outDoors=" + outDoors.value }
+
+            LazyColumn {
+                items(outDoors.value) {
+                    Text(it.address)
+                }
+            }
         }
     }
 

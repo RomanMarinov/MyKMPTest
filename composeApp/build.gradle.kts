@@ -31,11 +31,8 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
 
-            implementation(libs.koin.android)
-
-
-
-
+            // отключил для теста на работу koin
+           // implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,13 +58,16 @@ kotlin {
             implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.serialization)
 
-           // implementation(libs.kermit) // с ошибкой
+            implementation(libs.kermit.v203) //Add latest version
 
+            // отключил для теста на работу koin
             implementation(libs.koin.core)
-            implementation(libs.koin.compose)
+
+            implementation(libs.koin.compose) // в этом проблема
+
+//            implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
             //implementation(libs.koin.android)
           //  implementation(libs.koin.androidx.compose)
-
         }
         task("testClasses")
     }
@@ -109,10 +109,24 @@ android {
 dependencies {
 //    implementation(libs.androidx.core)
     //implementation(libs.androidx.core.ktx)
-      implementation(libs.koin.android)
-     implementation(libs.koin.androidx.compose)
 
-   // implementation(libs.koin.bom)
+    // отключил для теста на работу koin
+      implementation(libs.koin.android)
+     //implementation(libs.koin.androidx.compose)
+   // implementation(libs.koin.compose)
+
+
+    // отключил для теста на работу koin
     implementation(libs.koin.core)
+
+
+
+   // implementation("io.insert-koin:koin-annotations:1.3.0")
+    //ksp("io.insert-koin:koin-ksp-compiler:1.3.0")
+
+
+
+
+    implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
 }
 

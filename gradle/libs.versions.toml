@@ -13,20 +13,30 @@ androidx-core-ktx = "1.12.0"
 androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
-compose = "1.6.2"
+compose = "1.6.5"
 compose-plugin = "1.6.0"
 junit = "4.13.2"
-kermit = "2.0.2"
+kermitVersion = "2.0.3"
+
 koinAndroid = "3.5.6"
-koinAndroidxCompose = "3.4.3"
-koinCompose = "3.6.0-wasm-alpha2"
-koinBom = "3.6.0-wasm-alpha2"
-koinCore = "3.3.2"
+koinAndroidxCompose = "3.5.1"
+koinCompose = "1.2.0-alpha3"
+koinBom = "3.5.1"
+koinCore = "3.5.6"
+
+#koinAndroid = "3.5.6"
+#koinAndroidxCompose = "3.4.3"
+#koinCompose = "3.6.0-wasm-alpha2"
+#koinBom = "3.6.0-wasm-alpha2"
+#koinCore = "3.3.2"
+
+
+
 kotlin = "1.9.22"
 ktorClientCore = "2.3.9"
 precompose = "1.6.0"
 core = "1.12.0"
-kotlin2 = "1.9.0"
+kotlin2 = "1.9.20"
 lifecycleRuntimeKtx = "2.7.0"
 composeBom = "2023.08.00"
 
@@ -34,7 +44,7 @@ composeBom = "2023.08.00"
 accompanist-coil = { module = "com.google.accompanist:accompanist-coil", version.ref = "accompanistCoil" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit-v203 = { module = "co.touchlab:kermit", version.ref = "kermitVersion" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
