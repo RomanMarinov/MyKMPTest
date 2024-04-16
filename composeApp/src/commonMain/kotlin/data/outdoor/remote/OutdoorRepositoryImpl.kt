@@ -38,6 +38,9 @@ class OutdoorRepositoryImpl(
 //        }
 //    }
 
+
+
+
     private fun getFakeOutdoors(): List<Dvr> {
         return listOf(
             Dvr(
