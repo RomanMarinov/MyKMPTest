@@ -4,6 +4,10 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+
+
+//    implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.2")
+    //id("dev.icerock.mobile.multiplatform-resources")
 }
 
 kotlin {
@@ -23,6 +27,9 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+
+            export("dev.icerock.moko:resources:0.23.0")
+            export("dev.icerock.moko:graphics:0.9.0")
         }
     }
     
@@ -56,7 +63,7 @@ kotlin {
             implementation(libs.ktor.client.content.negotiation)
 
             implementation(libs.ktor.client.cio)
-            implementation(libs.ktor.client.serialization)
+          //  implementation(libs.ktor.client.serialization)
 
             implementation(libs.kermit.v203) //Add latest version
 
@@ -68,10 +75,28 @@ kotlin {
 //            implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
             //implementation(libs.koin.android)
           //  implementation(libs.koin.androidx.compose)
+
+
+            api("dev.icerock.moko:resources:0.23.0")
+        }
+
+        iosMain {
+
+            //sourceSets["main"].resources.srcDirs("src/commonMain/resources")
+
+            //resources.srcDirs("src/commonMain/resources","src/iosMain/resources")
+//            resources.srcDirs("src/commonMain/resources","src/iosMain/resources")
+//            dependencies {
+//                //Your dependencies
+//            }
         }
         task("testClasses")
     }
 }
+
+//ios {
+//
+//}
 
 android {
     namespace = "com.dev_marinov.my_compose_multi"
@@ -127,6 +152,6 @@ dependencies {
 
 
 
-    //implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
+    implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
 }
 

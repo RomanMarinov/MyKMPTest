@@ -4,9 +4,9 @@ import android.app.Application
 import di.commonModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
+//import org.koin.core.context.startKoin
 
-//import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.context.GlobalContext.startKoin
 
 // koin documentation
 //https://insert-koin.io/docs/reference/koin-android/start
