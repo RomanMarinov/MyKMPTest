@@ -33,6 +33,7 @@ import mykmptest.composeapp.generated.resources.ic_navbar_outdoor
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.KoinApplication
 import org.koin.compose.KoinContext
 //import org.koin.compose.KoinContext
 import util.ScreenRoute

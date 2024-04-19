@@ -1,9 +1,10 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    kotlin("plugin.serialization") version "1.9.23"
 
 
 //    implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.2")
@@ -28,8 +29,8 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
 
-            export("dev.icerock.moko:resources:0.23.0")
-            export("dev.icerock.moko:graphics:0.9.0")
+//            export("dev.icerock.moko:resources:0.23.0")
+//            export("dev.icerock.moko:graphics:0.9.0")
         }
     }
     
@@ -39,7 +40,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             // отключил для теста на работу koin
-           // implementation(libs.koin.android)
+//            implementation(libs.koin.android)
+//            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.client.cio)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -62,8 +65,8 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
 
-            implementation(libs.ktor.client.cio)
-          //  implementation(libs.ktor.client.serialization)
+            //implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.serialization)
 
             implementation(libs.kermit.v203) //Add latest version
 
@@ -74,21 +77,33 @@ kotlin {
 
 //            implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
             //implementation(libs.koin.android)
-          //  implementation(libs.koin.androidx.compose)
+            //implementation(libs.koin.androidx.compose)
+
+            //api("dev.icerock.moko:resources:0.23.0")
+
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+           // implementation(libs.kotlinx.coroutines.core)
+            implementation("media.kamel:kamel-image:0.9.4")
 
 
-            api("dev.icerock.moko:resources:0.23.0")
+            //implementation("org.jetbrains.kotlin:kotlin-serialization:2.0.0-RC1")
+
+
         }
 
         iosMain {
-
+            dependencies {
+               // implementation("io.ktor:ktor-client-ios:2.3.10")
+                implementation(libs.ktor.client.darwin)
+            }
             //sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
             //resources.srcDirs("src/commonMain/resources","src/iosMain/resources")
 //            resources.srcDirs("src/commonMain/resources","src/iosMain/resources")
-//            dependencies {
-//                //Your dependencies
-//            }
+
+
+
         }
         task("testClasses")
     }
@@ -132,7 +147,7 @@ android {
     }
 }
 dependencies {
-//    implementation(libs.androidx.core)
+    implementation(libs.androidx.core) // корутины
     //implementation(libs.androidx.core.ktx)
 
     // отключил для теста на работу koin
@@ -140,18 +155,17 @@ dependencies {
      implementation(libs.koin.androidx.compose)
     implementation(libs.koin.compose)
 
-
     // отключил для теста на работу koin
     implementation(libs.koin.core)
 
-
-
    // implementation("io.insert-koin:koin-annotations:1.3.0")
-    //ksp("io.insert-koin:koin-ksp-compiler:1.3.0")
-
-
-
+    // ksp("io.insert-koin:koin-ksp-compiler:1.3.0")
 
     implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
+
+
+//    implementation(libs.kotlinx.coroutines.core)
+
+
 }
 
