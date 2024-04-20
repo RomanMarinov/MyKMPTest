@@ -18,22 +18,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.launch
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.rememberNavigator
 import mykmptest.composeapp.generated.resources.Res
+import mykmptest.composeapp.generated.resources.domofon_name_nav
+import mykmptest.composeapp.generated.resources.help_name_nav
+import mykmptest.composeapp.generated.resources.home_name_nav
 import mykmptest.composeapp.generated.resources.ic_navbar_domofon
 import mykmptest.composeapp.generated.resources.ic_navbar_help
 import mykmptest.composeapp.generated.resources.ic_navbar_home
 import mykmptest.composeapp.generated.resources.ic_navbar_map
 import mykmptest.composeapp.generated.resources.ic_navbar_outdoor
+import mykmptest.composeapp.generated.resources.map_name_nav
+import mykmptest.composeapp.generated.resources.outdoor_name_nav
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.KoinApplication
 import org.koin.compose.KoinContext
 //import org.koin.compose.KoinContext
 import util.ScreenRoute
@@ -83,9 +84,11 @@ fun AppContent() {
                 var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
                 val navigator = rememberNavigator()
 
+
+
                 val items = listOf(
                     BottomNavigationItem(
-                        title = "Baza.net",
+                        title = stringResource(Res.string.home_name_nav),
                         selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
                         unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
                         hasNews = false,
@@ -93,7 +96,7 @@ fun AppContent() {
                         route = ScreenRoute.HomeScreen.route
                     ),
                     BottomNavigationItem(
-                        title = "Мой двор",
+                        title = stringResource(Res.string.outdoor_name_nav),
                         selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
                         unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
                         hasNews = false,
@@ -101,7 +104,7 @@ fun AppContent() {
                         route = ScreenRoute.OutdoorScreen.route
                     ),
                     BottomNavigationItem(
-                        title = "Карта",
+                        title = stringResource(Res.string.map_name_nav),
                         selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
                         unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
                         hasNews = false,
@@ -110,7 +113,7 @@ fun AppContent() {
                     ),
 
                     BottomNavigationItem(
-                        title = "Домофон",
+                        title = stringResource(Res.string.domofon_name_nav),
                         selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
                         unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
                         hasNews = false,
@@ -118,8 +121,7 @@ fun AppContent() {
                         route = ScreenRoute.DomofonScreen.route
                     ),
                     BottomNavigationItem(
-                        title = "Помощь",
-
+                        title = stringResource(Res.string.help_name_nav),
                         selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
                         unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
                         hasNews = false,
@@ -186,7 +188,7 @@ fun AppContent() {
 
                             // MainScreensNavigationGraph(navHostController = navController)
 
-                            Nav(navigator = navigator)
+                            NavHostScreenScenes(navigator = navigator)
                         }
                     }
                 }

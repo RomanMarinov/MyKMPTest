@@ -43,6 +43,8 @@ kotlin {
 //            implementation(libs.koin.android)
 //            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.client.cio)
+
+//            implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -89,7 +91,7 @@ kotlin {
 
             //implementation("org.jetbrains.kotlin:kotlin-serialization:2.0.0-RC1")
 
-
+            implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
         }
 
         iosMain {
@@ -162,6 +164,7 @@ dependencies {
     // ksp("io.insert-koin:koin-ksp-compiler:1.3.0")
 
     implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
+    implementation(libs.androidx.constraintlayout)
 
 
 //    implementation(libs.kotlinx.coroutines.core)

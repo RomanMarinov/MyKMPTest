@@ -1,15 +1,8 @@
 package data.outdoor.remote
 
-import domain.model.Dvr
+import domain.model.outdoor.Dvr
 import domain.repository.OutdoorRepository
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.utils.EmptyContent.contentType
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 
 class OutdoorRepositoryImpl(
     private val httpClient: HttpClient

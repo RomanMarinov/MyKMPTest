@@ -1,41 +1,33 @@
 package presentation.ui.outdoor_screen
 
-import co.touchlab.kermit.Logger
-import domain.model.Dvr
 import domain.repository.OutdoorRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-//import kotlinx.coroutines.Dispatchers
-//import kotlinx.coroutines.IO
-//import kotlinx.coroutines.flow.MutableStateFlow
-//import kotlinx.coroutines.flow.StateFlow
-//import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
-//import org.koin.core.component.KoinComponent
+import presentation.ui.outdoor_screen.model.OutdoorUiState
 
 class OutdoorScreenViewModel(
     private val outdoorRepository: OutdoorRepository
 ) : ViewModel() {
 
-    private var _outDoors: MutableStateFlow<List<Dvr>> = MutableStateFlow(listOf())
-    val outDoors: StateFlow<List<Dvr>> = _outDoors
+    private var _outDoorsUiState: MutableStateFlow<OutdoorUiState> = MutableStateFlow(OutdoorUiState(emptyList()))
+    val outDoorsUiState: StateFlow<OutdoorUiState> = _outDoorsUiState
 
     init {
         getOutdoors()
     }
 
     private fun getOutdoors() {
-
-
         viewModelScope.launch(Dispatchers.IO) {
-            val res = outdoorRepository.getOutdoors()
-           // Logger.d {" 4444 OutdoorScreenViewModel getOutdoors res=" + res }
-
-            _outDoors.value = res
+            val outDoors = outdoorRepository.getOutdoors()
+            _outDoorsUiState.update {
+                it.copy(outdoors = outDoors)
+            }
         }
     }
 

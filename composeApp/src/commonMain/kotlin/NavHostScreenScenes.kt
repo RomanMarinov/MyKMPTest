@@ -1,6 +1,7 @@
 import androidx.compose.runtime.Composable
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.path
 import moe.tlaster.precompose.navigation.transition.NavTransition
 import presentation.ui.domofon_screen.DomofonScreen
 import presentation.ui.help_screen.HelpScreen
@@ -13,56 +14,68 @@ import util.ScreenRoute
 
 
 @Composable
-fun Nav(navigator: Navigator) {
-
+fun NavHostScreenScenes(navigator: Navigator) {
     NavHost(
         navigator = navigator, // Назначаем навигатор NavHost
         navTransition = NavTransition(), // Переход навигации для сцен в этом NavHost, это необязательно
         initialRoute = ScreenRoute.HomeScreen.route, // Начальный пункт назначения
     ) {
-        scene( // Определить сцену для навигационного графа
+        scene(
+            // Определить сцену для навигационного графа
             route = ScreenRoute.HomeScreen.route,  // Путь маршрута сцены
             navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
         ) {
             HomeScreen(navigator = navigator)
         }
 
-        scene( // Определить сцену для навигационного графа
+        scene(
+            // Определить сцену для навигационного графа
             route = ScreenRoute.OutdoorScreen.route,  // Путь маршрута сцены
             navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
         ) {
             OutdoorScreen(navigator = navigator)
         }
 
-        scene( // Определить сцену для навигационного графа
+        scene(
+            // Определить сцену для навигационного графа
             route = ScreenRoute.MapScreen.route,  // Путь маршрута сцены
             navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
         ) {
             MapScreen(navigator = navigator)
         }
 
-        scene( // Определить сцену для навигационного графа
+        scene(
+            // Определить сцену для навигационного графа
             route = ScreenRoute.DomofonScreen.route,  // Путь маршрута сцены
             navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
         ) {
             DomofonScreen(navigator = navigator)
         }
 
-        scene( // Определить сцену для навигационного графа
+        scene(
+            // Определить сцену для навигационного графа
             route = ScreenRoute.HelpScreen.route,  // Путь маршрута сцены
             navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
         ) {
             HelpScreen(navigator = navigator)
         }
 
-        scene( // Определить сцену для навигационного графа
-            route = ScreenRoute.WebViewScreen.route,  // Путь маршрута сцены
+        scene(
+            // Определить сцену для навигационного графа
+            route = "/webview_screen/{address}/{videourl}",  // Путь маршрута сцены
             navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
         ) {
-            WebViewScreen(navigator = navigator)
+            val address: String? = it.path<String>("address")
+            val videoUrl: String? = it.path<String>("videourl")
+            WebViewScreen(
+                navigator = navigator,
+                address = address,
+                videoUrl = videoUrl
+            )
         }
 
-        scene( // Определить сцену для навигационного графа
+        scene(
+            // Определить сцену для навигационного графа
             route = ScreenRoute.ProfileScreen.route,  // Путь маршрута сцены
             navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
         ) {

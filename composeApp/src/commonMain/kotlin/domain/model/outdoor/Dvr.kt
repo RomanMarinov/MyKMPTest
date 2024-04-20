@@ -1,4 +1,4 @@
-package domain.model
+package domain.model.outdoor
 
 data class Dvr(
     val addrId: Int,
