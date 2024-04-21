@@ -52,7 +52,9 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_outdoor_create_shortcut
 import mykmptest.composeapp.generated.resources.ic_play
@@ -265,6 +267,14 @@ fun navigateToWebView(navigator: Navigator, address: String, videoUrl: String) {
         ScreenRoute.WebViewScreen.withArgs(
             address = address,
             videourl = videoUrlEncode
+        ),
+        NavOptions(
+            popUpTo = PopUpTo(
+                // The destination of popUpTo
+                route = ScreenRoute.OutdoorScreen.route,
+                // Whether the popUpTo destination should be popped from the back stack.
+                inclusive = false,
+            )
         )
     )
 }

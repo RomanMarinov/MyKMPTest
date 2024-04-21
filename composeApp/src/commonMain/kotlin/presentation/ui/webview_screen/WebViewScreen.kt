@@ -1,21 +1,117 @@
 package presentation.ui.webview_screen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import kotlinx.serialization.json.Json
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.util.KLogSeverity
+import com.multiplatform.webview.util.toKermitSeverity
+import com.multiplatform.webview.web.LoadingState
+import com.multiplatform.webview.web.WebContent
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewState
+import com.multiplatform.webview.web.rememberWebViewNavigator
 import moe.tlaster.precompose.navigation.Navigator
+import mykmptest.composeapp.generated.resources.Res
+import mykmptest.composeapp.generated.resources.ic_back
+import mykmptest.composeapp.generated.resources.ic_profile
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.vectorResource
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WebViewScreen(
     navigator: Navigator,
     address: String?,
-    videoUrl: String?
+    videoUrl: String?,
 ) {
+    val decodedUrl = UrlEncoderUtil.decode(videoUrl ?: "")
+
+    Logger.d { "webview =" + decodedUrl }
+
+    val webViewState = remember { WebViewState(WebContent.Url(decodedUrl)) }
+    val webViewNavigator = rememberWebViewNavigator()
+    val webViewJsBridge = remember { WebViewJsBridge() }
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Black),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = vectorResource(Res.drawable.ic_back),
+                contentDescription = "back",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(60.dp)
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .clickable {
+                        navigator.popBackStack()
+                    }
+            )
+            Text(
+                text = address ?: "",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(top = 16.dp, end = 16.dp)
+            )
+        }
+
+        val loadingState = webViewState.loadingState
+        if (loadingState is LoadingState.Loading) {
+            LinearProgressIndicator(
+                progress = { loadingState.progress },
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
 
 
-    videoUrl?.let {
-        val decodedUrl = UrlEncoderUtil.decode(it)
-        Text("WebViewScreen address=" + address + " " + decodedUrl)
+        webViewState.webSettings.apply {
+            isJavaScriptEnabled = true
+            androidWebSettings.apply {
+                domStorageEnabled = true
+                loadsImagesAutomatically = true
+                isAlgorithmicDarkeningAllowed = true
+                safeBrowsingEnabled = true
+
+                Logger.d { " WebViewScreen webViewState.isLoading=" + webViewState.isLoading }
+
+                Logger.d { " WebViewScreen KLogSeverity.Error=" + KLogSeverity.Error.toKermitSeverity() }
+                Logger.d { " WebViewScreen KLogSeverity.Assert=" + KLogSeverity.Assert.toKermitSeverity() }
+                Logger.d { " WebViewScreen KLogSeverity.Info=" + KLogSeverity.Info.toKermitSeverity() }
+            }
+        }
+
+        WebView(
+            state = webViewState,
+            modifier = Modifier.fillMaxSize(),
+            navigator = webViewNavigator,
+            webViewJsBridge = webViewJsBridge,
+            onCreated = {
+                // Вызовется, когда WebView будет создан
+
+            },
+            onDispose = {
+                // Вызовется при удалении WebView
+            }
+        )
     }
 }

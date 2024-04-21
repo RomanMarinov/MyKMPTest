@@ -3,6 +3,7 @@ package com.dev_marinov.my_compose_multi
 import App
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -22,6 +23,8 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
+
+
 
 
             // https://stackoverflow.com/questions/78190854/status-bar-color-change-in-compose-multiplatform

@@ -92,6 +92,11 @@ kotlin {
             //implementation("org.jetbrains.kotlin:kotlin-serialization:2.0.0-RC1")
 
             implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
+            //implementation("io.github.kevinnzou:compose-webview:0.33.6")
+
+            implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.2")
+
+//            implementation("com.google.accompanist:accompanist-webview:0.34.0")
         }
 
         iosMain {
@@ -168,7 +173,7 @@ dependencies {
 
 
 //    implementation(libs.kotlinx.coroutines.core)
-
+//    implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.2")
 
 }
 
