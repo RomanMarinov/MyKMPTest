@@ -25,6 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
@@ -37,15 +40,21 @@ import mykmptest.composeapp.generated.resources.map_title
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.koinInject
+import presentation.ui.map_screen.MapScreenViewModel
 import util.ScreenRoute
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun HelpScreen(navigator: Navigator) {
+fun HelpScreen(
+    navigator: Navigator,
+    viewModel: HelpScreenViewModel = koinInject(),
+) {
     Text("HelpScreen")
 
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val faqUiState by viewModel.faqUiState.collectAsStateWithLifecycle()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -127,19 +136,19 @@ fun HelpScreen(navigator: Navigator) {
             ) {
 
 
-//                OutdoorContentWithRefresh(
-//                    items = outDoorsUiState.outdoors,
-//                    isRefreshing = isRefreshing,
-//                    onRefresh = {
-//                        scope.launch {
-//                            isRefreshing = true
-//                            delay(2000L)
-//                            isRefreshing = false
-//                        }
-//                    },
-//                    navigator = navigator,
-//                    paddingValue = paddingValue
-//                )
+                HelpContentWithRefresh(
+                    items = faqUiState.faq,
+                    isRefreshing = isRefreshing,
+                    onRefresh = {
+                        scope.launch {
+                            isRefreshing = true
+                            delay(2000L)
+                            isRefreshing = false
+                        }
+                    },
+                    navigator = navigator,
+                    paddingValue = paddingValue
+                )
 
 
             }
