@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -18,25 +17,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
@@ -49,42 +43,40 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import data.public_info.remote.dto.Faq
-import domain.model.outdoor.Dvr
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.NavOptions
+import data.public_info.remote.dto.MarkerOffice
 import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
-import mykmptest.composeapp.generated.resources.domofon_name_nav
-import mykmptest.composeapp.generated.resources.help_title
+import mykmptest.composeapp.generated.resources.help_call_number_one
+import mykmptest.composeapp.generated.resources.help_call_number_two
+import mykmptest.composeapp.generated.resources.help_check_internet
+import mykmptest.composeapp.generated.resources.help_contact_title
+import mykmptest.composeapp.generated.resources.help_make_call
+import mykmptest.composeapp.generated.resources.help_make_question
+import mykmptest.composeapp.generated.resources.help_make_question_desc
 import mykmptest.composeapp.generated.resources.help_title_first
 import mykmptest.composeapp.generated.resources.help_title_second
-import mykmptest.composeapp.generated.resources.ic_outdoor_create_shortcut
-import mykmptest.composeapp.generated.resources.ic_play
-import net.thauvin.erik.urlencoder.UrlEncoderUtil
+import mykmptest.composeapp.generated.resources.help_title_support
+import mykmptest.composeapp.generated.resources.ic_call
+import mykmptest.composeapp.generated.resources.ic_chat
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
-import util.ScreenRoute
+import util.ColorCustomResources
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HelpContentWithRefresh(
-    items: List<Faq>,
+    itemsFaq: List<Faq>,
+    itemsOffices: List<MarkerOffice>,
     // content: @Composable (T) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -99,7 +91,13 @@ fun HelpContentWithRefresh(
     /////////////////////////////////////////////
 //    помотреть тут где я на шару писал navigationBarsPadding
 /////////////////////////////////////////////////
-    val colorsList = listOf(Color.LightGray, Color.White)
+
+    val colorsList = listOf(
+        ColorCustomResources.colorGradientLightBlueStart,
+        ColorCustomResources.colorGradientWhiteEnd
+    )
+
+//    val colorsList = listOf(Color.LightGray, Color.White)
 
     Box(
         modifier = modifier
@@ -116,19 +114,25 @@ fun HelpContentWithRefresh(
                 )
             )
     ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
+        ) {
 
-        LazyColumn(modifier = Modifier.fillMaxWidth()) {
-            HelpContentTitle()
+            helpContentTitle()
 
-            HelpContentListFaq(
+            helpContentListFaq(
                 lazyListState = lazyListState,
-                listFaq = items
+                listFaq = itemsFaq
             )
-            HelpContentSpeedTest()
+            helpContentSpeedTest()
 
-            HelpContentMessengers()
+            helpContentMessengers()
 
-            HelpContentVersionApp()
+            helpContentContactTitle()
+
+            helpContentContactTowns(itemsOffices = itemsOffices)
+
+            helpContentVersionApp()
 
         }
 
@@ -149,9 +153,9 @@ fun HelpContentWithRefresh(
         PullToRefreshContainer(
             state = pullToRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
-          //  modifier = Modifier.align(Alignment.CenterHorizontally),
+            //  modifier = Modifier.align(Alignment.CenterHorizontally),
 
-            )
+        )
 
 
     }
@@ -159,14 +163,17 @@ fun HelpContentWithRefresh(
 }
 
 @OptIn(ExperimentalResourceApi::class)
-fun LazyListScope.HelpContentTitle() {
+fun LazyListScope.helpContentTitle() {
     item {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-        ) {
-            Row(modifier = Modifier
+        Column(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)) {
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)
+            ) {
                 Text(
                     text = stringResource(Res.string.help_title_first),
                     fontWeight = FontWeight.Bold,
@@ -174,9 +181,10 @@ fun LazyListScope.HelpContentTitle() {
                 )
             }
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
             ) {
                 Text(
                     text = stringResource(Res.string.help_title_second),
@@ -186,46 +194,49 @@ fun LazyListScope.HelpContentTitle() {
     }
 }
 
-fun LazyListScope.HelpContentListFaq(
+fun LazyListScope.helpContentListFaq(
     lazyListState: LazyListState,
     listFaq: List<Faq>,
 ) {
-//    LazyColumn(
-//        state = lazyListState,
-//        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
-//        modifier = Modifier.fillMaxWidth(),
-//        verticalArrangement = Arrangement.spacedBy(16.dp)
-//    ) {
-        items(listFaq) { faq ->
+    items(listFaq) { faq ->
+        var contentExpanded by remember { mutableStateOf(false) }
+        //  Row(modifier = Modifier.animateContentSize()) {
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(modifier = Modifier.fillMaxWidth()) {
 
-            var contentExpanded by remember { mutableStateOf(false) }
+        }
 
-            //  Row(modifier = Modifier.animateContentSize()) {
-            Spacer(modifier = Modifier.height(8.dp))
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+
+        ) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+//                verticalArrangement = Arrangement.spacedBy(),
                 modifier = Modifier
-                    // .padding(8.dp)
-                    .animateContentSize()
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(10.dp)
-                    )
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    //.padding(start = 16.dp, end = 16.dp)
+//                    .clip(RoundedCornerShape(10.dp))
+//                    .border(1.dp, Color.LightGray, RoundedCornerShape(10.dp)) // Добавление границы
+//                    .background(color = Color.White)
                     .clickable {
                         contentExpanded = !contentExpanded
                     }
+                    .animateContentSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+                //.shadow(10.dp)
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = faq.title,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .weight(2f)
-
+                        modifier = Modifier.weight(2f)
                     )
                     IconButton(
                         onClick = { contentExpanded = !contentExpanded }) {
@@ -248,63 +259,237 @@ fun LazyListScope.HelpContentListFaq(
                     }
                 }
 
-
                 if (contentExpanded) {
                     Text(
-                        text = faq.content
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        text = faq.content,
+                        color = Color.Gray
                     )
                 }
-
-
             }
-            //  }
         }
-   // }
+    }
 }
 
-fun LazyListScope.HelpContentSpeedTest() {
-
+@OptIn(ExperimentalResourceApi::class)
+fun LazyListScope.helpContentSpeedTest() {
     item {
+        ElevatedButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+//                .shadow(2.dp, RoundedCornerShape(2.dp)),
 
-        Button(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             onClick = {
 
             },
-            content = { Text("Проверить скорость интернета") },
+            content = { Text(stringResource(Res.string.help_check_internet)) },
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color.White,
-                containerColor = Color.Blue
+                containerColor = ColorCustomResources.colorBazaMainBlue
             ),
-            shape = RoundedCornerShape(10.dp)
+            //shape = RoundedCornerShape(10.dp)
         )
     }
-
 }
 
-fun LazyListScope.HelpContentMessengers() {
+@OptIn(ExperimentalResourceApi::class)
+fun LazyListScope.helpContentMessengers() {
     item {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-//            Icon(
-//                Icons.Outlined.,
-//                contentDescription = "chat"
-//            )
+        val colorsList = listOf(
+            ColorCustomResources.colorBazaMainRed,
+            ColorCustomResources.colorBazaMainBlueCard
+        )
+
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
+
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Brush.horizontalGradient(colors = colorsList))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+
+                ) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_chat),
+                        contentDescription = "chat",
+                        tint = Color.White
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = stringResource(Res.string.help_make_question),
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                    text = stringResource(Res.string.help_make_question_desc),
+                    color = Color.White
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_chat),
+                        contentDescription = "chat",
+                        tint = Color.White
+                    )
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_chat),
+                        contentDescription = "chat",
+                        tint = Color.White
+                    )
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_chat),
+                        contentDescription = "chat",
+                        tint = Color.White
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = vectorResource(Res.drawable.ic_call),
+                        contentDescription = "call",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = stringResource(Res.string.help_title_support),
+                        color = Color.White,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = stringResource(Res.string.help_call_number_one),
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = stringResource(Res.string.help_call_number_two),
+                    color = Color.White,
+                    fontSize = 20.sp
+                )
+
+                ElevatedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+//                .shadow(2.dp, RoundedCornerShape(2.dp)),
+
+                    onClick = {
+
+                    },
+                    content = { Text(stringResource(Res.string.help_make_call)) },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                        containerColor = ColorCustomResources.colorBazaMainBlue
+                    ),
+                    //shape = RoundedCornerShape(10.dp)
+                )
             }
         }
     }
 }
 
-fun LazyListScope.HelpContentVersionApp() {
+@OptIn(ExperimentalResourceApi::class)
+fun LazyListScope.helpContentContactTitle() {
     item {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center
+        Box(
+            modifier = Modifier.fillMaxWidth()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center,
+            content = {
+                Text(
+                    text = stringResource(Res.string.help_contact_title),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+            }
+        )
+    }
+}
+
+fun LazyListScope.helpContentContactTowns(
+    itemsOffices: List<MarkerOffice>,
+) {
+    item {
+        ElevatedCard(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp)
         ) {
-            Text(
-                text = "Версия: четкая",
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column(
+                modifier = Modifier
+                    // .padding(16.dp)
+                    .background(Color.White)
+            ) { // Отступ для элементов внутри Card
+                itemsOffices.forEachIndexed { index, office ->
+                    Column {
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+
+                            }) {
+                            Text(
+                                text = office.title,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .weight(1f)
+                            )
+                            Icon(
+                                imageVector = Icons.Filled.KeyboardArrowRight,
+                                contentDescription = "arrow",
+                                modifier = Modifier
+                                    .padding(16.dp)
+                            )
+                        }
+                        if (index < itemsOffices.size - 1) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(1.dp)
+                                    .background(Color.Gray)
+                            )
+                        }
+                    }
+                }
+            }
         }
+    }
+}
+
+fun LazyListScope.helpContentVersionApp() {
+    item {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center,
+            content = {
+                Text(
+                    text = "Версия: четкая",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+        )
     }
 }

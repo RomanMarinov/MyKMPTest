@@ -1,10 +1,9 @@
-
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     kotlin("plugin.serialization") version "1.9.23"
+
 
 
 //    implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.2")
@@ -99,6 +98,8 @@ kotlin {
 
 //            implementation("com.google.accompanist:accompanist-webview:0.34.0")
 
+
+//            implementation("dev.icerock.moko:resources:0.23.0")
         }
 
         iosMain {

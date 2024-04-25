@@ -14,8 +14,22 @@
     <string name="help_name_nav">Помощь</string>
 
 
+    <string name="outdoor_add_address">Добавить адрес</string>
+    <string name="outdoor_create_shortcut">Создать ярлык</string>
+
+
 
     <string name="help_title_first">Часто задаваемые вопросы</string>
     <string name="help_title_second">Посмотрите наиболее поппулярные темы обращений к нашим специалистам. Возможно, эти ответы смогут решить вашу проблему.</string>
+    <string name="help_check_internet">Проверить скорость интернета</string>
+    <string name="help_make_question">Задайте нам вопрос</string>
+    <string name="help_make_question_desc">Любые вопросы, которые не требуют моментального реагирования, мы настоятельно просим задавать в любой удобный мессенджер.\n\nВам ответят те же технические специалисты, что и принимают звонки.</string>
+    <string name="help_title_support">Единая служба техподдержки</string>
+    <string name="help_button_make_call">Позвонить</string>
+    <string name="help_call_number_one">8-8172-70-02-39</string>
+    <string name="help_call_number_two">+78005502500</string>
+    <string name="help_make_call">Позвонить</string>
+
+    <string name="help_contact_title">Контакты:</string>
 
 </resources>

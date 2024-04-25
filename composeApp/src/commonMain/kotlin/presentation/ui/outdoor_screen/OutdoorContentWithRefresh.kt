@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
@@ -51,12 +52,16 @@ import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_outdoor_create_shortcut
 import mykmptest.composeapp.generated.resources.ic_play
+import mykmptest.composeapp.generated.resources.outdoor_add_address
+import mykmptest.composeapp.generated.resources.outdoor_create_shortcut
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import util.ColorCustomResources
 import util.ScreenRoute
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun OutdoorContentWithRefresh(
     items: List<Dvr>,
@@ -100,17 +105,21 @@ fun OutdoorContentWithRefresh(
             }
 
             item {
-                Button(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                ElevatedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+//                .shadow(2.dp, RoundedCornerShape(2.dp)),
+
                     onClick = {
 
                     },
-                    content = { Text("Добавить адрес") },
+                    content = { Text(stringResource(Res.string.outdoor_add_address)) },
                     colors = ButtonDefaults.buttonColors(
                         contentColor = Color.White,
-                        containerColor = Color.Blue
+                        containerColor = ColorCustomResources.colorBazaMainBlue
                     ),
-                    shape = RoundedCornerShape(10.dp)
+                    //shape = RoundedCornerShape(10.dp)
                 )
             }
         }
@@ -209,12 +218,12 @@ fun ContentLazyList(
                 Icon(
                     vectorResource(Res.drawable.ic_outdoor_create_shortcut),
                     contentDescription = "shortcut",
-                    tint = Color.Blue
+                    tint = ColorCustomResources.colorShortcut
                 )
                 Text(
                     modifier = Modifier.weight(1f).width(IntrinsicSize.Max),
-                    text = "Создать ярлык",
-                    color = Color.Blue
+                    text = stringResource(Res.string.outdoor_create_shortcut),
+                    color = ColorCustomResources.colorShortcut
                 )
             }
         }

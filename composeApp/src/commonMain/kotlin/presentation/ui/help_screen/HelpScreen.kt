@@ -13,8 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,16 +31,13 @@ import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
-import mykmptest.composeapp.generated.resources.help_name_nav
 import mykmptest.composeapp.generated.resources.help_title
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_profile
-import mykmptest.composeapp.generated.resources.map_title
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
-import presentation.ui.map_screen.MapScreenViewModel
 import util.ScreenRoute
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
@@ -50,11 +46,10 @@ fun HelpScreen(
     navigator: Navigator,
     viewModel: HelpScreenViewModel = koinInject(),
 ) {
-    Text("HelpScreen")
-
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val faqUiState by viewModel.faqUiState.collectAsStateWithLifecycle()
+    val officesUiState by viewModel.officesUiState.collectAsStateWithLifecycle()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -67,9 +62,16 @@ fun HelpScreen(
             topBar = {
                 TopAppBar(
                     // modifier = Modifier.height(20.dp),
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-                    ),
+//                    colors = TopAppBarDefaults.smallTopAppBarColors(
+//                        containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+//                    ),
+//                    colors = TopAppBarColors(
+//                        containerColor = Color.Magenta,
+//                        scrolledContainerColor = Color.Yellow,
+//                        navigationIconContentColor = Color.Green,
+//                        titleContentColor = Color.Cyan,
+//                        actionIconContentColor = Color.Red
+//                    ),
                     title = {
                         Text(
                             modifier = Modifier
@@ -122,7 +124,9 @@ fun HelpScreen(
                                     .size(50.dp)
                             )
                         }
-                    }
+                    },
+                    modifier = Modifier
+                        .shadow(4.dp)
                 )
             }
         ) { paddingValue ->
@@ -134,10 +138,9 @@ fun HelpScreen(
                         bottom = paddingValue.calculateBottomPadding()
                     )
             ) {
-
-
                 HelpContentWithRefresh(
-                    items = faqUiState.faq,
+                    itemsFaq = faqUiState.faq,
+                    itemsOffices = officesUiState.offices,
                     isRefreshing = isRefreshing,
                     onRefresh = {
                         scope.launch {

@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
 import presentation.ui.help_screen.model.HelpFaqUiState
+import presentation.ui.help_screen.model.HelpOfficesUiState
 
 class HelpScreenViewModel(
     private val publicInfoRepository: PublicInfoRepository
@@ -17,6 +18,10 @@ class HelpScreenViewModel(
 
     private var _faqUiState: MutableStateFlow<HelpFaqUiState> = MutableStateFlow(HelpFaqUiState(emptyList()))
     val faqUiState: StateFlow<HelpFaqUiState> = _faqUiState
+
+    private var _officesUiState: MutableStateFlow<HelpOfficesUiState> = MutableStateFlow(
+        HelpOfficesUiState(emptyList()))
+    val officesUiState: StateFlow<HelpOfficesUiState> = _officesUiState
 
     init {
         getPublicInfo()
@@ -29,6 +34,12 @@ class HelpScreenViewModel(
             res.faq?.let { listFaq ->
                 _faqUiState.update {
                     it.copy(faq = listFaq)
+                }
+            }
+
+            res.mapMarkers?.officeCams?.markersOffice?.let { officesCam ->
+                _officesUiState.update {
+                    it.copy(offices = officesCam)
                 }
             }
         }

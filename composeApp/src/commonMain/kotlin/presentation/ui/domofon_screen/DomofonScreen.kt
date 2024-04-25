@@ -15,8 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,7 +33,6 @@ import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.domofon_title
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_profile
-import mykmptest.composeapp.generated.resources.map_title
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -59,9 +57,9 @@ fun DomofonScreen(navigator: Navigator) {
          topBar = {
             TopAppBar(
                // modifier = Modifier.height(20.dp),
-               colors = TopAppBarDefaults.smallTopAppBarColors(
-                  containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-               ),
+//               colors = TopAppBarDefaults.smallTopAppBarColors(
+//                  containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+//               ),
                title = {
                   Text(
                      modifier = Modifier
@@ -114,7 +112,9 @@ fun DomofonScreen(navigator: Navigator) {
                            .size(50.dp)
                      )
                   }
-               }
+               },
+               modifier = Modifier
+                  .shadow(4.dp)
             )
          }
       ) { paddingValue ->
