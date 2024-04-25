@@ -100,6 +100,7 @@ kotlin {
 
 
 //            implementation("dev.icerock.moko:resources:0.23.0")
+            implementation("org.osmdroid:osmdroid-android:6.1.11")
         }
 
         iosMain {
@@ -173,6 +174,7 @@ dependencies {
 
     implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
     implementation(libs.androidx.constraintlayout)
+    
 
 
 //    implementation(libs.kotlinx.coroutines.core)

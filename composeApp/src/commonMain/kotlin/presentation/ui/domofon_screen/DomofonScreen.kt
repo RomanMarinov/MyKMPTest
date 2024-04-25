@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +27,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
@@ -36,12 +39,16 @@ import mykmptest.composeapp.generated.resources.ic_profile
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.koinInject
 import util.ScreenRoute
 
-@OptIn(ExperimentalResourceApi::class)
+@OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun DomofonScreen(navigator: Navigator) {
-   Text("DomofonScreen")
+fun DomofonScreen(
+   navigator: Navigator,
+   viewModel: DomofonScreenViewModel = koinInject()) {
+
+   val sputnikUiState by viewModel.sputnikUiState.collectAsState()
 
    var isRefreshing by remember { mutableStateOf(false) }
    val scope = rememberCoroutineScope()
@@ -128,19 +135,19 @@ fun DomofonScreen(navigator: Navigator) {
          ) {
 
 
-//                OutdoorContentWithRefresh(
-//                    items = outDoorsUiState.outdoors,
-//                    isRefreshing = isRefreshing,
-//                    onRefresh = {
-//                        scope.launch {
-//                            isRefreshing = true
-//                            delay(2000L)
-//                            isRefreshing = false
-//                        }
-//                    },
-//                    navigator = navigator,
-//                    paddingValue = paddingValue
-//                )
+                DomofonContentWithRefresh(
+                    items = sputnikUiState.sputnik,
+                    isRefreshing = isRefreshing,
+                    onRefresh = {
+                        scope.launch {
+                            isRefreshing = true
+                            delay(2000L)
+                            isRefreshing = false
+                        }
+                    },
+                    navigator = navigator,
+                    paddingValue = paddingValue
+                )
 
 
          }

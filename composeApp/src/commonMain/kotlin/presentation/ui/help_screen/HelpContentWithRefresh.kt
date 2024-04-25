@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -43,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -71,6 +73,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import util.ColorCustomResources
+import util.ShimmerListOutdoorOrDomofonHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,6 +91,12 @@ fun HelpContentWithRefresh(
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    var isLoadingState by remember { mutableStateOf(true) }
+    LaunchedEffect(itemsFaq) {
+        if (itemsFaq.isNotEmpty()) {
+            isLoadingState = false
+        }
+    }
     /////////////////////////////////////////////
 //    помотреть тут где я на шару писал navigationBarsPadding
 /////////////////////////////////////////////////
@@ -98,6 +107,8 @@ fun HelpContentWithRefresh(
     )
 
 //    val colorsList = listOf(Color.LightGray, Color.White)
+
+
 
     Box(
         modifier = modifier
@@ -120,9 +131,14 @@ fun HelpContentWithRefresh(
 
             helpContentTitle()
 
+
             helpContentListFaq(
                 lazyListState = lazyListState,
-                listFaq = itemsFaq
+                listFaq = itemsFaq,
+                isLoading = isLoadingState,
+//                isLoadingChange = {
+//                    isLoadingState = it
+//                }
             )
             helpContentSpeedTest()
 
@@ -197,77 +213,88 @@ fun LazyListScope.helpContentTitle() {
 fun LazyListScope.helpContentListFaq(
     lazyListState: LazyListState,
     listFaq: List<Faq>,
+    isLoading: Boolean,
+    //isLoadingChange: (Boolean) -> Unit
 ) {
+
     items(listFaq) { faq ->
+
         var contentExpanded by remember { mutableStateOf(false) }
         //  Row(modifier = Modifier.animateContentSize()) {
         Spacer(modifier = Modifier.height(8.dp))
-        Box(modifier = Modifier.fillMaxWidth()) {
 
-        }
+        ShimmerListOutdoorOrDomofonHelper(
+            isLoading = isLoading,
+            contentAfterLoading = {
 
-        ElevatedCard(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp)
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp)
 
-        ) {
-            Column(
+                ) {
+                    Column(
 //                verticalArrangement = Arrangement.spacedBy(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    //.padding(start = 16.dp, end = 16.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.White)
+                            //.padding(start = 16.dp, end = 16.dp)
 //                    .clip(RoundedCornerShape(10.dp))
 //                    .border(1.dp, Color.LightGray, RoundedCornerShape(10.dp)) // Добавление границы
 //                    .background(color = Color.White)
-                    .clickable {
-                        contentExpanded = !contentExpanded
-                    }
-                    .animateContentSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-                //.shadow(10.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = faq.title,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(2f)
-                    )
-                    IconButton(
-                        onClick = { contentExpanded = !contentExpanded }) {
-                        Icon(
-                            modifier = Modifier
-                                .size(30.dp)
-                                .weight(1f)
-                                .width(IntrinsicSize.Max),
-                            imageVector = if (contentExpanded) {
-                                Icons.Filled.KeyboardArrowUp
-                            } else {
-                                Icons.Filled.KeyboardArrowDown
-                            },
-                            contentDescription = if (contentExpanded) {
-                                "ExpandLess"
-                            } else {
-                                "ExpandMore"
+                            .clickable {
+                                contentExpanded = !contentExpanded
                             }
-                        )
+                            .animateContentSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                        //.shadow(10.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = faq.title,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.weight(2f)
+                            )
+                            IconButton(
+                                onClick = { contentExpanded = !contentExpanded }) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(30.dp)
+                                        .weight(1f)
+                                        .width(IntrinsicSize.Max),
+                                    imageVector = if (contentExpanded) {
+                                        Icons.Filled.KeyboardArrowUp
+                                    } else {
+                                        Icons.Filled.KeyboardArrowDown
+                                    },
+                                    contentDescription = if (contentExpanded) {
+                                        "ExpandLess"
+                                    } else {
+                                        "ExpandMore"
+                                    }
+                                )
+                            }
+                        }
+
+                        if (contentExpanded) {
+                            Text(
+                                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                                text = faq.content,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
-
-                if (contentExpanded) {
-                    Text(
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                        text = faq.content,
-                        color = Color.Gray
-                    )
-                }
-            }
-        }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+             .padding(start = 16.dp, end = 16.dp).clip(
+                    RoundedCornerShape(10.dp))
+        )
     }
 }
 

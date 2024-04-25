@@ -1,4 +1,4 @@
-package presentation.ui.outdoor_screen
+package presentation.ui.domofon_screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,12 +28,17 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +47,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import domain.model.outdoor.Dvr
+import data.domofon.remote.model.Sputnik
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.CoroutineScope
@@ -52,6 +57,7 @@ import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
+import mykmptest.composeapp.generated.resources.ic_lock
 import mykmptest.composeapp.generated.resources.ic_outdoor_create_shortcut
 import mykmptest.composeapp.generated.resources.ic_play
 import mykmptest.composeapp.generated.resources.outdoor_add_address
@@ -66,8 +72,8 @@ import util.shimmerEffect
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
-fun OutdoorContentWithRefresh(
-    items: List<Dvr>,
+fun DomofonContentWithRefresh(
+    items: List<Sputnik>,
     // content: @Composable (T) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -78,6 +84,8 @@ fun OutdoorContentWithRefresh(
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var isLoading by remember { mutableStateOf(true) }
 
     /////////////////////////////////////////////
 //    помотреть тут где я на шару писал navigationBarsPadding
@@ -99,12 +107,30 @@ fun OutdoorContentWithRefresh(
                 .fillMaxSize().navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(items) { dvr ->
+            items(items) { sputnik ->
+
+
                 ContentLazyList(
-                    dvr = dvr,
+                    sputnik = sputnik,
                     snackbarHostState = snackbarHostState,
                     navigator = navigator
                 )
+
+
+//                LaunchedEffect(true) {
+//                    delay(2000L)
+//                    isLoading = false
+//                }
+//
+//                ShimmerListOutdoorOrDomofonHelper(
+//                    isLoading = isLoading,
+//                    contentAfterLoading = {
+//
+//                    },
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                    // .padding(16.dp)
+//                )
             }
 
             item {
@@ -185,11 +211,13 @@ fun OutdoorContentWithRefresh(
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ContentLazyList(
-    dvr: Dvr,
+    sputnik: Sputnik,
     //snackBarState: Boolean,
     snackbarHostState: SnackbarHostState,
     navigator: Navigator,
 ) {
+
+    var switchCheckedState by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth().navigationBarsPadding()) {
         Row(
@@ -197,17 +225,15 @@ fun ContentLazyList(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Bottom
         ) {
-            Row(
-                modifier = Modifier
-                    .weight(2f)
-            ) {
+            Row(modifier = Modifier.weight(2f)) {
                 Text(
-                    text = dvr.address,
+                    text = sputnik.title,
                     fontWeight = FontWeight.Bold
                 )
             }
             Row(
-                modifier = Modifier.padding(start = 8.dp)
+                modifier = Modifier
+                    .padding(start = 8.dp)
                     .width(IntrinsicSize.Max)
                     .clickable {
                         CoroutineScope(Dispatchers.Main).launch {
@@ -233,56 +259,108 @@ fun ContentLazyList(
                 )
             }
         }
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            KamelImage(
-                onLoading = {
-                    Box(
-                        modifier = Modifier
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                KamelImage(
+                    onLoading = {
+                        Box(modifier = Modifier
                             .fillMaxWidth()
                             .shimmerEffect()
                             .height(200.dp)
-                            .padding(start = 16.dp, end = 16.dp)
-                    )
-                },
-                onFailure = {
-                    Box(
-                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp))
+                    },
+                    onFailure = {
+                        Box(modifier = Modifier
                             .fillMaxWidth()
                             .shimmerEffect()
                             .height(200.dp)
-                            .padding(start = 16.dp, end = 16.dp)
+                            .padding(start = 16.dp, end = 16.dp))
+                    },
+                    resource = asyncPainterResource(sputnik.previewUrl),
+                    contentDescription = sputnik.previewUrl,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+
+//                        .placeholder(
+//                            color = Color.Gray,
+//                            shape = RoundedCornerShape(8.dp) // Опционально, если нужно закруглить углы
+//                        )
+//                        .shimmer(
+//                            baseColor = Color.LightGray,
+//                            highlightColor = Color.Gray,
+//                            animationSpec = shimmerAnimationSpec
+//                        )
+                        .clickable {
+                            navigateToWebView(
+                                navigator = navigator,
+                                address = sputnik.title,
+                                videoUrl = sputnik.videoUrl
+                            )
+                        }
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        vectorResource(Res.drawable.ic_play),
+                        contentDescription = "play",
+                        tint = Color.White,
+                        modifier = Modifier
+                            //.fillMaxWidth()
+                            // .weight(1f)
+                            .size(80.dp)
+                            .clickable {
+                                navigateToWebView(
+                                    navigator = navigator,
+                                    address = sputnik.title,
+                                    videoUrl = sputnik.videoUrl
+                                )
+                            }
                     )
-                },
-                resource = asyncPainterResource(dvr.previewUrl),
-                contentDescription = dvr.previewUrl,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp))
-                    .clickable {
-                        navigateToWebView(
-                            navigator = navigator,
-                            address = dvr.address,
-                            videoUrl = dvr.videoUrl
-                        )
-                    }
-            )
-            Icon(
-                vectorResource(Res.drawable.ic_play),
-                contentDescription = "play",
-                tint = Color.White,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .size(80.dp)
-                    .clickable {
-                        navigateToWebView(
-                            navigator = navigator,
-                            address = dvr.address,
-                            videoUrl = dvr.videoUrl
-                        )
-                    }
-            )
+                    Icon(
+                        vectorResource(Res.drawable.ic_lock),
+                        contentDescription = "lock",
+                        tint = Color.White,
+                        modifier = Modifier
+                            //.weight(1f)
+                            //.fillMaxWidth()
+                            .size(80.dp)
+                            .clickable {
+                            }
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxSize().padding(top = 16.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "Принимать звонки")
+                Switch(
+                    modifier = Modifier.height(14.dp).padding(start = 16.dp),
+                    checked = switchCheckedState,
+                    onCheckedChange = { switchCheckedState = it },
+                    colors = SwitchDefaults.colors(
+                        checkedTrackColor = Color.White,
+                        checkedThumbColor = ColorCustomResources.colorBazaMainBlue,
+                        checkedIconColor = Color.DarkGray,
+                        checkedBorderColor = ColorCustomResources.colorBazaMainBlue,
+                        uncheckedThumbColor = ColorCustomResources.colorBazaMainRed,
+                        uncheckedIconColor = ColorCustomResources.colorBazaMainBlue,
+                        disabledCheckedThumbColor = ColorCustomResources.colorSwitch,
+                        disabledUncheckedThumbColor = ColorCustomResources.colorBazaMainRed,
+                    )
+                )
+            }
         }
     }
 }
@@ -297,7 +375,7 @@ fun navigateToWebView(navigator: Navigator, address: String, videoUrl: String) {
         NavOptions(
             popUpTo = PopUpTo(
                 // The destination of popUpTo
-                route = ScreenRoute.OutdoorScreen.route,
+                route = ScreenRoute.DomofonScreen.route,
                 // Whether the popUpTo destination should be popped from the back stack.
                 inclusive = false,
             )

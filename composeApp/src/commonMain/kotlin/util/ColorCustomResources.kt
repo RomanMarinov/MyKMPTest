@@ -15,4 +15,16 @@ object ColorCustomResources {
     // HelpScreen
     val colorBazaMainBlueCard = Color(0XFF025265)
 
+
+    // ShimmerGradientOutdoorOrDomofon
+    val colorShimmerStart = Color(0XFFB8B8B8)
+    val colorShimmerMiddle = Color(0XFFD8D8D8)
+    val colorShimmerEnd = Color(0XFFB8B8B8)
+
+
+    // DomofonScreenSwitcher
+    val colorSwitch = Color(0XFF025265)
+
+
+
 }
