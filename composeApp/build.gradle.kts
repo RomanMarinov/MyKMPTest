@@ -44,7 +44,6 @@ kotlin {
             implementation(libs.ktor.client.cio)
 
 //            implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
-
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -100,7 +99,18 @@ kotlin {
 
 
 //            implementation("dev.icerock.moko:resources:0.23.0")
-            implementation("org.osmdroid:osmdroid-android:6.1.11")
+            //implementation("org.osmdroid:osmdroid-android:6.1.11")
+
+
+            // это перепроверить надо ли это
+            implementation("org.osmdroid:osmdroid-android:6.1.16")
+            implementation("tech.utsmankece:osm-android-compose:0.0.3")
+            implementation("com.google.maps.android:maps-compose:4.4.0")
+            implementation("com.google.android.gms:play-services-maps:18.2.0")
+            ///////////
+
+
+
         }
 
         iosMain {
@@ -180,5 +190,9 @@ dependencies {
 //    implementation(libs.kotlinx.coroutines.core)
 //    implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.2")
 
+
+    implementation("org.osmdroid:osmdroid-android:6.1.16")
+    implementation("tech.utsmankece:osm-android-compose:0.0.3")
+    implementation(libs.androidx.activity.ktx)
 }
 

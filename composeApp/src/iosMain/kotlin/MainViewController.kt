@@ -1,13 +1,38 @@
+
+
 import androidx.compose.ui.window.ComposeUIViewController
-
-import org.koin.core.context.startKoin
 import di.commonModule
+import kotlinx.cinterop.ExperimentalForeignApi
+import org.koin.core.context.startKoin
 
 
-fun MainViewController() = ComposeUIViewController { App() }
+@OptIn(ExperimentalForeignApi::class)
+fun MainViewController() = ComposeUIViewController { App()
+
+//    var showSomething by remember { mutableStateOf(false) }
+//
+//    UIKitView(factory = {
+//
+//
+//        val mkMapView = MKMapView()
+//
+//        mkMapView.delegate = object : MKMapViewDelegateProtocol {
+//            override fun mapView(mapView: MKMapView, didDeselectAnnotation: MKAnnotationProtocol) {
+//                showSomething = true
+//            }
+//        }
+//
+//        mkMapView
+//    }, Modifier.fillMaxSize())
+//
+//    if (showSomething) {
+//
+//    }
+}
 
 fun initKoin() {
     startKoin {
         modules(commonModule())
     }
 }
+

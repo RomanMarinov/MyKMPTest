@@ -38,12 +38,20 @@ import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
 import util.ScreenRoute
 
+//
+//@Composable
+//expect fun MapViewPlatform()
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun MapScreen(
     navigator: Navigator,
     viewModel: MapScreenViewModel = koinInject()
 ) {
+
+
+
+
 
     val cityCams by viewModel.cityCams.collectAsStateWithLifecycle()
 
@@ -134,18 +142,18 @@ fun MapScreen(
             ) {
 
 
-//                OutdoorContentWithRefresh(
-//                    items = outDoorsUiState.outdoors,
-//                    isRefreshing = isRefreshing,
-//                    onRefresh = {
-//                        scope.launch {
-//                            isRefreshing = true
-//                            delay(2000L)
-//                            isRefreshing = false
-//                        }
-//                    },
-//                    navigator = navigator,
-//                    paddingValue = paddingValue
+//                val res = MapView()
+//
+//                // define camera state
+//                val cameraState = rememberCameraState {
+//                    geoPoint = GeoPoint(-6.3970066, 106.8224316)
+//                    zoom = 12.0 // optional, default is 5.0
+//                }
+//
+//                // add node
+//                OpenStreetMap(
+//                    modifier = Modifier.fillMaxSize(),
+//                    cameraState = cameraState
 //                )
 
 
@@ -153,3 +161,6 @@ fun MapScreen(
         }
     }
 }
+
+
+

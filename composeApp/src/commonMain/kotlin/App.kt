@@ -70,8 +70,13 @@ data class BottomNavigationItem(
 
 @Composable
 fun App() {
+
+
     KoinContext {
         AppContent()
+
+
+
     }
 }
 
@@ -90,6 +95,7 @@ fun GetCurrentEntry(navigator: Navigator, onEntryChanged: (String) -> Unit) {
 fun AppContent() {
     // KoinContext{
     MaterialTheme {
+
         PreComposeApp {
             val currentEntryState = remember { mutableStateOf("") }
             var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
