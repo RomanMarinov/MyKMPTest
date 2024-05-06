@@ -1,5 +1,6 @@
 package presentation.ui.map_screen
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.MotionEvent
@@ -58,6 +59,9 @@ import com.dev_marinov.my_compose_multi.R
 import data.public_info.remote.dto.Data
 import data.public_info.remote.dto.Location
 import data.public_info.remote.dto.MarkerCityCam
+import data.public_info.remote.dto.MarkerDomofon
+import data.public_info.remote.dto.MarkerOffice
+import data.public_info.remote.dto.MarkerOutdoor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
@@ -78,7 +82,6 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
-import presentation.ui.map_screen.model.MapCategory
 import util.ColorCustomResources
 import java.lang.Math.abs
 
@@ -87,6 +90,19 @@ lateinit var markerCityTriangle: MarkerCityTriangle
 private var listMarkersCityTriangle: MutableList<Marker> = mutableListOf()
 private var listMarkersCityCam: MutableList<Marker> = mutableListOf()
 private var listCityCam: MutableList<MarkerCityCam> = mutableListOf()
+
+
+private var listMarkersDomofon: MutableList<Marker> = mutableListOf()
+private var listDomofonCam: MutableList<MarkerDomofon> = mutableListOf()
+
+private var listMarkersOutDoor: MutableList<Marker> = mutableListOf()
+private var listOutDoorCam: MutableList<MarkerOutdoor> =
+    mutableListOf()
+
+private var listMarkersOffice: MutableList<Marker> = mutableListOf()
+private var listOffice: MutableList<MarkerOffice> =
+    mutableListOf()
+
 
 private val _mapViewZoom = MutableStateFlow(0.0)
 val mapViewZoom: StateFlow<Double> = _mapViewZoom
@@ -120,9 +136,9 @@ fun MapScreenActual(
     val geoPointZoom by viewModel.geoPointZoom.collectAsStateWithLifecycle()
     val zoomNew by viewModel.zoomNew.collectAsState(null)
 
-    val cityCams by viewModel.cityCams.collectAsStateWithLifecycle()
+    val mapCityCams by viewModel.mapCityCams.collectAsStateWithLifecycle()
     val locations by viewModel.locationsTitle.collectAsStateWithLifecycle()
-    val mapCategories by viewModel.mapCategories.collectAsStateWithLifecycle()
+//    val mapCategories by viewModel.mapCategories.collectAsStateWithLifecycle()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -138,111 +154,28 @@ fun MapScreenActual(
                 },
                 update = { mapView ->
                     mapViewGlobal = mapView
+
                     settingMapView(mapView = mapView, publicInfo = publicInfo)
 
-                    val publicInfoCityCams = publicInfo?.mapMarkers?.cityCams?.markerCityCams
-                    publicInfo?.let {
-
-                        var markerCityCam: Marker? = null
-
-                        for (cityCam in publicInfoCityCams ?: emptyList()) {
-                            co.touchlab.kermit.Logger.d { " 4444 SetMapView android cityCam 1" }
-
-                            markerCityTriangle =
-                                MarkerCityTriangle(mapView) // маркер угла должен быть первый добавлен
-                            mapView.overlays.add(markerCityTriangle)
-                            mapView.invalidate() // перерисовка из главного потока // postInvalidate из фонового
-                            listMarkersCityTriangle.add(markerCityTriangle)
-                        }
-
-                        for (cityCam in publicInfoCityCams ?: emptyList()) {
-                            co.touchlab.kermit.Logger.d { " 4444 SetMapView android cityCam 2" }
-
-                            markerCityCam = MarkerCityCamera(mapView) // маркер камеры
-
-                            val geoPointCityCam = GeoPoint(cityCam.latitude, cityCam.longitude)
-                            val title = cityCam.title
-
-                            val iconCityCam = ContextCompat.getDrawable(
-                                context,
-                                R.drawable.ic_map_city_cam
-                            )
-
-                            setMarkerParams(
-                                marker = markerCityCam,
-                                geoPoint = geoPointCityCam,
-                                iconId = iconCityCam,
-                                title = title
-                            )
-                            //     }
-
-
-                            //////// //markerCityTriangle = Marker(binding.mapView) // маркер угла должен быть первый добавлен
-
-                            // binding.mapView.overlays.add(markerCityTriangle)
-                            // маркер камер должен быть вторым установлен (т.е. поверх первого)
-                            mapView.overlays.add(markerCityCam)
-                            mapView.invalidate() // перерисовка из главного потока // postInvalidate из фонового
-
-                            /// showInfoMarkerWindow(markerCityCam, cityCam)
-
-                            listMarkersCityCam.add(markerCityCam) // список для только для удаления маркеров markerCams
-                            //  listMarkersCityTriangle.add(markerCityTriangle)
-                            listCityCam.add(cityCam)
-                        }
-
-                        val iconTriangle = ContextCompat.getDrawable(
-                            context,
-                            R.drawable.ic_map_triangle
-                        )
-                        createMarkerTriangle(iconTriangle = iconTriangle)
-
-                        val overlays: List<Overlay> = mapView.overlays
-                        // showFavoriteCityCam(overlays = overlays)
-
-                        closeInfoMarkerWindow(markerCityCam, mapView)
-
-                        setIconMarkerTriangle(mapView.zoomLevelDouble)
-
-                        removeMarkers(
-                            publicInfoCityCams ?: emptyList(),
-                            listMarkersCityCam,
-                            mapView
-                        )
-                        removeMarkers(
-                            publicInfoCityCams ?: emptyList(),
-                            listMarkersCityTriangle,
-                            mapView
-                        )
-
-                        mapView.addMapListener(mapViewScrollListener)
-
-
-                    }
+                    mapView.addMapListener(mapViewScrollListener)
                 }
             )
 
             TopControl(
                 locations = locations,
                 viewModel = viewModel,
-                setLocation = setLocation
+                setLocation = setLocation,
+                paddingValue = paddingValue
             )
 
-            ZoomControl(
-                //  mapView = mapV,
-                viewModel = viewModel
-            )
+            ZoomControl()
 
             BottomControl(
-                mapCategories = mapCategories,
                 paddingValue = paddingValue,
-                viewModel = viewModel
+                viewModel = viewModel,
+                context = context
             )
-
-
         }
-
-
     }
 }
 
@@ -321,25 +254,39 @@ private fun getLocationScreen(mapView: MapView): String {
     return "$valueLat, $valueLong"
 }
 
-private fun <T> removeMarkers(
+private fun <T> removeMarkersIsNotEmpty(
     markerCams: List<T>,
     listMarkersCam: MutableList<Marker>,
-    mapView: MapView,
+    // mapView: MapView,
+) {
+    if (markerCams.isNotEmpty()) {
+        for (marker in listMarkersCam) {
+            mapViewGlobal?.overlays?.remove(marker)
+        }
+        mapViewGlobal?.invalidate() // разобраться с методом
+        listMarkersCam.clear()
+    }
+}
+
+private fun <T> removeMarkersIsEmpty(
+    markerCams: List<T>,
+    listMarkersCam: MutableList<Marker>,
+    // mapView: MapView,
 ) {
     if (markerCams.isEmpty()) {
         for (marker in listMarkersCam) {
-            mapView.overlays.remove(marker)
+            mapViewGlobal?.overlays?.remove(marker)
         }
-        mapView.invalidate() // разобраться с методом
+        mapViewGlobal?.invalidate() // разобраться с методом
         listMarkersCam.clear()
     }
 }
 
 private fun closeInfoMarkerWindow(
     markerCam: Marker?,
-    mapView: MapView,
+//    mapView: MapView,
 ) {    // закрыть окно описания маркета
-    mapView.setOnTouchListener(object : View.OnTouchListener {
+    mapViewGlobal?.setOnTouchListener(object : View.OnTouchListener {
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> markerCam?.closeInfoWindow()
@@ -474,6 +421,7 @@ fun TopControl(
     locations: List<String>,
     setLocation: Location?,
     viewModel: MapScreenViewModel,
+    paddingValue: PaddingValues,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var labelClick by remember { mutableStateOf("Вологда") }
@@ -508,6 +456,7 @@ fun TopControl(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(paddingValue)
     ) {
         Row(
             modifier = Modifier
@@ -603,12 +552,7 @@ fun TopControl(
                             //  modifier = Modifier.padding(end = 16.dp) // Отступ справа
                         )
                     }
-
                 }
-
-
-                /////////////////////////////////////
-
 
                 DropdownMenu(
                     modifier = Modifier
@@ -643,15 +587,7 @@ fun TopControl(
                                     expanded = false
                                     labelClick = label
                                     indexClick = index
-                                },
-//                                colors = MenuItemColors(
-//                                    textColor = Color.Black,
-//                                    leadingIconColor = ColorCustomResources.colorBazaMainBlue,
-//                                    trailingIconColor = Color.Green,
-//                                    disabledLeadingIconColor = Color.Red,
-//                                    disabledTextColor = Color.White,
-//                                    disabledTrailingIconColor = Color.Green
-//                                )
+                                }
                             )
                         }
                     }
@@ -663,9 +599,7 @@ fun TopControl(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun ZoomControl(
-    viewModel: MapScreenViewModel,
-) {
+fun ZoomControl() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -721,91 +655,66 @@ fun ZoomControl(
 
 @Composable
 fun BottomControl(
-    mapCategories: List<MapCategory>,
     paddingValue: PaddingValues,
     viewModel: MapScreenViewModel,
+    context: Context,
 ) {
+    val mapCategories = viewModel.mapCategories.collectAsStateWithLifecycle()
+
+    val mapCityCams by viewModel.mapCityCams.collectAsStateWithLifecycle()
+    val mapOutDoorCams by viewModel.mapOutDoorCams.collectAsStateWithLifecycle()
+    val mapDomofonCams by viewModel.mapDomofonCams.collectAsStateWithLifecycle()
+    val mapOffice by viewModel.mapOffice.collectAsStateWithLifecycle()
 
     val lazyListState = rememberLazyListState()
-    var indexClickCityCam = remember { mutableStateOf(-1) }
-    var indexClickOutdoor = remember { mutableStateOf(-1) }
-    var indexClickDomofon = remember { mutableStateOf(-1) }
-    var indexClickOffice = remember { mutableStateOf(-1) }
+    var indexClickCityCam by remember { mutableStateOf(true) }
+    var indexClickOutdoor by remember { mutableStateOf(false) }
+    var indexClickDomofon by remember { mutableStateOf(false) }
+    var indexClickOffice by remember { mutableStateOf(true) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 60.dp),
+            .padding(bottom = 84.dp)
+            .padding(paddingValue),
         //  .background(Color.Red),
         verticalArrangement = Arrangement.Bottom,
     ) {
         LazyRow(
             state = lazyListState,
-            contentPadding = paddingValue
+           // contentPadding = paddingValue
         ) {
-            itemsIndexed(mapCategories) { index, item ->
+            itemsIndexed(mapCategories.value) { index, item ->
                 Spacer(modifier = Modifier.width(4.dp))
                 Row(
                     modifier = Modifier
                         .clickable {
-                            val mapCategory = if (item.isSelected) {
-                                MapCategory(
-                                    title = item.title,
-                                    count = index,
-                                    isSelected = !item.isSelected
-                                )
-                            } else {
-                                MapCategory(
-                                    title = item.title,
-                                    count = index,
-                                    isSelected = item.isSelected
-                                )
+                            // трабл с этого метода
+                            viewModel.onClickCategory(position = index)
+                            if (index == 0) {
+                                indexClickCityCam = !indexClickCityCam
                             }
-                            viewModel.selectedCategory(mapCategory)
+                            if (index == 1) {
+                                indexClickOutdoor = !indexClickOutdoor
+                            }
+                            if (index == 2) {
+                                indexClickDomofon = !indexClickDomofon
+                            }
+                            if (index == 3) {
+                                indexClickOffice = !indexClickOffice
+                            }
                         }
                         .clip(RoundedCornerShape(10))
                         .height(40.dp)
                         .background(
-                            ColorCustomResources.colorBazaMainBlue
-                            //    method(item = item)
-
-//
-//                            when(item.count) {
-//                                0 -> {
-//                                    if (item.isSelected) {
-//                                        ColorCustomResources.colorBazaMainBlue
-//                                    } else {
-//                                        ColorCustomResources.colorTransparentItem
-//                                    }
-//                                }
-//                                1 -> {
-//                                    if (item.isSelected) {
-//                                        ColorCustomResources.colorBazaMainBlue
-//                                    } else {
-//                                        ColorCustomResources.colorTransparentItem
-//                                    }
-//                                }
-//                                2 -> {
-//                                    if (item.isSelected) {
-//                                        ColorCustomResources.colorBazaMainBlue
-//                                    } else {
-//                                        ColorCustomResources.colorTransparentItem
-//                                    }
-//                                }
-//                                3 -> {
-//                                    if (item.isSelected) {
-//                                        ColorCustomResources.colorBazaMainBlue
-//                                    } else {
-//                                        ColorCustomResources.colorTransparentItem
-//                                    }
-//                                }
-//
-//                                else -> {}
-//                            }
-
+                            method(
+                                index = index,
+                                indexClickCityCam = indexClickCityCam,
+                                indexClickOutdoor = indexClickOutdoor,
+                                indexClickDomofon = indexClickDomofon,
+                                indexClickOffice = indexClickOffice
+                            )
                         )
-
-
-//                        .background(ColorCustomResources.colorTransparentItem)
                         .padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -826,15 +735,315 @@ fun BottomControl(
             }
         }
     }
+
+
+    outdoorMarkers(mapOutDoorCams = mapOutDoorCams, context = context)
+    domofonMarkers(mapDomofonCams = mapDomofonCams, context = context)
+    cityMarkers(mapCityCams = mapCityCams, context = context)
+    officeMarkers(mapOffice = mapOffice, context = context)
 }
 
-fun method(item: MapCategory): Color {
-    val color = when (item.count) {
-        0 -> if (item.isSelected) ColorCustomResources.colorBazaMainBlue else ColorCustomResources.colorBazaMainBlue
-        1 -> if (item.isSelected) ColorCustomResources.colorBazaMainBlue else ColorCustomResources.colorTransparentItem
-        2 -> if (item.isSelected) ColorCustomResources.colorBazaMainBlue else ColorCustomResources.colorTransparentItem
-        3 -> if (item.isSelected) ColorCustomResources.colorBazaMainBlue else ColorCustomResources.colorTransparentItem
+fun cityMarkers(mapCityCams: List<MarkerCityCam>?, context: Context) {
+    mapCityCams?.let {
+
+        removeMarkersIsNotEmpty(mapCityCams, listMarkersCityCam)
+        removeMarkersIsNotEmpty(mapCityCams, listMarkersCityTriangle)
+
+
+//        if (mapCityCams.isNotEmpty()) {
+//            for (marker in listMarkersCityCam) {
+//                mapViewGlobal?.overlays?.remove(marker)
+//            }
+//            mapViewGlobal?.invalidate() // разобраться с методом
+//            listMarkersCityCam.clear()
+//        }
+//
+//        if (mapCityCams.isNotEmpty()) {
+//            for (marker in listMarkersCityTriangle) {
+//                mapViewGlobal?.overlays?.remove(marker)
+//            }
+//            mapViewGlobal?.invalidate() // разобраться с методом
+//            listMarkersCityTriangle.clear()
+//        }
+
+
+
+
+
+        var markerCityCam: Marker? = null
+        for (cityCam in mapCityCams ?: emptyList()) {
+            co.touchlab.kermit.Logger.d { " 4444 SetMapView android cityCam 1" }
+
+            markerCityTriangle = MarkerCityTriangle(mapViewGlobal) // маркер угла должен быть первый добавлен
+            mapViewGlobal?.overlays?.add(markerCityTriangle)
+            mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
+            listMarkersCityTriangle.add(markerCityTriangle)
+        }
+
+        for (cityCam in mapCityCams ?: emptyList()) {
+            co.touchlab.kermit.Logger.d { " 4444 SetMapView android cityCam 2" }
+
+            markerCityCam = MarkerCityCamera(mapViewGlobal) // маркер камеры
+
+            val geoPointCityCam = GeoPoint(cityCam.latitude, cityCam.longitude)
+            val title = cityCam.title
+
+            val iconCityCam = ContextCompat.getDrawable(
+                context,
+                R.drawable.ic_map_city_cam
+            )
+
+            setMarkerParams(
+                marker = markerCityCam,
+                geoPoint = geoPointCityCam,
+                iconId = iconCityCam,
+                title = title
+            )
+
+            //////// //markerCityTriangle = Marker(binding.mapView) // маркер угла должен быть первый добавлен
+
+            // binding.mapView.overlays.add(markerCityTriangle)
+            // маркер камер должен быть вторым установлен (т.е. поверх первого)
+            mapViewGlobal?.overlays?.add(markerCityCam)
+            mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
+
+            /// showInfoMarkerWindow(markerCityCam, cityCam)
+
+            listMarkersCityCam.add(markerCityCam) // список для только для удаления маркеров markerCams
+            //  listMarkersCityTriangle.add(markerCityTriangle)
+            listCityCam.add(cityCam)
+        }
+
+        val iconTriangle = ContextCompat.getDrawable(
+            context,
+            R.drawable.ic_map_triangle
+        )
+        createMarkerTriangle(iconTriangle = iconTriangle)
+
+//        val overlays: List<Overlay> = mapViewGlobal.overlays
+        // showFavoriteCityCam(overlays = overlays)
+
+        closeInfoMarkerWindow(markerCityCam)
+
+        mapViewGlobal?.let {
+            setIconMarkerTriangle(it.zoomLevelDouble)
+        }
+
+        removeMarkersIsEmpty(mapCityCams, listMarkersCityCam)
+        removeMarkersIsEmpty(mapCityCams, listMarkersCityTriangle)
+
+//        removeMarkers(mapCityCams, listMarkersCityCam)
+//        removeMarkers(mapCityCams, listMarkersCityTriangle)
+    }
+}
+
+fun outdoorMarkers(mapOutDoorCams: List<MarkerOutdoor>?, context: Context) {
+    mapOutDoorCams?.let {
+
+        removeMarkersIsNotEmpty(it, listMarkersOutDoor)
+
+        var markerOutDoorCam: Marker? = null
+        for (outDoorCam in it) {
+
+            markerOutDoorCam = Marker(mapViewGlobal) // маркер камеры
+
+            val geoPoint = GeoPoint(outDoorCam.latitude, outDoorCam.longitude)
+            val iconId = ContextCompat.getDrawable(context, R.drawable.ic_map_outdoor)
+            val title = outDoorCam.title
+
+            setMarkerParams(
+                marker = markerOutDoorCam,
+                geoPoint = geoPoint,
+                iconId = iconId,
+                title = title
+            )
+
+            mapViewGlobal?.overlays?.add(markerOutDoorCam)
+            mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
+
+            // showInfoMarkerWindow(markerOutDoorCam, outDoorCam)
+
+            listMarkersOutDoor.add(markerOutDoorCam) // список для только для удаления маркеров markerCams
+            listOutDoorCam.add(outDoorCam)
+        }
+
+        closeInfoMarkerWindow(markerOutDoorCam)
+        //setIconMarkerMap(binding.mapView.zoomLevel.toDouble())
+
+
+        removeMarkersIsEmpty(it, listMarkersOutDoor)
+//        removeMarkers(it, listMarkersOutDoor)
+    }
+}
+
+fun domofonMarkers(mapDomofonCams: List<MarkerDomofon>?, context: Context) {
+    mapDomofonCams?.let {
+
+        removeMarkersIsNotEmpty(it, listMarkersDomofon)
+
+        var markerDomofonCam: Marker? = null
+        for (domofonCam in it) {
+            markerDomofonCam = Marker(mapViewGlobal) // маркер камеры
+
+            val geoPoint = GeoPoint(domofonCam.latitude, domofonCam.longitude)
+            val iconId = ContextCompat.getDrawable(context, R.drawable.ic_map_domofon)
+            val title = domofonCam.title
+
+            setMarkerParams(
+                marker = markerDomofonCam,
+                geoPoint = geoPoint,
+                iconId = iconId,
+                title = title
+            )
+
+            mapViewGlobal?.overlays?.add(markerDomofonCam)
+            mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
+
+            //showInfoMarkerWindow(markerDomofonCam, domofonCam)
+
+            listMarkersDomofon.add(markerDomofonCam) // список для только для удаления маркеров markerCams
+            listDomofonCam.add(domofonCam)
+        }
+
+        closeInfoMarkerWindow(markerDomofonCam)
+        //  setIconMarkerMap(binding.mapView.zoomLevel.toDouble())
+
+        removeMarkersIsEmpty(it, listMarkersDomofon)
+//        removeMarkers(it, listMarkersDomofon)
+    }
+}
+
+fun officeMarkers(mapOffice: List<MarkerOffice>?, context: Context) {
+    mapOffice?.let {
+
+        removeMarkersIsNotEmpty(it, listMarkersOffice)
+
+        var markerOffice: Marker? = null
+        for (office in it) {
+
+            markerOffice = Marker(mapViewGlobal) // маркер камеры
+
+            val geoPoint = GeoPoint(office.latitude, office.longitude)
+            val iconId = ContextCompat.getDrawable(context, R.drawable.ic_map_office)
+            val title = office.title
+
+            setMarkerParams(
+                marker = markerOffice,
+                geoPoint = geoPoint,
+                iconId = iconId,
+                title = title
+            )
+
+            mapViewGlobal?.overlays?.add(markerOffice)
+            mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
+
+            //showInfoMarkerWindow(markerOffice, office)
+
+            listMarkersOffice.add(markerOffice) // список для только для удаления маркеров markerCams
+            listOffice.add(office)
+        }
+
+        closeInfoMarkerWindow(markerOffice)
+        //  setIconMarkerMap(binding.mapView.zoomLevel.toDouble())
+
+        removeMarkersIsEmpty(it, listMarkersOffice)
+//        removeMarkers(it, listMarkersOffice)
+    }
+}
+
+//private fun <T> showInfoMarkerWindow(markerCam: Marker, objectCam: T) {
+//    markerCam.setOnMarkerClickListener { marker, mapView ->
+//        if (objectCam is MarkerCityCam) {
+//            moveToBottomSheetMapFragment(
+//                MarkerDetail(
+//                    cameraName = objectCam.additional.cameraName,
+//                    server = "https://".plus(objectCam.additional.server.plus("/")),
+//                    token = objectCam.additional.token,
+//                    titleType = Strings.typeCity,
+//                    titleAddress = objectCam.title,
+//                    previewUrl = objectCam.additional.previewUrl,
+//                    worktime = "",
+//                    visible = "",
+//                    dtpCounts = objectCam.additional.dtpCounts,
+//                    albumId = objectCam.additional.albumId,
+//                    isFavorite = false,
+//                    longitude = objectCam.longitude.toString(),
+//                    latitude = objectCam.latitude.toString()
+//                )
+//            )
+//        }
+//
+//        if (objectCam is MarkerOutdoor) {
+//            moveToBottomSheetMapFragment(
+//                MarkerDetail(
+//                    cameraName = "",
+//                    token = "",
+//                    server = "",
+//                    titleType = Strings.typeOutDoor,
+//                    titleAddress = objectCam.title,
+//                    previewUrl = objectCam.additional.previewUrl,
+//                    worktime = "",
+//                    visible = "",
+//                    dtpCounts = 0,
+//                    albumId = 0,
+//                    isFavorite = false
+//                )
+//            )
+//        }
+//        if (objectCam is MarkerOffice) {
+//            moveToBottomSheetMapFragment(
+//                MarkerDetail(
+//                    cameraName = "",
+//                    token = "",
+//                    server = "",
+//                    titleType = Strings.typeOffice,
+//                    titleAddress = objectCam.additional.address,
+//                    previewUrl = "",
+//                    worktime = objectCam.additional.worktime,
+//                    visible = objectCam.additional.phone.visible,
+//                    dtpCounts = 0,
+//                    albumId = 0,
+//                    isFavorite = false
+//                )
+//            )
+//        }
+//        if (objectCam is MarkerDomofonCam) {
+//            moveToBottomSheetMapFragment(
+//                MarkerDetail(
+//                    cameraName = "",
+//                    token = "",
+//                    server = "",
+//                    titleType = Strings.typeDomofon,
+//                    titleAddress = objectCam.title,
+//                    previewUrl = "",
+//                    worktime = "",
+//                    visible = "",
+//                    dtpCounts = 0,
+//                    albumId = 0,
+//                    isFavorite = false
+//                )
+//            )
+//        }
+//        //   marker.showInfoWindow()
+//        true
+//    }
+//}
+
+
+fun method(
+    index: Int,
+    indexClickCityCam: Boolean,
+    indexClickOutdoor: Boolean,
+    indexClickDomofon: Boolean,
+    indexClickOffice: Boolean,
+): Color {
+    val color = when (index) {
+        0 -> if (indexClickCityCam) ColorCustomResources.colorBazaMainBlue else ColorCustomResources.colorTransparentItem
+        1 -> if (indexClickOutdoor) ColorCustomResources.colorMapOutdoor else ColorCustomResources.colorTransparentItem
+        2 -> if (indexClickDomofon) ColorCustomResources.colorMapDomofon else ColorCustomResources.colorTransparentItem
+        3 -> if (indexClickOffice) ColorCustomResources.colorMapOffice else ColorCustomResources.colorTransparentItem
         else -> ColorCustomResources.colorTransparentItem
+
     }
     return color
 }

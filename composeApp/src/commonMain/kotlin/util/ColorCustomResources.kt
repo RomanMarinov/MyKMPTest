@@ -28,5 +28,9 @@ object ColorCustomResources {
 
     // MapScreen
     val colorTransparentItem = Color(0X88000000)
+    val colorMapDomofon = Color(0XA6F38F1C)
+    val colorMapOutdoor = Color(0X9E4B9D61)
+    val colorMapOffice = Color(0X99C85C61)
+
 
 }

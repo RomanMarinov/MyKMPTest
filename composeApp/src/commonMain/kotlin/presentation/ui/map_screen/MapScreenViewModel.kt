@@ -5,17 +5,17 @@ import co.touchlab.kermit.Logger
 import data.public_info.remote.dto.Data
 import data.public_info.remote.dto.Location
 import data.public_info.remote.dto.MarkerCityCam
+import data.public_info.remote.dto.MarkerDomofon
+import data.public_info.remote.dto.MarkerOffice
+import data.public_info.remote.dto.MarkerOutdoor
 import domain.repository.PublicInfoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
 import moe.tlaster.precompose.viewmodel.viewModelScope
@@ -32,12 +32,22 @@ class MapScreenViewModel(
     private var _publicInfo: MutableStateFlow<Data?> = MutableStateFlow(null)
     val publicInfo: StateFlow<Data?> = _publicInfo
 
-    private var _cityCams: MutableStateFlow<List<MarkerCityCam>?> = MutableStateFlow(null)
-    val cityCams: StateFlow<List<MarkerCityCam>?> = _cityCams
+    private var _mapCityCams: MutableStateFlow<List<MarkerCityCam>?> =
+        MutableStateFlow(emptyList())
+    val mapCityCams: StateFlow<List<MarkerCityCam>?> = _mapCityCams
+    private var _mapDomofonCams: MutableStateFlow<List<MarkerDomofon>> =
+        MutableStateFlow(emptyList())
+    val mapDomofonCams: StateFlow<List<MarkerDomofon>> = _mapDomofonCams
+    private var _mapOutDoorCams: MutableStateFlow<List<MarkerOutdoor>> =
+        MutableStateFlow(emptyList())
+    val mapOutDoorCams: StateFlow<List<MarkerOutdoor>> = _mapOutDoorCams
+    private var _mapOffice: MutableStateFlow<List<MarkerOffice>> =
+        MutableStateFlow(emptyList())
+    val mapOffice: StateFlow<List<MarkerOffice>> = _mapOffice
+
 
     private var _mapCategories: MutableStateFlow<List<MapCategory>> = MutableStateFlow(emptyList())
     val mapCategories: StateFlow<List<MapCategory>> = _mapCategories
-
 
     private var _setLocation: MutableStateFlow<Location?> = MutableStateFlow(null)
     val setLocation: StateFlow<Location?> = _setLocation
@@ -45,13 +55,16 @@ class MapScreenViewModel(
     private var _spinnerCityPosition: MutableStateFlow<Int> = MutableStateFlow(0)
     val spinnerCityPosition: StateFlow<Int> = _spinnerCityPosition
 
-//    private var _zoomNew: MutableStateFlow<Double?> = MutableStateFlow(null)
-//    val zoomNew: SharedFlow<Double?> = _zoomNew.asSharedFlow()
     private val _zoomNew: MutableSharedFlow<Double?> = MutableSharedFlow(replay = 1)
     val zoomNew: SharedFlow<Double?> = _zoomNew.asSharedFlow()
 
     private var _geoPointZoom: MutableStateFlow<GeoPointScreen?> = MutableStateFlow(null)
     val geoPointZoom: StateFlow<GeoPointScreen?> = _geoPointZoom
+
+    private var _isEmptyCityCams = true
+    private var _isEmptyDomofonCams = true
+    private var _isEmptyOutDoorCams = true
+    private var _isEmptyOffice = true
 
     init {
         getData()
@@ -62,70 +75,40 @@ class MapScreenViewModel(
             val publicInfo = publicInfoRepository.getPublicInfo()
             _publicInfo.value = publicInfo
 
-            _cityCams.value = publicInfo.mapMarkers?.cityCams?.markerCityCams
-
-
             getMapCategories(publicInfo = publicInfo)
+            setStartSettingForMapCategories()
             getLocationTitle()
         }
     }
 
     private fun getMapCategories(publicInfo: Data) {
-
         val mapCategoriesTemp: MutableList<MapCategory> = mutableListOf()
-
-       // val mapCategories = publicInfoRepository.getPublicInfo()
         publicInfo.mapMarkers?.let { mapMarkers ->
-
             mapCategoriesTemp.add(
                 0, MapCategory(
                     title = mapMarkers.cityCams.title,
-                    count = mapMarkers.cityCams.count,
-                    isSelected = true
+                    count = mapMarkers.cityCams.count
                 )
             )
             mapCategoriesTemp.add(
                 1, MapCategory(
                     title = mapMarkers.outdoorCams.title,
-                    count = mapMarkers.outdoorCams.count,
-                    isSelected = false
+                    count = mapMarkers.outdoorCams.count
                 )
             )
             mapCategoriesTemp.add(
                 2, MapCategory(
                     title = mapMarkers.domofonCams.title,
-                    count = mapMarkers.domofonCams.count,
-                    isSelected = false
+                    count = mapMarkers.domofonCams.count
                 )
             )
             mapCategoriesTemp.add(
                 3, MapCategory(
                     title = mapMarkers.officeCams.title,
                     count = mapMarkers.officeCams.count,
-                    isSelected = true
                 )
             )
-
             _mapCategories.value = mapCategoriesTemp
-        }
-    }
-
-    fun selectedCategory(mapCategory: MapCategory) {
-        val mapCategoryFlow = flow { emit(mapCategory) }
-        viewModelScope.launch(Dispatchers.IO) {
-            val combineMapCategory: Flow<List<MapCategory>> =
-                combine(_mapCategories, mapCategoryFlow) { mapCat, mapCatSel ->
-                    mapCat.map { item ->
-                        if (item == mapCatSel) {
-                            mapCatSel // Заменяем элемент на mapCategorySelection, если он совпадает
-                        } else {
-                            item // Новый список без изменений, если элементы не совпадают
-                        }
-                    }
-                }
-            combineMapCategory.collect {
-                _mapCategories.value = it
-            }
         }
     }
 
@@ -154,10 +137,8 @@ class MapScreenViewModel(
     }
 
     private fun getLocationTitle() {
-
         val list: MutableList<String> = mutableListOf()
         val data = _publicInfo.value?.locations
-
         data?.let {
             it.map { location ->
                 list.add(location.titlePrefix + " " + location.title)
@@ -170,7 +151,6 @@ class MapScreenViewModel(
                 _locationsTitle.value = listSort
             }
 
-
         _locationsTitle.value.forEachIndexed { index, item ->
             if (item.contains("Вологда")) {
                 _spinnerCityPosition.value = index
@@ -178,6 +158,102 @@ class MapScreenViewModel(
             return@forEachIndexed
         }
     }
+
+    private fun setStartSettingForMapCategories(){
+        onClickCategory(0)
+        onClickCategory(3)
+    }
+
+    fun onClickCategory(position: Int) {
+        try {
+            val categories = _mapCategories.value
+
+            if (position >= 0 && position < categories.size) {
+                val category = categories[position].title
+
+                Logger.d{" 4444 onClickCategory category=" + category}
+
+                when (category) {
+                    "Городские камеры" -> {
+                        if (!_isEmptyCityCams) {
+                            _mapCityCams.value = emptyList()
+                            _isEmptyCityCams = true
+                        } else {
+                            _isEmptyCityCams = false
+                            fillingMapCams()
+                        }
+                    }
+
+                    "Дворовые камеры" -> {
+                        if (!_isEmptyOutDoorCams) {
+                            _mapOutDoorCams.value = emptyList()
+                            _isEmptyOutDoorCams = true
+                        } else {
+                            _isEmptyOutDoorCams = false
+                            fillingMapCams()
+                        }
+                    }
+
+                    "Домофоны" -> {
+                        if (!_isEmptyDomofonCams) {
+                            _mapDomofonCams.value = emptyList()
+                            _isEmptyDomofonCams = true
+                        } else {
+                            _isEmptyDomofonCams = false
+                            fillingMapCams()
+                        }
+                    }
+
+                    "Офисы" -> {
+                        if (!_isEmptyOffice) {
+                            _mapOffice.value = emptyList()
+                            _isEmptyOffice = true
+                        } else {
+                            _isEmptyOffice = false
+                            fillingMapCams()
+                        }
+                    }
+                }
+            } else {
+                Logger.d{"4444 Invalid position: $position"}
+            }
+        } catch (e: Exception) {
+            Logger.d{"4444  try catch e=" + e}
+        }
+    }
+
+
+    //////////////////////////////////////
+
+    private fun fillingMapCams() {
+        if (!_isEmptyOutDoorCams) { // очередь первая - 1й слой наложения на карте
+            _mapOutDoorCams.value = emptyList()
+            _publicInfo.value?.let {
+                _mapOutDoorCams.value = it.mapMarkers?.outdoorCams?.markersOutdoors ?: emptyList()
+            }
+        }
+        if (!_isEmptyDomofonCams) { // очередь вторая - 2й слой наложения на карте
+            _mapDomofonCams.value = emptyList()
+            _publicInfo.value?.let {
+                _mapDomofonCams.value = it.mapMarkers?.domofonCams?.markersDomofon ?: emptyList()
+            }
+        }
+        if (!_isEmptyCityCams) { // очередь третья - 3й слой наложения на карте
+            Logger.d{" 4444 fillingMapCams _mapCityCams"}
+            _mapCityCams.value = emptyList()
+            _publicInfo.value?.let {
+                _mapCityCams.value = it.mapMarkers?.cityCams?.markerCityCams ?: emptyList()
+            }
+        }
+        if (!_isEmptyOffice) { // очередь четвертая - 4й слой наложения на карте
+            _mapOffice.value = emptyList()
+            _publicInfo.value?.let {
+                _mapOffice.value = it.mapMarkers?.officeCams?.markersOffice ?: emptyList()
+            }
+        }
+    }
+
+    ////////////////////////
 
     // для хелпа
     suspend fun setIndexSpinner(selectedCity: String) {
