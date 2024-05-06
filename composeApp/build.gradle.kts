@@ -104,12 +104,10 @@ kotlin {
 
             // это перепроверить надо ли это
             implementation("org.osmdroid:osmdroid-android:6.1.16")
-            implementation("tech.utsmankece:osm-android-compose:0.0.3")
-            implementation("com.google.maps.android:maps-compose:4.4.0")
-            implementation("com.google.android.gms:play-services-maps:18.2.0")
+//            implementation("tech.utsmankece:osm-android-compose:0.0.3")
+//            implementation("com.google.maps.android:maps-compose:4.4.0")
+//            implementation("com.google.android.gms:play-services-maps:18.2.0")
             ///////////
-
-
 
         }
 
@@ -192,7 +190,7 @@ dependencies {
 
 
     implementation("org.osmdroid:osmdroid-android:6.1.16")
-    implementation("tech.utsmankece:osm-android-compose:0.0.3")
+   // implementation("tech.utsmankece:osm-android-compose:0.0.3")
     implementation(libs.androidx.activity.ktx)
 }
 

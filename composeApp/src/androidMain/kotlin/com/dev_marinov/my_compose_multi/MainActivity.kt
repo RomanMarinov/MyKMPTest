@@ -1,5 +1,6 @@
 package com.dev_marinov.my_compose_multi
 
+import App
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -11,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
-import com.utsman.osmandcompose.OpenStreetMap
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 
@@ -34,19 +34,19 @@ class MainActivity : ComponentActivity() {
             // сначала работало потом изменений не заметил
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            //App()
+            App()
 
             //MapView()
 
 //            AndroidView {
 //
 //            }
-            OpenStreetMap {
+//            OpenStreetMap {
+//
+//            }
 
-            }
 
-
-            MapScreen(this)
+            //MapScreen(this)
 //            val c = LocalContext.current
 //            val res = MapView(c)
 //

@@ -26,5 +26,7 @@ object ColorCustomResources {
     val colorSwitch = Color(0XFF025265)
 
 
+    // MapScreen
+    val colorTransparentItem = Color(0X88000000)
 
 }

@@ -1,6 +1,6 @@
 package presentation.ui.map_screen
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
@@ -38,25 +37,24 @@ import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
 import util.ScreenRoute
 
-//
-//@Composable
-//expect fun MapViewPlatform()
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun MapScreen(
     navigator: Navigator,
-    viewModel: MapScreenViewModel = koinInject()
+    viewModel: MapScreenViewModel = koinInject(),
 ) {
 
-
-
-
-
-    val cityCams by viewModel.cityCams.collectAsStateWithLifecycle()
+    var mapVisible by remember { mutableStateOf(true) }
+//    val cityCams by viewModel.cityCams.collectAsStateWithLifecycle()
+//    val locations by viewModel.locationsTitle.collectAsStateWithLifecycle()
+//    val mapCategories by viewModel.mapCategories.collectAsStateWithLifecycle()
+//    val publicInfo by viewModel.publicInfo.collectAsStateWithLifecycle()
 
     // анимация топбара при скроле
     // https://www.youtube.com/watch?v=EqCvUETekjk
+
+
+//    MapViewPlatform().setMapView()
 
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -79,6 +77,7 @@ fun MapScreen(
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth(),
+                            //      text = MapViewPlatform().getMapViewManipulation(),
                             text = stringResource(Res.string.map_title),
                             textAlign = TextAlign.Center,
                             fontWeight = FontWeight.Bold
@@ -89,7 +88,8 @@ fun MapScreen(
                         IconButton(
                             onClick = {
 //                                navigator.popBackStack()
-                                navigator.navigate(ScreenRoute.HomeScreen.route,
+                                navigator.navigate(
+                                    ScreenRoute.HomeScreen.route,
                                     NavOptions(
                                         popUpTo = PopUpTo(
                                             // The destination of popUpTo
@@ -133,34 +133,35 @@ fun MapScreen(
             }
         ) { paddingValue ->
 
-            Column(
+            Box(
                 modifier = Modifier
+                    .fillMaxSize()
                     .padding(paddingValue)
-                    .padding(
-                        bottom = paddingValue.calculateBottomPadding()
-                    )
+                // .padding(bottom = paddingValue.calculateBottomPadding())
             ) {
 
+                MapViewPlatform().SetMapView(
+                   // publicInfo = publicInfo
+                    paddingValue = paddingValue,
+                    viewModel = viewModel
+                )
 
-//                val res = MapView()
-//
-//                // define camera state
-//                val cameraState = rememberCameraState {
-//                    geoPoint = GeoPoint(-6.3970066, 106.8224316)
-//                    zoom = 12.0 // optional, default is 5.0
-//                }
-//
-//                // add node
-//                OpenStreetMap(
-//                    modifier = Modifier.fillMaxSize(),
-//                    cameraState = cameraState
+//                TopControl(
+//                    locations = locations,
+//                    viewModel = viewModel
 //                )
+//
+//                ZoomControl(viewModel = viewModel)
+//
+//                BottomControl(
+//                    mapCategories = mapCategories,
+//                    paddingValue = paddingValue,
+//                    viewModel = viewModel
+//                )
+
 
 
             }
         }
     }
 }
-
-
-

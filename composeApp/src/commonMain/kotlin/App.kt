@@ -70,13 +70,8 @@ data class BottomNavigationItem(
 
 @Composable
 fun App() {
-
-
     KoinContext {
         AppContent()
-
-
-
     }
 }
 
