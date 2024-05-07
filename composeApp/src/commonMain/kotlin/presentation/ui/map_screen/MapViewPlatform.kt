@@ -2,17 +2,16 @@ package presentation.ui.map_screen
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import presentation.ui.map_screen.model.MarkerDetail
 
 
 expect class MapViewPlatform() {
     fun getMapViewManipulation(): String
 
-    //fun setZoomLocation(zoom: Double, center: String)
-
     @Composable
     fun SetMapView(
-        //publicInfo: Data?
         paddingValue: PaddingValues,
-        viewModel: MapScreenViewModel
+        viewModel: MapScreenViewModel,
+        moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
     )
 }

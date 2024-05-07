@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import presentation.ui.map_screen.model.MarkerDetail
 
 class MarkerCityCamera(mapView: MapView?) : Marker(mapView)
 class MarkerCityTriangle(mapView: MapView?) : Marker(mapView)
@@ -20,9 +21,15 @@ actual class MapViewPlatform actual constructor() {
     @Composable
     actual fun SetMapView(
         paddingValue: PaddingValues,
-        viewModel: MapScreenViewModel
+        viewModel: MapScreenViewModel,
+        moveToBottomSheetMapFragment: (MarkerDetail) -> Unit
     ) {
 
-        MapScreenActual(paddingValue = paddingValue)
+        MapScreenAndroidActual(
+            paddingValue = paddingValue,
+            moveToBottomSheetMapFragment = { markerDetail ->
+                 moveToBottomSheetMapFragment(markerDetail)
+            }
+        )
     }
 }

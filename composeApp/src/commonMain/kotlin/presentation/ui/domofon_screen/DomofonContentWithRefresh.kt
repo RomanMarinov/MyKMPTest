@@ -68,6 +68,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import util.ColorCustomResources
 import util.ScreenRoute
+import util.navigateToWebViewHelper
 import util.shimmerEffect
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -296,8 +297,9 @@ fun ContentLazyList(
 //                            animationSpec = shimmerAnimationSpec
 //                        )
                         .clickable {
-                            navigateToWebView(
+                            navigateToWebViewHelper(
                                 navigator = navigator,
+                                route = ScreenRoute.DomofonScreen.route,
                                 address = sputnik.title,
                                 videoUrl = sputnik.videoUrl
                             )
@@ -318,8 +320,9 @@ fun ContentLazyList(
                             // .weight(1f)
                             .size(80.dp)
                             .clickable {
-                                navigateToWebView(
+                                navigateToWebViewHelper(
                                     navigator = navigator,
+                                    route = ScreenRoute.DomofonScreen.route,
                                     address = sputnik.title,
                                     videoUrl = sputnik.videoUrl
                                 )
@@ -365,7 +368,7 @@ fun ContentLazyList(
     }
 }
 
-fun navigateToWebView(navigator: Navigator, address: String, videoUrl: String) {
+fun navigateDomofonToWebView(navigator: Navigator, address: String, videoUrl: String) {
     val videoUrlEncode = UrlEncoderUtil.encode(videoUrl)
     navigator.navigate(
         ScreenRoute.WebViewScreen.withArgs(

@@ -34,7 +34,13 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
+import presentation.ui.map_screen.map_screen_bottom_sheet.BottomSheetCityCam
+import presentation.ui.map_screen.map_screen_bottom_sheet.BottomSheetDomofonCam
+import presentation.ui.map_screen.map_screen_bottom_sheet.BottomSheetOffice
+import presentation.ui.map_screen.map_screen_bottom_sheet.BottomSheetOutdoorCam
+import presentation.ui.map_screen.model.MarkerDetail
 import util.ScreenRoute
+import util.Strings
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
@@ -43,17 +49,12 @@ fun MapScreen(
     viewModel: MapScreenViewModel = koinInject(),
 ) {
 
-    var mapVisible by remember { mutableStateOf(true) }
-//    val cityCams by viewModel.cityCams.collectAsStateWithLifecycle()
-//    val locations by viewModel.locationsTitle.collectAsStateWithLifecycle()
-//    val mapCategories by viewModel.mapCategories.collectAsStateWithLifecycle()
-//    val publicInfo by viewModel.publicInfo.collectAsStateWithLifecycle()
-
     // анимация топбара при скроле
     // https://www.youtube.com/watch?v=EqCvUETekjk
 
+    val markerDetailTitleTypeState = remember { mutableStateOf("") }
+    val markerDetailState = remember { mutableStateOf(MarkerDetail()) }
 
-//    MapViewPlatform().setMapView()
 
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -135,32 +136,63 @@ fun MapScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                   // .padding(paddingValue)
+                // .padding(paddingValue)
                 // .padding(bottom = paddingValue.calculateBottomPadding())
             ) {
-
                 MapViewPlatform().SetMapView(
-                   // publicInfo = publicInfo
                     paddingValue = paddingValue,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    moveToBottomSheetMapFragment = { markerDetail ->
+                        markerDetail.titleType?.let {
+                            markerDetailTitleTypeState.value = it
+                            markerDetailState.value = markerDetail
+                        }
+                    }
                 )
+            }
+        }
 
-//                TopControl(
-//                    locations = locations,
-//                    viewModel = viewModel
-//                )
-//
-//                ZoomControl(viewModel = viewModel)
-//
-//                BottomControl(
-//                    mapCategories = mapCategories,
-//                    paddingValue = paddingValue,
-//                    viewModel = viewModel
-//                )
+        when (markerDetailTitleTypeState.value) {
+            Strings.typeCity -> {
+                BottomSheetCityCam(
+                    navigator = navigator,
+                    markerDetailState.value,
+                    openBottomSheet = {
+                        markerDetailTitleTypeState.value = ""
+                    }
+                )
+            }
+            Strings.typeOutDoor -> {
+                BottomSheetOutdoorCam(
+                    navigator = navigator,
+                    markerDetailState.value,
+                    openBottomSheet = {
+                        markerDetailTitleTypeState.value = ""
+                    }
+                )
+            }
 
+            Strings.typeDomofon -> {
+                BottomSheetDomofonCam(
+                    navigator = navigator,
+                    markerDetailState.value,
+                    openBottomSheet = {
+                        markerDetailTitleTypeState.value = ""
+                    }
+                )
+            }
 
-
+            Strings.typeOffice -> {
+                BottomSheetOffice(
+                    navigator = navigator,
+                    markerDetailState.value,
+                    openBottomSheet = {
+                        markerDetailTitleTypeState.value = ""
+                    }
+                )
             }
         }
     }
 }
+
+

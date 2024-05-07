@@ -39,6 +39,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,7 +83,9 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
+import presentation.ui.map_screen.model.MarkerDetail
 import util.ColorCustomResources
+import util.Strings
 import java.lang.Math.abs
 
 
@@ -123,12 +126,14 @@ var centerLatitude = ""
 var centerLongitude = ""
 
 @Composable
-fun MapScreenActual(
+fun MapScreenAndroidActual(
     viewModel: MapScreenViewModel = koinInject(),
     paddingValue: PaddingValues,
+    moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
 ) {
     SetLocalLifecycleOwner()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     val publicInfo by viewModel.publicInfo.collectAsState()
     val setLocation by viewModel.setLocation.collectAsState()
@@ -139,6 +144,7 @@ fun MapScreenActual(
     val mapCityCams by viewModel.mapCityCams.collectAsStateWithLifecycle()
     val locations by viewModel.locationsTitle.collectAsStateWithLifecycle()
 //    val mapCategories by viewModel.mapCategories.collectAsStateWithLifecycle()
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -173,10 +179,15 @@ fun MapScreenActual(
             BottomControl(
                 paddingValue = paddingValue,
                 viewModel = viewModel,
-                context = context
+                context = context,
+                moveToBottomSheetMapFragment = { markerDetail ->
+                    moveToBottomSheetMapFragment(markerDetail)
+                }
             )
         }
     }
+
+
 }
 
 val mapViewScrollListener = object : MapListener {
@@ -658,6 +669,7 @@ fun BottomControl(
     paddingValue: PaddingValues,
     viewModel: MapScreenViewModel,
     context: Context,
+    moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
 ) {
     val mapCategories = viewModel.mapCategories.collectAsStateWithLifecycle()
 
@@ -682,7 +694,7 @@ fun BottomControl(
     ) {
         LazyRow(
             state = lazyListState,
-           // contentPadding = paddingValue
+            // contentPadding = paddingValue
         ) {
             itemsIndexed(mapCategories.value) { index, item ->
                 Spacer(modifier = Modifier.width(4.dp))
@@ -737,44 +749,51 @@ fun BottomControl(
     }
 
 
-    outdoorMarkers(mapOutDoorCams = mapOutDoorCams, context = context)
-    domofonMarkers(mapDomofonCams = mapDomofonCams, context = context)
-    cityMarkers(mapCityCams = mapCityCams, context = context)
-    officeMarkers(mapOffice = mapOffice, context = context)
+    outdoorMarkers(
+        mapOutDoorCams = mapOutDoorCams,
+        context = context,
+        moveToBottomSheetMapFragment = { markerDetail ->
+            moveToBottomSheetMapFragment(markerDetail)
+        }
+    )
+    domofonMarkers(
+        mapDomofonCams = mapDomofonCams,
+        context = context,
+        moveToBottomSheetMapFragment = { markerDetail ->
+            moveToBottomSheetMapFragment(markerDetail)
+        }
+    )
+    cityMarkers(
+        mapCityCams = mapCityCams,
+        context = context,
+        moveToBottomSheetMapFragment = { markerDetail ->
+            moveToBottomSheetMapFragment(markerDetail)
+        }
+    )
+    officeMarkers(
+        mapOffice = mapOffice,
+        context = context,
+        moveToBottomSheetMapFragment = { markerDetail ->
+            moveToBottomSheetMapFragment(markerDetail)
+        })
 }
 
-fun cityMarkers(mapCityCams: List<MarkerCityCam>?, context: Context) {
+fun cityMarkers(
+    mapCityCams: List<MarkerCityCam>?,
+    context: Context,
+    moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
+) {
     mapCityCams?.let {
 
         removeMarkersIsNotEmpty(mapCityCams, listMarkersCityCam)
         removeMarkersIsNotEmpty(mapCityCams, listMarkersCityTriangle)
 
-
-//        if (mapCityCams.isNotEmpty()) {
-//            for (marker in listMarkersCityCam) {
-//                mapViewGlobal?.overlays?.remove(marker)
-//            }
-//            mapViewGlobal?.invalidate() // разобраться с методом
-//            listMarkersCityCam.clear()
-//        }
-//
-//        if (mapCityCams.isNotEmpty()) {
-//            for (marker in listMarkersCityTriangle) {
-//                mapViewGlobal?.overlays?.remove(marker)
-//            }
-//            mapViewGlobal?.invalidate() // разобраться с методом
-//            listMarkersCityTriangle.clear()
-//        }
-
-
-
-
-
         var markerCityCam: Marker? = null
         for (cityCam in mapCityCams ?: emptyList()) {
             co.touchlab.kermit.Logger.d { " 4444 SetMapView android cityCam 1" }
 
-            markerCityTriangle = MarkerCityTriangle(mapViewGlobal) // маркер угла должен быть первый добавлен
+            markerCityTriangle =
+                MarkerCityTriangle(mapViewGlobal) // маркер угла должен быть первый добавлен
             mapViewGlobal?.overlays?.add(markerCityTriangle)
             mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
             listMarkersCityTriangle.add(markerCityTriangle)
@@ -807,7 +826,12 @@ fun cityMarkers(mapCityCams: List<MarkerCityCam>?, context: Context) {
             mapViewGlobal?.overlays?.add(markerCityCam)
             mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
 
-            /// showInfoMarkerWindow(markerCityCam, cityCam)
+            showInfoMarkerWindow(
+                markerCityCam, cityCam,
+                moveToBottomSheetMapFragment = { markerDetail ->
+                    moveToBottomSheetMapFragment(markerDetail)
+                }
+            )
 
             listMarkersCityCam.add(markerCityCam) // список для только для удаления маркеров markerCams
             //  listMarkersCityTriangle.add(markerCityTriangle)
@@ -837,7 +861,11 @@ fun cityMarkers(mapCityCams: List<MarkerCityCam>?, context: Context) {
     }
 }
 
-fun outdoorMarkers(mapOutDoorCams: List<MarkerOutdoor>?, context: Context) {
+fun outdoorMarkers(
+    mapOutDoorCams: List<MarkerOutdoor>?,
+    context: Context,
+    moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
+) {
     mapOutDoorCams?.let {
 
         removeMarkersIsNotEmpty(it, listMarkersOutDoor)
@@ -861,7 +889,13 @@ fun outdoorMarkers(mapOutDoorCams: List<MarkerOutdoor>?, context: Context) {
             mapViewGlobal?.overlays?.add(markerOutDoorCam)
             mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
 
-            // showInfoMarkerWindow(markerOutDoorCam, outDoorCam)
+            showInfoMarkerWindow(
+                markerOutDoorCam,
+                outDoorCam,
+                moveToBottomSheetMapFragment = { markerDetail ->
+                    moveToBottomSheetMapFragment(markerDetail)
+                }
+            )
 
             listMarkersOutDoor.add(markerOutDoorCam) // список для только для удаления маркеров markerCams
             listOutDoorCam.add(outDoorCam)
@@ -876,7 +910,11 @@ fun outdoorMarkers(mapOutDoorCams: List<MarkerOutdoor>?, context: Context) {
     }
 }
 
-fun domofonMarkers(mapDomofonCams: List<MarkerDomofon>?, context: Context) {
+fun domofonMarkers(
+    mapDomofonCams: List<MarkerDomofon>?,
+    context: Context,
+    moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
+) {
     mapDomofonCams?.let {
 
         removeMarkersIsNotEmpty(it, listMarkersDomofon)
@@ -899,7 +937,13 @@ fun domofonMarkers(mapDomofonCams: List<MarkerDomofon>?, context: Context) {
             mapViewGlobal?.overlays?.add(markerDomofonCam)
             mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
 
-            //showInfoMarkerWindow(markerDomofonCam, domofonCam)
+            showInfoMarkerWindow(
+                markerDomofonCam,
+                domofonCam,
+                moveToBottomSheetMapFragment = { markerDetail ->
+                    moveToBottomSheetMapFragment(markerDetail)
+                }
+            )
 
             listMarkersDomofon.add(markerDomofonCam) // список для только для удаления маркеров markerCams
             listDomofonCam.add(domofonCam)
@@ -913,7 +957,11 @@ fun domofonMarkers(mapDomofonCams: List<MarkerDomofon>?, context: Context) {
     }
 }
 
-fun officeMarkers(mapOffice: List<MarkerOffice>?, context: Context) {
+fun officeMarkers(
+    mapOffice: List<MarkerOffice>?,
+    context: Context,
+    moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
+) {
     mapOffice?.let {
 
         removeMarkersIsNotEmpty(it, listMarkersOffice)
@@ -937,7 +985,13 @@ fun officeMarkers(mapOffice: List<MarkerOffice>?, context: Context) {
             mapViewGlobal?.overlays?.add(markerOffice)
             mapViewGlobal?.invalidate() // перерисовка из главного потока // postInvalidate из фонового
 
-            //showInfoMarkerWindow(markerOffice, office)
+            showInfoMarkerWindow(
+                markerOffice,
+                office,
+                moveToBottomSheetMapFragment = { markerDetail ->
+                    moveToBottomSheetMapFragment(markerDetail)
+                }
+            )
 
             listMarkersOffice.add(markerOffice) // список для только для удаления маркеров markerCams
             listOffice.add(office)
@@ -951,83 +1005,93 @@ fun officeMarkers(mapOffice: List<MarkerOffice>?, context: Context) {
     }
 }
 
-//private fun <T> showInfoMarkerWindow(markerCam: Marker, objectCam: T) {
-//    markerCam.setOnMarkerClickListener { marker, mapView ->
-//        if (objectCam is MarkerCityCam) {
-//            moveToBottomSheetMapFragment(
-//                MarkerDetail(
-//                    cameraName = objectCam.additional.cameraName,
-//                    server = "https://".plus(objectCam.additional.server.plus("/")),
-//                    token = objectCam.additional.token,
-//                    titleType = Strings.typeCity,
-//                    titleAddress = objectCam.title,
-//                    previewUrl = objectCam.additional.previewUrl,
-//                    worktime = "",
-//                    visible = "",
-//                    dtpCounts = objectCam.additional.dtpCounts,
-//                    albumId = objectCam.additional.albumId,
-//                    isFavorite = false,
-//                    longitude = objectCam.longitude.toString(),
-//                    latitude = objectCam.latitude.toString()
-//                )
-//            )
-//        }
-//
-//        if (objectCam is MarkerOutdoor) {
-//            moveToBottomSheetMapFragment(
-//                MarkerDetail(
-//                    cameraName = "",
-//                    token = "",
-//                    server = "",
-//                    titleType = Strings.typeOutDoor,
-//                    titleAddress = objectCam.title,
-//                    previewUrl = objectCam.additional.previewUrl,
-//                    worktime = "",
-//                    visible = "",
-//                    dtpCounts = 0,
-//                    albumId = 0,
-//                    isFavorite = false
-//                )
-//            )
-//        }
-//        if (objectCam is MarkerOffice) {
-//            moveToBottomSheetMapFragment(
-//                MarkerDetail(
-//                    cameraName = "",
-//                    token = "",
-//                    server = "",
-//                    titleType = Strings.typeOffice,
-//                    titleAddress = objectCam.additional.address,
-//                    previewUrl = "",
-//                    worktime = objectCam.additional.worktime,
-//                    visible = objectCam.additional.phone.visible,
-//                    dtpCounts = 0,
-//                    albumId = 0,
-//                    isFavorite = false
-//                )
-//            )
-//        }
-//        if (objectCam is MarkerDomofonCam) {
-//            moveToBottomSheetMapFragment(
-//                MarkerDetail(
-//                    cameraName = "",
-//                    token = "",
-//                    server = "",
-//                    titleType = Strings.typeDomofon,
-//                    titleAddress = objectCam.title,
-//                    previewUrl = "",
-//                    worktime = "",
-//                    visible = "",
-//                    dtpCounts = 0,
-//                    albumId = 0,
-//                    isFavorite = false
-//                )
-//            )
-//        }
-//        //   marker.showInfoWindow()
-//        true
-//    }
-//}
+private fun <T> showInfoMarkerWindow(
+    markerCam: Marker,
+    objectCam: T,
+    moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
+) {
+    markerCam.setOnMarkerClickListener { marker, mapView ->
+        Log.d("4444", " showInfoMarkerWindow")
+        if (objectCam is MarkerCityCam) {
+            moveToBottomSheetMapFragment(
+                MarkerDetail(
+                    cameraName = objectCam.additionalMap.cameraName,
+                    server = "https://".plus(objectCam.additionalMap.server.plus("/")),
+                    token = objectCam.additionalMap.token,
+                    titleType = Strings.typeCity,
+                    titleAddress = objectCam.title,
+                    previewUrl = objectCam.additionalMap.previewUrl,
+                    videoUrl = objectCam.additionalMap.videoUrl,
+                    worktime = "",
+                    visible = "",
+                    dtpCounts = objectCam.additionalMap.dtpCounts,
+                    albumId = objectCam.additionalMap.albumId,
+                    isFavorite = false,
+                    longitude = objectCam.longitude.toString(),
+                    latitude = objectCam.latitude.toString()
+                )
+            )
+        }
+
+        if (objectCam is MarkerOutdoor) {
+            Log.d("4444", " showInfoMarkerWindow MarkerOutdoor")
+            moveToBottomSheetMapFragment(
+                MarkerDetail(
+                    cameraName = "",
+                    token = "",
+                    server = "",
+                    titleType = Strings.typeOutDoor,
+                    titleAddress = objectCam.title,
+                    previewUrl = objectCam.additional.previewUrl,
+                    videoUrl = "",
+                    worktime = "",
+                    visible = "",
+                    dtpCounts = 0,
+                    albumId = 0,
+                    isFavorite = false
+                )
+            )
+        }
+        if (objectCam is MarkerOffice) {
+            moveToBottomSheetMapFragment(
+                MarkerDetail(
+                    cameraName = "",
+                    token = "",
+                    server = "",
+                    titleType = Strings.typeOffice,
+                    titleAddress = objectCam.additional.address,
+                    previewUrl = "",
+                    videoUrl = "",
+                    worktime = objectCam.additional.worktime,
+                    visible = objectCam.additional.phone.visible,
+                    dtpCounts = 0,
+                    albumId = 0,
+                    isFavorite = false
+                )
+            )
+        }
+        if (objectCam is MarkerDomofon) {
+            moveToBottomSheetMapFragment(
+                MarkerDetail(
+                    cameraName = "",
+                    token = "",
+                    server = "",
+                    titleType = Strings.typeDomofon,
+                    titleAddress = objectCam.title,
+                    previewUrl = "",
+                    videoUrl = "",
+                    worktime = "",
+                    visible = "",
+                    dtpCounts = 0,
+                    albumId = 0,
+                    isFavorite = false
+                )
+            )
+        }
+        //   marker.showInfoWindow()
+        true
+    }
+}
 
 
 fun method(

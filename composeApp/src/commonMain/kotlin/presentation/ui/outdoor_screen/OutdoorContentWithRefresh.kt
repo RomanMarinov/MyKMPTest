@@ -48,20 +48,18 @@ import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.NavOptions
 import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_outdoor_create_shortcut
 import mykmptest.composeapp.generated.resources.ic_play
 import mykmptest.composeapp.generated.resources.outdoor_add_address
 import mykmptest.composeapp.generated.resources.outdoor_create_shortcut
-import net.thauvin.erik.urlencoder.UrlEncoderUtil
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import util.ColorCustomResources
 import util.ScreenRoute
+import util.navigateToWebViewHelper
 import util.shimmerEffect
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
@@ -261,8 +259,9 @@ fun ContentLazyList(
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
                     .clickable {
-                        navigateToWebView(
+                        navigateToWebViewHelper(
                             navigator = navigator,
+                            route = ScreenRoute.OutdoorScreen.route,
                             address = dvr.address,
                             videoUrl = dvr.videoUrl
                         )
@@ -276,8 +275,9 @@ fun ContentLazyList(
                     .fillMaxSize()
                     .size(80.dp)
                     .clickable {
-                        navigateToWebView(
+                        navigateToWebViewHelper(
                             navigator = navigator,
+                            route = ScreenRoute.OutdoorScreen.route,
                             address = dvr.address,
                             videoUrl = dvr.videoUrl
                         )
@@ -287,20 +287,22 @@ fun ContentLazyList(
     }
 }
 
-fun navigateToWebView(navigator: Navigator, address: String, videoUrl: String) {
-    val videoUrlEncode = UrlEncoderUtil.encode(videoUrl)
-    navigator.navigate(
-        ScreenRoute.WebViewScreen.withArgs(
-            address = address,
-            videourl = videoUrlEncode
-        ),
-        NavOptions(
-            popUpTo = PopUpTo(
-                // The destination of popUpTo
-                route = ScreenRoute.OutdoorScreen.route,
-                // Whether the popUpTo destination should be popped from the back stack.
-                inclusive = false,
-            )
-        )
-    )
-}
+
+// не нужен
+//fun navigateToWebView(navigator: Navigator, address: String, videoUrl: String) {
+//    val videoUrlEncode = UrlEncoderUtil.encode(videoUrl)
+//    navigator.navigate(
+//        ScreenRoute.WebViewScreen.withArgs(
+//            address = address,
+//            videourl = videoUrlEncode
+//        ),
+//        NavOptions(
+//            popUpTo = PopUpTo(
+//                // The destination of popUpTo
+//                route = ScreenRoute.OutdoorScreen.route,
+//                // Whether the popUpTo destination should be popped from the back stack.
+//                inclusive = false,
+//            )
+//        )
+//    )
+//}

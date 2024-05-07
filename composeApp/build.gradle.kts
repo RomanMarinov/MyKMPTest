@@ -192,5 +192,9 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.16")
    // implementation("tech.utsmankece:osm-android-compose:0.0.3")
     implementation(libs.androidx.activity.ktx)
+
+    // красивый переход от Лакнера
+    // https://www.youtube.com/watch?v=mE5bLb42_Os
+    //implementation("androidx.compose.animation:animation:1.7.0-alpha07")
 }
 
