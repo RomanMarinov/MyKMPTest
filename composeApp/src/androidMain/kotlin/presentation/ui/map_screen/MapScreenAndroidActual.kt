@@ -39,7 +39,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -133,15 +132,15 @@ fun MapScreenAndroidActual(
 ) {
     SetLocalLifecycleOwner()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
+    //val scope = rememberCoroutineScope()
 
     val publicInfo by viewModel.publicInfo.collectAsState()
     val setLocation by viewModel.setLocation.collectAsState()
-    val setLocationState = remember { mutableStateOf(setLocation) }
-    val geoPointZoom by viewModel.geoPointZoom.collectAsStateWithLifecycle()
-    val zoomNew by viewModel.zoomNew.collectAsState(null)
+//    val setLocationState = remember { mutableStateOf(setLocation) }
+//    val geoPointZoom by viewModel.geoPointZoom.collectAsStateWithLifecycle()
+//    val zoomNew by viewModel.zoomNew.collectAsState(null)
 
-    val mapCityCams by viewModel.mapCityCams.collectAsStateWithLifecycle()
+ //   val mapCityCams by viewModel.mapCityCams.collectAsStateWithLifecycle()
     val locations by viewModel.locationsTitle.collectAsStateWithLifecycle()
 //    val mapCategories by viewModel.mapCategories.collectAsStateWithLifecycle()
 

@@ -33,7 +33,7 @@ val networkModule = module {
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
-                        co.touchlab.kermit.Logger.d {" 4444 networkModule httpClient =$message" }
+                        //co.touchlab.kermit.Logger.d {" 4444 networkModule httpClient =$message" }
                     }
                 }
                 level = LogLevel.ALL

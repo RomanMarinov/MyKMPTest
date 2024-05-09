@@ -171,7 +171,7 @@ class MapScreenViewModel(
             if (position >= 0 && position < categories.size) {
                 val category = categories[position].title
 
-                Logger.d{" 4444 onClickCategory category=" + category}
+                //Logger.d{" 4444 onClickCategory category=" + category}
 
                 when (category) {
                     "Городские камеры" -> {
@@ -239,7 +239,7 @@ class MapScreenViewModel(
             }
         }
         if (!_isEmptyCityCams) { // очередь третья - 3й слой наложения на карте
-            Logger.d{" 4444 fillingMapCams _mapCityCams"}
+            //Logger.d{" 4444 fillingMapCams _mapCityCams"}
             _mapCityCams.value = emptyList()
             _publicInfo.value?.let {
                 _mapCityCams.value = it.mapMarkers?.cityCams?.markerCityCams ?: emptyList()

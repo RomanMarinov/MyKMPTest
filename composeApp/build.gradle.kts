@@ -115,6 +115,9 @@ kotlin {
             dependencies {
                // implementation("io.ktor:ktor-client-ios:2.3.10")
                 implementation(libs.ktor.client.darwin)
+
+
+                
             }
             //sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 

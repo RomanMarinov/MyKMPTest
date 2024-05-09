@@ -33,6 +33,7 @@ actual class MapViewPlatform actual constructor() {
         moveToBottomSheetMapFragment: (MarkerDetail) -> Unit
     ) {
 
+
         MapScreenIosActual(
             paddingValue = paddingValue,
             moveToBottomSheetMapFragment = { markerDetail ->
