@@ -4,16 +4,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -21,6 +20,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -58,8 +59,8 @@ import moe.tlaster.precompose.navigation.Navigator
 import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_lock
-import mykmptest.composeapp.generated.resources.ic_outdoor_create_shortcut
 import mykmptest.composeapp.generated.resources.ic_play
+import mykmptest.composeapp.generated.resources.ic_plus_square
 import mykmptest.composeapp.generated.resources.outdoor_add_address
 import mykmptest.composeapp.generated.resources.outdoor_create_shortcut
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
@@ -138,9 +139,8 @@ fun DomofonContentWithRefresh(
                 ElevatedButton(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-//                .shadow(2.dp, RoundedCornerShape(2.dp)),
-
+                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                    shape = RoundedCornerShape(8.dp),
                     onClick = {
 
                     },
@@ -148,8 +148,7 @@ fun DomofonContentWithRefresh(
                     colors = ButtonDefaults.buttonColors(
                         contentColor = Color.White,
                         containerColor = ColorCustomResources.colorBazaMainBlue
-                    ),
-                    //shape = RoundedCornerShape(10.dp)
+                    )
                 )
             }
         }
@@ -223,43 +222,91 @@ fun ContentLazyList(
     Column(modifier = Modifier.fillMaxWidth().navigationBarsPadding()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.Start,
+            // horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.Bottom
         ) {
-            Row(modifier = Modifier.weight(2f)) {
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 16.dp),
+                //.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically,
+                // horizontalArrangement = Arrangement.Start
+            ) {
                 Text(
+                    modifier = Modifier,
                     text = sputnik.title,
                     fontWeight = FontWeight.Bold
                 )
             }
+
             Row(
-                modifier = Modifier
-                    .padding(start = 8.dp)
-                    .width(IntrinsicSize.Max)
-                    .clickable {
-                        CoroutineScope(Dispatchers.Main).launch {
-                            snackbarHostState.showSnackbar(
-                                message = "Hey look a snackbar",
-                                actionLabel = "Hide",
-                                duration = SnackbarDuration.Short
+                modifier = Modifier,
+                //.fillMaxWidth()
+                //.weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                Box(
+                    modifier = Modifier,
+                    //.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
+                    Card(
+                        modifier = Modifier
+                            //.fillMaxWidth()
+                            .height(40.dp),
+                        shape = RoundedCornerShape(100.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .clickable {
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = "Hey look a snackbar",
+                                            actionLabel = "Hide",
+                                            duration = SnackbarDuration.Short
+                                        )
+                                    }
+                                }
+                                .fillMaxHeight()
+                                .padding(start = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(24.dp),
+                                imageVector = vectorResource(Res.drawable.ic_plus_square),
+                                contentDescription = null,
+                                tint = ColorCustomResources.colorBazaMainBlue
+                            )
+                            Text(
+                                modifier = Modifier
+                                    //.fillMaxWidth()
+                                    .padding(start = 16.dp, end = 8.dp),
+                                text = stringResource(Res.string.outdoor_create_shortcut),
+                                color = ColorCustomResources.colorBazaMainBlue
                             )
                         }
-                    },
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Icon(
-                    vectorResource(Res.drawable.ic_outdoor_create_shortcut),
-                    contentDescription = "shortcut",
-                    tint = ColorCustomResources.colorShortcut
-                )
-                Text(
-                    modifier = Modifier.weight(1f).width(IntrinsicSize.Max),
-                    text = stringResource(Res.string.outdoor_create_shortcut),
-                    color = ColorCustomResources.colorShortcut
-                )
+                    }
+                }
             }
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
         Column(modifier = Modifier.fillMaxWidth()) {
             Box(
@@ -268,18 +315,22 @@ fun ContentLazyList(
             ) {
                 KamelImage(
                     onLoading = {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .shimmerEffect()
-                            .height(200.dp)
-                            .padding(start = 16.dp, end = 16.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shimmerEffect()
+                                .height(200.dp)
+                                .padding(start = 16.dp, end = 16.dp)
+                        )
                     },
                     onFailure = {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .shimmerEffect()
-                            .height(200.dp)
-                            .padding(start = 16.dp, end = 16.dp))
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .shimmerEffect()
+                                .height(200.dp)
+                                .padding(start = 16.dp, end = 16.dp)
+                        )
                     },
                     resource = asyncPainterResource(sputnik.previewUrl),
                     contentDescription = sputnik.previewUrl,

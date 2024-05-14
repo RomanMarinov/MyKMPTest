@@ -8,6 +8,7 @@ object ColorCustomResources {
 
     val colorGradientLightBlueStart = Color(0XFFE4EDF9)
     val colorGradientWhiteEnd = Color(0XFFFCFDFF)
+    val colorBackgroundMain = Color(0XFFE4EDF9)
 
     val colorShortcut = Color(0XFF0093B5)
 
@@ -31,6 +32,12 @@ object ColorCustomResources {
     val colorMapDomofon = Color(0XA6F38F1C)
     val colorMapOutdoor = Color(0X9E4B9D61)
     val colorMapOffice = Color(0X99C85C61)
+
+
+
+    val colorBackgroundClose = Color(0XFFF4F4F4)
+
+
 
 
 }

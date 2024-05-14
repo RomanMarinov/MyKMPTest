@@ -22,11 +22,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_profile
@@ -96,7 +96,7 @@ fun HomeScreen(navigator: Navigator) {
                                 imageVector = vectorResource(Res.drawable.ic_profile),
                                 contentDescription = "Open profile",
                                 modifier = Modifier
-                                    .size(50.dp)
+                                    .size(24.dp)
                             )
                         }
                     },
@@ -111,29 +111,23 @@ fun HomeScreen(navigator: Navigator) {
                 modifier = Modifier.fillMaxSize()
                     .padding(paddingValue)
                     .padding(bottom = paddingValue.calculateBottomPadding())
-                    .background(
-                        Brush.linearGradient(
-                            colors = colorsList,
-                            start = Offset.Zero,
-                            end = Offset.Infinite
-                        )
-                    )
+                    .background(ColorCustomResources.colorBackgroundMain)
             ) {
 
 
-//                OutdoorContentWithRefresh(
-//                    items = outDoorsUiState.outdoors,
-//                    isRefreshing = isRefreshing,
-//                    onRefresh = {
-//                        scope.launch {
-//                            isRefreshing = true
-//                            delay(2000L)
-//                            isRefreshing = false
-//                        }
-//                    },
-//                    navigator = navigator,
-//                    paddingValue = paddingValue
-//                )
+                HomeContentWithRefresh(
+                   // items = outDoorsUiState.outdoors,
+                    isRefreshing = isRefreshing,
+                    onRefresh = {
+                        scope.launch {
+                            isRefreshing = true
+                            delay(2000L)
+                            isRefreshing = false
+                        }
+                    },
+                    navigator = navigator,
+                    paddingValue = paddingValue
+                )
 
 
             }

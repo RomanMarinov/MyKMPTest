@@ -2,6 +2,7 @@
 
 package presentation.ui.domofon_screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,6 +41,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
+import util.ColorCustomResources
 import util.ScreenRoute
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
@@ -116,7 +118,7 @@ fun DomofonScreen(
                         imageVector = vectorResource(Res.drawable.ic_profile),
                         contentDescription = "Open profile",
                         modifier = Modifier
-                           .size(50.dp)
+                            .size(24.dp)
                      )
                   }
                },
@@ -132,6 +134,7 @@ fun DomofonScreen(
                .padding(
                   bottom = paddingValue.calculateBottomPadding()
                )
+                .background(ColorCustomResources.colorBackgroundMain)
          ) {
 
 

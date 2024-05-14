@@ -434,7 +434,7 @@ fun TopControl(
     paddingValue: PaddingValues,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var labelClick by remember { mutableStateOf("Вологда") }
+    var labelClick by remember { mutableStateOf("г. Вологда") }
     var indexClick by remember { mutableStateOf(-1) }
     var dropdownMenuWidth by remember { mutableStateOf(0) }
     var dropdownMenuHeight by remember { mutableStateOf(0) }

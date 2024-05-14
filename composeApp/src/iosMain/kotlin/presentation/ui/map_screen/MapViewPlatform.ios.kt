@@ -2,7 +2,6 @@ package presentation.ui.map_screen
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import kotlinx.cinterop.ExperimentalForeignApi
 import presentation.ui.map_screen.model.MarkerDetail
 
 actual class MapViewPlatform actual constructor() {
@@ -11,21 +10,6 @@ actual class MapViewPlatform actual constructor() {
         return "ios"
     }
 
-//    actual fun setZoomLocation(zoom: Double, center: String) {
-
-
-
-
-//    actual fun setMapView() : MKMapView {
-//
-//    }
-//
-//    @Composable
-//    actual fun setMapView() {
-//    }
-
-
-    @OptIn(ExperimentalForeignApi::class)
     @Composable
     actual fun SetMapView(
         paddingValue: PaddingValues,
@@ -42,3 +26,4 @@ actual class MapViewPlatform actual constructor() {
         )
     }
 }
+

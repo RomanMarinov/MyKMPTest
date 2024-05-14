@@ -124,7 +124,7 @@ fun MapScreen(
                                 imageVector = vectorResource(Res.drawable.ic_profile),
                                 contentDescription = "Open profile",
                                 modifier = Modifier
-                                    .size(50.dp)
+                                    .size(24.dp)
                             )
                         }
                     },

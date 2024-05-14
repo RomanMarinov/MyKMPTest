@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -45,7 +44,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -117,13 +115,7 @@ fun HelpContentWithRefresh(
             .padding(
                 bottom = paddingValue.calculateBottomPadding()
             )
-            .background(
-                Brush.linearGradient(
-                    colors = colorsList,
-                    start = Offset.Zero,
-                    end = Offset.Infinite
-                )
-            )
+            .background(ColorCustomResources.colorBackgroundMain)
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
@@ -482,8 +474,8 @@ fun LazyListScope.helpContentContactTowns(
                                     .padding(16.dp)
                                     .weight(1f)
                             )
-                            Icon(
-                                imageVector = Icons.Filled.KeyboardArrowRight,
+                            Icon( // потом исправить на право предупреждение было в ios
+                                imageVector = Icons.Filled.KeyboardArrowDown,
                                 contentDescription = "arrow",
                                 modifier = Modifier
                                     .padding(16.dp)

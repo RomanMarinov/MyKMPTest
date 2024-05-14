@@ -13,8 +13,12 @@ androidx-core-ktx = "1.12.0"
 androidx-espresso-core = "3.5.1"
 androidx-material = "1.11.0"
 androidx-test-junit = "1.1.5"
-compose = "1.6.5"
-compose-plugin = "1.6.10-beta01"
+compose = "1.6.7"
+###########
+compose-plugin = "1.6.10-rc01"
+#compose-plugin = "1.6.10-beta01"
+#1.6.10-rc01
+############
 junit = "4.13.2"
 kermitVersion = "2.0.2" #не повышать
 
@@ -36,11 +40,12 @@ coroutines_version = "1.8.0"
 ktorClientCore = "2.3.10"
 precompose = "1.5.11" #не повышать
 core = "1.12.0"
-kotlin2 = "1.9.22"
+kotlin2 = "2.0.0-RC3"
 lifecycleRuntimeKtx = "2.7.0"
 composeBom = "2023.08.00"
 composeMaterial = "1.3.1"
 activityKtx = "1.9.0"
+foundationAndroid = "1.6.7"
 
 [libraries]
 accompanist-coil = { module = "com.google.accompanist:accompanist-coil", version.ref = "accompanistCoil" }
@@ -86,6 +91,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
 androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
+androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -93,6 +99,6 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 #jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin2" }
+jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 

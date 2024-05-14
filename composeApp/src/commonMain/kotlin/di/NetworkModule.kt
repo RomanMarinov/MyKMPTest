@@ -27,7 +27,7 @@ val networkModule = module {
 
             install(ResponseObserver) {
                 onResponse { response ->
-                    co.touchlab.kermit.Logger.d {" 4444 networkModule ResponseObserver HTTP onResponse= =$response.status.value" }
+                    //co.touchlab.kermit.Logger.d {" 4444 networkModule ResponseObserver HTTP onResponse= =$response.status.value" }
                 }
             }
             install(Logging) {

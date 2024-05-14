@@ -40,8 +40,11 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
-import mykmptest.composeapp.generated.resources.ic_map_city_cam
+import mykmptest.composeapp.generated.resources.ic_close
+import mykmptest.composeapp.generated.resources.ic_heart_off
 import mykmptest.composeapp.generated.resources.ic_play
+import mykmptest.composeapp.generated.resources.ic_plus_square
+import mykmptest.composeapp.generated.resources.ic_share
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
 import presentation.ui.map_screen.model.MarkerDetail
@@ -83,14 +86,14 @@ fun BottomSheetCityCam(
                         .fillMaxWidth()
                         .padding(top = 16.dp),
                 ) {
-                    Icon(
-                        modifier = Modifier
-                            .size(35.dp)
-                            .padding(start = 16.dp)
-                            .align(Alignment.CenterStart),
-                        imageVector = vectorResource(Res.drawable.ic_map_city_cam),
-                        contentDescription = null
-                    )
+//                    Icon( надо новую иконку камеры
+//                        modifier = Modifier
+//                            .size(35.dp)
+//                            .padding(start = 16.dp)
+//                            .align(Alignment.CenterStart),
+//                        imageVector = vectorResource(Res.drawable.cameramap_2__2_),
+//                        contentDescription = "icon_map"
+//                    )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -104,14 +107,31 @@ fun BottomSheetCityCam(
                             fontSize = 20.sp
                         )
                     }
-                    Icon(
+
+                    Card(
                         modifier = Modifier
-                            .size(35.dp)
                             .padding(end = 16.dp)
+                            .size(34.dp)
                             .align(Alignment.CenterEnd),
-                        imageVector = vectorResource(Res.drawable.ic_map_city_cam),
-                        contentDescription = null
-                    )
+                        shape = RoundedCornerShape(5.dp),
+                        colors = CardDefaults.cardColors(containerColor = ColorCustomResources.colorBackgroundClose),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clickable {
+                                    openBottomSheet(false)
+                                },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon( // close
+                                modifier = Modifier
+                                    .size(24.dp),
+                                imageVector = vectorResource(Res.drawable.ic_close),
+                                contentDescription = null,
+                            )
+                        }
+                    }
                 }
                 Text(
                     modifier = Modifier
@@ -148,9 +168,9 @@ fun BottomSheetCityCam(
                             Icon(
                                 modifier = Modifier
                                     .size(24.dp),
-                                imageVector = vectorResource(Res.drawable.ic_map_city_cam),
+                                imageVector = vectorResource(Res.drawable.ic_heart_off),
                                 contentDescription = null,
-
+                                tint = Color.Red
                                 )
                         }
                     }
@@ -175,10 +195,10 @@ fun BottomSheetCityCam(
                             Icon(
                                 modifier = Modifier
                                     .size(24.dp),
-                                imageVector = vectorResource(Res.drawable.ic_map_city_cam),
+                                imageVector = vectorResource(Res.drawable.ic_share),
                                 contentDescription = null,
-
-                                )
+                                tint = ColorCustomResources.colorBazaMainBlue
+                            )
                         }
                     }
 
@@ -214,8 +234,9 @@ fun BottomSheetCityCam(
                                     Icon(
                                         modifier = Modifier
                                             .size(24.dp),
-                                        imageVector = vectorResource(Res.drawable.ic_map_city_cam),
-                                        contentDescription = null
+                                        imageVector = vectorResource(Res.drawable.ic_plus_square),
+                                        contentDescription = null,
+                                        tint = ColorCustomResources.colorBazaMainBlue
                                     )
                                     Text(
                                         modifier = Modifier.padding(start = 16.dp, end = 8.dp),
@@ -363,10 +384,6 @@ fun BottomSheetCityCam(
                             )
                         }
                     }
-
-
-
-
                 }
             }
 

@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
 
+<!--    // navigation-->
     <string name="home_title">Baza.net</string>
     <string name="outdoor_title">Мой двор</string>
     <string name="map_title">Карта</string>
     <string name="domofon_title">Умный домофон</string>
     <string name="help_title">Помощь</string>
+
+<!--    home-->
+    <string name="home_personal_account">Добавить новый лицевой счет или уже существующий для оплаты услуг за своих близких</string>
+    <string name="home_button_order">Оставить заявку</string>
+
 
     <string name="home_name_nav">Baza.net</string>
     <string name="outdoor_name_nav">Мой двор</string>
@@ -15,7 +21,7 @@
 
 
     <string name="outdoor_add_address">Добавить адрес</string>
-    <string name="outdoor_create_shortcut">Создать ярлык</string>
+    <string name="outdoor_create_shortcut">На рабочий стол</string>
 
 
 
@@ -33,7 +39,7 @@
     <string name="help_contact_title">Контакты:</string>
 
     <string name="map_sheet_outdoor">Онлайн воспроизведение и доступ к архиву с этой камеры предоставлены только для жителей дома или собственников помещений</string>
-    <string name="map_sheet_domofon">Умный домофон - это сервис, который расширит функционал вашего обычного домофона:\n-вы будете видеть кто вам звонит,\nу вас появиться возможность открыть дверь дистанционно.</string>
+    <string name="map_sheet_domofon">Умный домофон - это сервис, который расширит функционал вашего обычного домофона:\n- вы будете видеть кто вам звонит,\n- у вас появиться возможность открыть дверь дистанционно.</string>
 
 
 </resources>
