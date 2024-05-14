@@ -196,6 +196,8 @@ dependencies {
    // implementation("tech.utsmankece:osm-android-compose:0.0.3")
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.foundation.android)
+//    implementation(libs.firebase.crashlytics.buildtools)
+   // implementation(libs.androidx.compose.material)
 
     // красивый переход от Лакнера
     // https://www.youtube.com/watch?v=mE5bLb42_Os

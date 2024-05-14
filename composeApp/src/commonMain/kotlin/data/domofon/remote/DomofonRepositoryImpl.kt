@@ -13,88 +13,92 @@ class DomofonRepositoryImpl(
     private fun getFakeSputnik(): List<Sputnik> {
         return listOf(
             Sputnik(
-                title = "Добролюбова (ул.) 26, Калитка",
-                addrId = 2698,
-                deviceID = "4f6e8f98-ea2a-40ef-a203-0730d825ac2d",
+                title = "Тестовая (ул.) 1, 2 подъезд",
+                addrId = 980,
+                deviceID = "e344f4bb-fd97-4f7d-b12c-2aab350abcdd",
                 fullControl = true,
-                flat = 33,
-                oper = "baza",
-                porch = 0,
-                previewUrl = "https://api.baza.net/domofon/preview/4f6e8f98-ea2a-40ef-a203-0730d825ac2d?token=NjYwOWNhYTlkODRlYWZiZjk5MzExNWFhNzVjNDc5ZmZmOWNjNjhhNC4xNzE0NjQ4MjA5",
-                videoUrl = "https://sputnikdvr1.baza.net/4f6e8f98-ea2a-40ef-a203-0730d825ac2d/embed.html?dvr=true&token=NjYwOWNhYTlkODRlYWZiZjk5MzExNWFhNzVjNDc5ZmZmOWNjNjhhNC4xNzE0NjQ4MjA5"
-            ),
-
-            Sputnik(
-                title = "Добролюбова (ул.) 26, Калитка",
-                addrId = 2698,
-                deviceID = "8af0ab9f-431a-4bd4-aad4-8ba7c47c178c",
-                fullControl = true,
-                flat = 33,
-                oper = "baza",
-                porch = 0,
-                previewUrl = "https://api.baza.net/domofon/preview/8af0ab9f-431a-4bd4-aad4-8ba7c47c178c?token=YzBlZmIxMmVhMzFlYTg2NGUyODc0NzE0ODA4YjM1YTBjM2YzZDczYi4xNzE0NjQ4MjA5",
-                videoUrl = "https://sputnikdvr1.baza.net/8af0ab9f-431a-4bd4-aad4-8ba7c47c178c/embed.html?dvr=true&token=YzBlZmIxMmVhMzFlYTg2NGUyODc0NzE0ODA4YjM1YTBjM2YzZDczYi4xNzE0NjQ4MjA5"
-            ),
-
-            Sputnik(
-                title = "Возрождения (ул.) 74в, 1 подъезд",
-                addrId = 2282,
-                deviceID = "e7d96a52-b9ed-45ec-a457-11275f8db217",
-                fullControl = true,
-                flat = 26,
-                oper = "baza",
-                porch = 1,
-                previewUrl = "https://api.baza.net/domofon/preview/e7d96a52-b9ed-45ec-a457-11275f8db217?token=Yzk3ZTdiY2NkZThkYWVlZjJiNWRhYzQwYmMwZDU5MzVlYTJiY2ZiNi4xNzE0NjQ4MjA5",
-                videoUrl = "https://sputnikdvr1.baza.net/e7d96a52-b9ed-45ec-a457-11275f8db217/embed.html?dvr=true&token=Yzk3ZTdiY2NkZThkYWVlZjJiNWRhYzQwYmMwZDU5MzVlYTJiY2ZiNi4xNzE0NjQ4MjA5"
-            ),
-
-            Sputnik(
-                title = "Добролюбова (ул.) 26, 1 подъезд",
-                addrId = 2698,
-                deviceID = "2cc28d92-3969-44c6-8468-cbd2a5015715",
-                fullControl = true,
-                flat = 33,
-                oper = "baza",
-                porch = 1,
-                previewUrl = "https://api.baza.net/domofon/preview/2cc28d92-3969-44c6-8468-cbd2a5015715?token=MGZjNjQwN2Y0Nzg1ZGFlZWQ3ZjIzNGI3MDQ5NWE1Yjc3MTk4NjRkNi4xNzE0NjQ4MjA5",
-                videoUrl = "https://sputnikdvr1.baza.net/2cc28d92-3969-44c6-8468-cbd2a5015715/embed.html?dvr=true&token=MGZjNjQwN2Y0Nzg1ZGFlZWQ3ZjIzNGI3MDQ5NWE1Yjc3MTk4NjRkNi4xNzE0NjQ4MjA5"
-            ),
-
-            Sputnik(
-                title = "Бурмагиных (ул.) 34к2, 1 подъезд",
-                addrId = 20770,
-                deviceID = "030052ae-9d59-4564-b931-005ad0c5300b",
-                fullControl = false,
-                flat = 100,
-                oper = "baza",
-                porch = 1,
-                previewUrl = "https://api.baza.net/domofon/preview/030052ae-9d59-4564-b931-005ad0c5300b?token=YmEyYjNmOTdmZjBkNWQ1NzMzMmQ4OTk4Yzc2ZmRhZTc5MDZhNWU2NC4xNzE0NjQ4MjA5",
-                videoUrl = "https://sputnikdvr1.baza.net/030052ae-9d59-4564-b931-005ad0c5300b/embed.html?dvr=true&token=YmEyYjNmOTdmZjBkNWQ1NzMzMmQ4OTk4Yzc2ZmRhZTc5MDZhNWU2NC4xNzE0NjQ4MjA5"
-            ),
-
-            Sputnik(
-                title = "Добролюбова (ул.) 26, 2 подъезд",
-                addrId = 2698,
-                deviceID = "30b32e40-0fda-4b15-8710-597c7c71baa7",
-                fullControl = false,
-                flat = 33,
+                flat = 2,
                 oper = "baza",
                 porch = 2,
-                previewUrl = "https://api.baza.net/domofon/preview/30b32e40-0fda-4b15-8710-597c7c71baa7?token=ZTFlMDA2MzA5ZWQ1YmViMzc2YmM3NDFjZDFiZGE4OGIzYTlhZTFkNC4xNzE0NjQ4MjA5",
-                videoUrl = "https://sputnikdvr1.baza.net/30b32e40-0fda-4b15-8710-597c7c71baa7/embed.html?dvr=true&token=ZTFlMDA2MzA5ZWQ1YmViMzc2YmM3NDFjZDFiZGE4OGIzYTlhZTFkNC4xNzE0NjQ4MjA5"
+                previewUrl = "https://public-api-test.baza.net/domofon/preview/e344f4bb-fd97-4f7d-b12c-2aab350abcdd?token=MjkwYTFkNjY5ODIxMjJhYzI2MWIyZjQyMmFkZjQ0YWFhN2MzOGFiNS4xNzE2MjE1OTM1",
+                videoUrl = "https://sputnikdvr1.baza.net/e344f4bb-fd97-4f7d-b12c-2aab350abcdd/embed.html?dvr=true&token=MjkwYTFkNjY5ODIxMjJhYzI2MWIyZjQyMmFkZjQ0YWFhN2MzOGFiNS4xNzE2MjE1OTM1",
+                isSelected = false
             ),
-
             Sputnik(
-                title = "Огородный (пер.) 7, 2 подъезд",
-                addrId = 667,
-                deviceID = "35d2b6f7-380e-4dc6-b9b5-24c3ea69e632",
+                title = "Тестовая(ул.)1, 3 подъезд",
+                addrId = 980,
+                deviceID = "a8afbbde-981b-492f-8b4c-e1af5edd5b2b",
+                fullControl = true,
+                flat = 2,
+                oper = "baza",
+                porch = 3,
+                previewUrl = "https://public-api-test.baza.net/domofon/preview/a8afbbde-981b-492f-8b4c-e1af5edd5b2b?token=YjA0NTFiNzU3OTFmMWM0YjRhODkzODM5NjY5OGIzZTJjOThkMmZkNi4xNzE2MjE1OTM1",
+                videoUrl = "https://sputnikdvr1.baza.net/a8afbbde-981b-492f-8b4c-e1af5edd5b2b/embed.html?dvr=true&token=YjA0NTFiNzU3OTFmMWM0YjRhODkzODM5NjY5OGIzZTJjOThkMmZkNi4xNzE2MjE1OTM1",
+                isSelected = true
+            ),
+            Sputnik(
+                title = "Ярославская (ул.) 42, 5 подъезд",
+                addrId = 20290,
+                deviceID = "db275fc8-b2ea-48a8-a68e-44c4fecfe689",
+                fullControl = true,
+                flat = 241,
+                oper = "baza",
+                porch = 5,
+                previewUrl = "https://public-api-test.baza.net/domofon/preview/db275fc8-b2ea-48a8-a68e-44c4fecfe689?token=YmE4M2RmYjExOTAwOTVjMDIyNWM2YTI4Y2ExYjgyN2MwN2RlMjYyOC4xNzE2MjE1OTM1",
+                videoUrl = "https://sputnikdvr1.baza.net/db275fc8-b2ea-48a8-a68e-44c4fecfe689/embed.html?dvr=true&token=YmE4M2RmYjExOTAwOTVjMDIyNWM2YTI4Y2ExYjgyN2MwN2RlMjYyOC4xNzE2MjE1OTM1",
+                isSelected = true
+            ),
+            Sputnik(
+                title = "Ярославская (ул.) 42, 1 подъезд",
+                addrId = 20290,
+                deviceID = "0ff068a2-38cc-47cd-acec-ce27cc9ec2a0",
                 fullControl = false,
-                flat = 32,
+                flat = 241,
+                oper = "baza",
+                porch = 1,
+                previewUrl = "https://public-api-test.baza.net/domofon/preview/0ff068a2-38cc-47cd-acec-ce27cc9ec2a0?token=OGYwZjYxYzg2OWQzMzQ1MzdjZGYwYzYzZWZmY2Q2OWI1NjA0MzcwMC4xNzE2MjE1OTM1",
+                videoUrl = "https://sputnikdvr1.baza.net/0ff068a2-38cc-47cd-acec-ce27cc9ec2a0/embed.html?dvr=true&token=OGYwZjYxYzg2OWQzMzQ1MzdjZGYwYzYzZWZmY2Q2OWI1NjA0MzcwMC4xNzE2MjE1OTM1",
+                isSelected = false
+            ),
+            Sputnik(
+                title = "Ярославская (ул.) 42, 2 подъезд",
+                addrId = 20290,
+                deviceID = "7905fec2-32bf-4584-b7ce-08f95e2434b5",
+                fullControl = false,
+                flat = 241,
                 oper = "baza",
                 porch = 2,
-                previewUrl = "https://api.baza.net/domofon/preview/35d2b6f7-380e-4dc6-b9b5-24c3ea69e632?token=NTQ5ZmQ1NGY0MTU3NDM2ZDMwZjU4MDFjY2YzZWExNTRhNzZmYTUwOC4xNzE0NjQ4MjA5",
-                videoUrl = "https://sputnikdvr1.baza.net/35d2b6f7-380e-4dc6-b9b5-24c3ea69e632/embed.html?dvr=true&token=NTQ5ZmQ1NGY0MTU3NDM2ZDMwZjU4MDFjY2YzZWExNTRhNzZmYTUwOC4xNzE0NjQ4MjA5"
+                previewUrl = "https://public-api-test.baza.net/domofon/preview/7905fec2-32bf-4584-b7ce-08f95e2434b5?token=YzVhOWMyYTk2YjBiNDZkOTE0OTAzNmE3NmY3M2E1ZGQ3Y2VmNmEwZi4xNzE2MjE1OTM1",
+                videoUrl = "https://sputnikdvr1.baza.net/7905fec2-32bf-4584-b7ce-08f95e2434b5/embed.html?dvr=true&token=YzVhOWMyYTk2YjBiNDZkOTE0OTAzNmE3NmY3M2E1ZGQ3Y2VmNmEwZi4xNzE2MjE1OTM1",
+                isSelected = false
+            ),
+            Sputnik(
+                title = "Ярославская (ул.) 42, 3 подъезд",
+                addrId = 20290,
+                deviceID = "13ddce5f-71be-41da-9e6c-4726ce5cfdf3",
+                fullControl = false,
+                flat = 241,
+                oper = "baza",
+                porch = 3,
+                previewUrl = "https://public-api-test.baza.net/domofon/preview/13ddce5f-71be-41da-9e6c-4726ce5cfdf3?token=ZTgyYjcwMjE2NTc2OTc1ODA4OTNlZjBjOGRmMTdmMjZmN2I5MWJhYi4xNzE2MjE1OTM1",
+                videoUrl = "https://sputnikdvr1.baza.net/13ddce5f-71be-41da-9e6c-4726ce5cfdf3/embed.html?dvr=true&token=ZTgyYjcwMjE2NTc2OTc1ODA4OTNlZjBjOGRmMTdmMjZmN2I5MWJhYi4xNzE2MjE1OTM1",
+                isSelected = false
+            ),
+            Sputnik(
+                title = "Ярославская (ул.) 42, 4 подъезд",
+                addrId = 20290,
+                deviceID = "6acb8c95-28ff-4e7c-a33a-d48c11725756",
+                fullControl = false,
+                flat = 241,
+                oper = "baza",
+                porch = 4,
+                previewUrl = "https://public-api-test.baza.net/domofon/preview/6acb8c95-28ff-4e7c-a33a-d48c11725756?token=YzFhZGExYzA5MGE2ZWJjYjM3OTUyMzMwZTI0MmY1MTg3ODlhYmEwOC4xNzE2MjE1OTM1",
+                videoUrl = "https://sputnikdvr1.baza.net/6acb8c95-28ff-4e7c-a33a-d48c11725756/embed.html?dvr=true&token=YzFhZGExYzA5MGE2ZWJjYjM3OTUyMzMwZTI0MmY1MTg3ODlhYmEwOC4xNzE2MjE1OTM1",
+                isSelected = false
             )
         )
     }
 }
+
+
+

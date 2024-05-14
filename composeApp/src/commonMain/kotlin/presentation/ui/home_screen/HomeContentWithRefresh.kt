@@ -29,6 +29,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +53,8 @@ import mykmptest.composeapp.generated.resources.ic_plus
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import presentation.ui.home_screen.home_screen_bottom_sheet.BottomSheetOrder
+import presentation.ui.home_screen.home_screen_bottom_sheet.BottomSheetPersonalAccount
 import util.ColorCustomResources
 import util.ScreenRoute
 
@@ -70,7 +73,8 @@ fun HomeContentWithRefresh(
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
-
+    val openBottomSheetPersonalAccountState = remember { mutableStateOf(false) }
+    val openBottomSheetOrderState = remember { mutableStateOf(false) }
 //    var isLoadingState by remember { mutableStateOf(true) }
 //    LaunchedEffect(itemsFaq) {
 //        if (itemsFaq.isNotEmpty()) {
@@ -105,8 +109,14 @@ fun HomeContentWithRefresh(
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {
-            homePersonalAccountCard()
-            homeOrderCard()
+            homePersonalAccountCard(
+                openBottomSheet = {
+                    openBottomSheetPersonalAccountState.value = it
+                }
+            )
+            homeOrderCard(openBottomSheet = {
+                openBottomSheetOrderState.value = it
+            })
             homeInternetTvCard(navigator = navigator)
             homeMobileCard(navigator = navigator)
             homeOutdoorCard(navigator = navigator)
@@ -134,13 +144,31 @@ fun HomeContentWithRefresh(
             //  modifier = Modifier.align(Alignment.CenterHorizontally),
 
         )
-
-
     }
 
+    if (openBottomSheetPersonalAccountState.value) {
+        BottomSheetPersonalAccount(
+            navigator = navigator,
+            //markerDetailState.value,
+            openBottomSheet = {
+                openBottomSheetPersonalAccountState.value = false
+            }
+        )
+    }
+    if (openBottomSheetOrderState.value) {
+        BottomSheetOrder(
+            navigator = navigator,
+            //markerDetailState.value,
+            openBottomSheet = {
+                openBottomSheetOrderState.value = false
+            }
+        )
+    }
 }
 
-fun LazyListScope.homePersonalAccountCard() {
+fun LazyListScope.homePersonalAccountCard(
+    openBottomSheet: (Boolean) -> Unit,
+) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
@@ -153,13 +181,13 @@ fun LazyListScope.homePersonalAccountCard() {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-
+                        openBottomSheet(true)
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
                     onClick = {
-
+                        openBottomSheet(true)
                     }) {
                     Icon(
                         modifier = Modifier
@@ -180,7 +208,9 @@ fun LazyListScope.homePersonalAccountCard() {
     }
 }
 
-fun LazyListScope.homeOrderCard() {
+fun LazyListScope.homeOrderCard(
+    openBottomSheet: (Boolean) -> Unit
+) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
@@ -193,7 +223,7 @@ fun LazyListScope.homeOrderCard() {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-
+                        openBottomSheet(true)
                     }
             ) {
 

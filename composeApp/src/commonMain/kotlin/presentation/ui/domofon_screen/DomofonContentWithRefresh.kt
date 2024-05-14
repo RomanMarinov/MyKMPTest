@@ -379,17 +379,20 @@ fun ContentLazyList(
                                 )
                             }
                     )
-                    Icon(
-                        vectorResource(Res.drawable.ic_lock),
-                        contentDescription = "lock",
-                        tint = Color.White,
-                        modifier = Modifier
-                            //.weight(1f)
-                            //.fillMaxWidth()
-                            .size(80.dp)
-                            .clickable {
-                            }
-                    )
+
+                    if (sputnik.fullControl) {
+                        Icon(
+                            vectorResource(Res.drawable.ic_lock),
+                            contentDescription = "lock",
+                            tint = Color.White,
+                            modifier = Modifier
+                                //.weight(1f)
+                                //.fillMaxWidth()
+                                .size(80.dp)
+                                .clickable {
+                                }
+                        )
+                    }
                 }
             }
 

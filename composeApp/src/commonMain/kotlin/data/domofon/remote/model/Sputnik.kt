@@ -10,4 +10,5 @@ data class Sputnik(
     val porch: Int,
     val previewUrl: String,
     val videoUrl: String,
+    val isSelected: Boolean
 )
