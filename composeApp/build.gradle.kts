@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     kotlin("plugin.serialization") version "1.9.23"
+   // alias(libs.plugins.jetbrainsKotlinAndroid)
 
 
 //    implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.2")
@@ -150,6 +151,9 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
     packaging {
         resources {
@@ -164,6 +168,15 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+//    kotlinOptions {
+//        jvmTarget = "1.8"
+//    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
     }
     dependencies {
         debugImplementation(libs.compose.ui.tooling)
@@ -197,6 +210,17 @@ dependencies {
    // implementation("tech.utsmankece:osm-android-compose:0.0.3")
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 //    implementation(libs.firebase.crashlytics.buildtools)
    // implementation(libs.androidx.compose.material)
 
