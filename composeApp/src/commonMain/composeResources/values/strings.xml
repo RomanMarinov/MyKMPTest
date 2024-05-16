@@ -8,6 +8,9 @@
     <string name="domofon_title">Умный домофон</string>
     <string name="help_title">Помощь</string>
 
+    <string name="internet_tv_title">Интернет и ТВ</string>
+    <string name="profile_title">Профиль</string>
+
 <!--    home-->
     <string name="home_personal_account">Добавить новый лицевой счет или уже существующий для оплаты услуг за своих близких</string>
     <string name="home_button_order">Оставить заявку</string>
@@ -29,7 +32,7 @@
     <string name="help_title_second">Посмотрите наиболее поппулярные темы обращений к нашим специалистам. Возможно, эти ответы смогут решить вашу проблему.</string>
     <string name="help_check_internet">Проверить скорость интернета</string>
     <string name="help_make_question">Задайте нам вопрос</string>
-    <string name="help_make_question_desc">Любые вопросы, которые не требуют моментального реагирования, мы настоятельно просим задавать в любой удобный мессенджер.\n\nВам ответят те же технические специалисты, что и принимают звонки.</string>
+    <string name="help_make_question_desc">Любые вопросы, которые не требуют моментального реагирования, мы настоятельно просим задавать в любой удобный мессенджер.\n\nВам ответят те же технические специалисты, которые принимают звонки.</string>
     <string name="help_title_support">Единая служба техподдержки</string>
     <string name="help_button_make_call">Позвонить</string>
     <string name="help_call_number_one">8-8172-70-02-39</string>

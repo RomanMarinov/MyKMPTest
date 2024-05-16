@@ -29,7 +29,6 @@ import com.multiplatform.webview.web.rememberWebViewNavigator
 import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
-import mykmptest.composeapp.generated.resources.ic_profile
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
@@ -49,10 +48,11 @@ fun WebViewScreen(
     val webViewNavigator = rememberWebViewNavigator()
     val webViewJsBridge = remember { WebViewJsBridge() }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(top = 30.dp)
                 .background(Color.Black),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -62,7 +62,7 @@ fun WebViewScreen(
                 tint = Color.White,
                 modifier = Modifier
                     .size(60.dp)
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .padding(start = 16.dp, top = 30.dp, end = 16.dp)
                     .clickable {
                         navigator.popBackStack()
                     }
@@ -71,7 +71,7 @@ fun WebViewScreen(
                 text = address ?: "",
                 color = Color.White,
                 modifier = Modifier
-                    .padding(top = 16.dp, end = 16.dp)
+                    .padding(top = 30.dp, end = 16.dp)
             )
         }
 

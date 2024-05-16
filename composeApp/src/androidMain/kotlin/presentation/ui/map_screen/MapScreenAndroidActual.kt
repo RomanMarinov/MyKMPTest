@@ -568,7 +568,7 @@ fun TopControl(
                     modifier = Modifier
                         //.padding(0.dp)
                         .height(400.dp)
-                        .background(color = Color.Transparent)
+                        .background(color = Color.White)
                         .shadow(0.dp, shape = RoundedCornerShape(10.dp)),
                     //  .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 4.dp),
                     //  .offset(x = 2.dp),

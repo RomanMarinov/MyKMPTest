@@ -1,9 +1,11 @@
 package di
 
 import data.domofon.remote.DomofonRepositoryImpl
+import data.home.remote.HomeRepositoryImpl
 import data.outdoor.remote.OutdoorRepositoryImpl
 import data.public_info.remote.PublicInfoRepositoryImpl
 import domain.repository.DomofonRepository
+import domain.repository.HomeRepository
 import domain.repository.OutdoorRepository
 import domain.repository.PublicInfoRepository
 import org.koin.core.module.dsl.createdAtStart
@@ -21,5 +23,10 @@ val repositoryModule = module {
     single<DomofonRepository> { DomofonRepositoryImpl(get()) } withOptions {
         createdAtStart()
     }
+
+    single<HomeRepository> { HomeRepositoryImpl(get()) } withOptions {
+        createdAtStart()
+    }
+
 }
 

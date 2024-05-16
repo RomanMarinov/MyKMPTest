@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,10 +60,13 @@ fun DomofonScreen(
       modifier = Modifier.fillMaxSize(),
       color = MaterialTheme.colorScheme.background
    ) {
+       val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-      Scaffold(
+
+       Scaffold(
          modifier = Modifier
             .fillMaxSize(),
+           // .nestedScroll(scrollBehavior.nestedScrollConnection),
          topBar = {
             TopAppBar(
                // modifier = Modifier.height(20.dp),
@@ -123,7 +127,8 @@ fun DomofonScreen(
                   }
                },
                modifier = Modifier
-                  .shadow(4.dp)
+                  .shadow(4.dp),
+                scrollBehavior = scrollBehavior
             )
          }
       ) { paddingValue ->

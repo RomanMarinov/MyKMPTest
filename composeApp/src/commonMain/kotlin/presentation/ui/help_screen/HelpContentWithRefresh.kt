@@ -1,6 +1,7 @@
 package presentation.ui.help_screen
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -65,9 +66,13 @@ import mykmptest.composeapp.generated.resources.help_make_question_desc
 import mykmptest.composeapp.generated.resources.help_title_first
 import mykmptest.composeapp.generated.resources.help_title_second
 import mykmptest.composeapp.generated.resources.help_title_support
+import mykmptest.composeapp.generated.resources.ic_arrow_right
 import mykmptest.composeapp.generated.resources.ic_call
-import mykmptest.composeapp.generated.resources.ic_chat
+import mykmptest.composeapp.generated.resources.ic_tg
+import mykmptest.composeapp.generated.resources.ic_vk
+import mykmptest.composeapp.generated.resources.ic_wa
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import util.ColorCustomResources
@@ -98,11 +103,6 @@ fun HelpContentWithRefresh(
     /////////////////////////////////////////////
 //    помотреть тут где я на шару писал navigationBarsPadding
 /////////////////////////////////////////////////
-
-    val colorsList = listOf(
-        ColorCustomResources.colorGradientLightBlueStart,
-        ColorCustomResources.colorGradientWhiteEnd
-    )
 
 //    val colorsList = listOf(Color.LightGray, Color.White)
 
@@ -335,15 +335,14 @@ fun LazyListScope.helpContentMessengers() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-
                 ) {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_chat),
-                        contentDescription = "chat",
-                        tint = Color.White
-                    )
+//                    Icon(
+//                        imageVector = vectorResource(Res.drawable.ic_chat),
+//                        contentDescription = "chat",
+//                        tint = Color.White
+//                    )
                     Text(
-                        modifier = Modifier.padding(start = 16.dp),
+//                        modifier = Modifier.padding(start = 16.dp),
                         text = stringResource(Res.string.help_make_question),
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -357,24 +356,31 @@ fun LazyListScope.helpContentMessengers() {
                     color = Color.White
                 )
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_chat),
-                        contentDescription = "chat",
-                        tint = Color.White
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Image(
+                        painter = painterResource(Res.drawable.ic_vk),
+                        modifier = Modifier
+                            .size(80.dp),
+                        contentDescription = null
                     )
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_chat),
-                        contentDescription = "chat",
-                        tint = Color.White
+                    Image(
+                        painter = painterResource(Res.drawable.ic_tg),
+                        modifier = Modifier
+                            .size(80.dp),
+                        contentDescription = null
                     )
-                    Icon(
-                        imageVector = vectorResource(Res.drawable.ic_chat),
-                        contentDescription = "chat",
-                        tint = Color.White
+                    Image(
+                        painter = painterResource(Res.drawable.ic_wa),
+                        modifier = Modifier
+                            .size(80.dp),
+                        contentDescription = null
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
 
                 Row(
@@ -475,7 +481,7 @@ fun LazyListScope.helpContentContactTowns(
                                     .weight(1f)
                             )
                             Icon( // потом исправить на право предупреждение было в ios
-                                imageVector = Icons.Filled.KeyboardArrowDown,
+                                imageVector = vectorResource(Res.drawable.ic_arrow_right),
                                 contentDescription = "arrow",
                                 modifier = Modifier
                                     .padding(16.dp)

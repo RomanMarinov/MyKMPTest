@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.flow.collectLatest
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.navigation.Navigator
@@ -76,7 +77,10 @@ fun App() {
 }
 
 @Composable
-fun GetCurrentEntry(navigator: Navigator, onEntryChanged: (String) -> Unit) {
+fun GetCurrentEntry(
+    navigator: Navigator,
+    onEntryChanged: (String) -> Unit
+) {
     LaunchedEffect(true) {
         navigator.currentEntry.collectLatest { entry ->
             onEntryChanged(entry?.route?.route ?: "")
@@ -96,12 +100,8 @@ fun AppContent() {
             var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
             val navigator = rememberNavigator()
 
-            GetCurrentEntry(
-                navigator = navigator,
-                onEntryChanged = {
-                    currentEntryState.value = it
-                }
-            )
+            Logger.d {" 4444 hui currentEntryState=" + currentEntryState.value}
+            Logger.d {" 4444 hui selectedItemIndex=" + selectedItemIndex}
 
             val items = listOf(
                 BottomNavigationItem(
@@ -145,6 +145,20 @@ fun AppContent() {
                     badgeCount = null,
                     route = ScreenRoute.HelpScreen.route
                 )
+            )
+
+            GetCurrentEntry(
+                navigator = navigator,
+                onEntryChanged = {
+                    currentEntryState.value = it
+
+                    // установка цвета в момент переключения навигации
+                    items.forEachIndexed { index, item ->
+                        if (item.route.contains(it)) {
+                            selectedItemIndex = index
+                        }
+                    }
+                }
             )
 
             Surface(

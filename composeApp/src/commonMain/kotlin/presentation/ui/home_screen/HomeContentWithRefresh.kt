@@ -279,7 +279,7 @@ fun LazyListScope.homeInternetTvCard(navigator: Navigator) {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-
+                        navigator.navigate(ScreenRoute.InternetTvScreen.route)
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {

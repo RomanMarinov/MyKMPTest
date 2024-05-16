@@ -71,10 +71,10 @@ import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import platform.CoreLocation.kCLLocationAccuracyBest
 import platform.MapKit.MKCoordinateRegionMake
 import platform.MapKit.MKCoordinateSpanMake
-import platform.MapKit.MKMapCameraBoundary
 import platform.MapKit.MKMapSizeMake
 import platform.MapKit.MKMapView
 import platform.MapKit.MKMapViewDelegateProtocol
+import platform.MapKit.MKPointAnnotation
 import platform.UIKit.UIGestureRecognizer
 import platform.darwin.NSObject
 import presentation.ui.map_screen.model.MarkerDetail
@@ -120,26 +120,26 @@ fun calculateZoomLevel(centerCoordinateDistance: Double): Double {
 @OptIn(ExperimentalForeignApi::class)
 fun settingMapKit(mkMapView: MKMapView, publicInfo: Data?) {
 
-//    val center = CLLocationCoordinate2DMake(
-//        latitude = 59.222340,
-//        longitude = 39.882431
-//    )
-//
-//    val span = MKCoordinateSpanMake(
-//        latitudeDelta = 20.0, // Примерное значение для широты
-//        longitudeDelta = 20.0// Примерное значение для долготы
-//    )
-//
-//    val region = MKCoordinateRegionMake(
-//        centerCoordinate = center,
-//        span = span
-//    )
+    val center = CLLocationCoordinate2DMake(
+        latitude = 59.222340,
+        longitude = 39.882431
+    )
+
+    val span = MKCoordinateSpanMake(
+        latitudeDelta = 0.5, // Примерное значение для широты
+        longitudeDelta = 0.5// Примерное значение для долготы
+    )
+
+    val region = MKCoordinateRegionMake(
+        centerCoordinate = center,
+        span = span
+    )
 //
 //
 //    //  val cgRectMake = CGRectMake(10.0, 50.0, 40.0, 40.0) // фигня какая-то
 //    // mkMapView.setBounds(cgRectMake)
 //
-//    mkMapView.setRegion(region, animated = true)
+    mkMapView.setRegion(region, animated = true)
 
 
 //    // "https://osm.baza.net/hot/"
@@ -170,41 +170,41 @@ fun settingMapKit(mkMapView: MKMapView, publicInfo: Data?) {
     // mkMapView.setCameraBoundary(mkMapView.cameraBoundary(region, true))
 
 
-    //////////////////
-    val northLatitude = 60.5
-    val eastLongitude = 43.0
-    val southLatitude = 58.74
-    val westLongitude = 37.0
-
-//    val clLocationCoordinate2D = CLLocationCoordinate2DMake(latitude = 59.222340, longitude = 39.882431)
-//    val mkCoordinateSpan = MKCoordinateSpanMake(10.0, 10.0)
-//    val mkCoordinateRegion = MKCoordinateRegionMake(clLocationCoordinate2D, mkCoordinateSpan)
-//    val mkMapCameraBoundary = MKMapCameraBoundary(mkCoordinateRegion)
-//    mkMapView.setCameraBoundary(mkMapCameraBoundary)
-/////////////////////////
-    // Создание координат для углов границы карты
-    val northEastCoordinate = CLLocationCoordinate2DMake(northLatitude, eastLongitude)
-    val southWestCoordinate = CLLocationCoordinate2DMake(southLatitude, westLongitude)
-
-
-// Создание координаты центра карты
-    val centerLatitude = (northLatitude + southLatitude) / 2
-    val centerLongitude = (eastLongitude + westLongitude) / 2
-    val centerCoordinate = CLLocationCoordinate2DMake(centerLatitude, centerLongitude)
-
-// Вычисление ширины и высоты области карты
-    val spanLatitude = northLatitude - southLatitude
-    val spanLongitude = eastLongitude - westLongitude
-    val span1 = MKCoordinateSpanMake(spanLatitude, spanLongitude)
-
-// Создание области карты на основе координат центра и размера области
-    val region1 = MKCoordinateRegionMake(centerCoordinate, span1)
-
-// Создание ограничения карты для камеры
-    val cameraBoundary = MKMapCameraBoundary(region1)
-
-// Установка ограничений камеры на карте
-    mkMapView.setCameraBoundary(cameraBoundary)
+//    //////////////////
+//    val northLatitude = 60.5
+//    val eastLongitude = 43.0
+//    val southLatitude = 58.74
+//    val westLongitude = 37.0
+//
+////    val clLocationCoordinate2D = CLLocationCoordinate2DMake(latitude = 59.222340, longitude = 39.882431)
+////    val mkCoordinateSpan = MKCoordinateSpanMake(10.0, 10.0)
+////    val mkCoordinateRegion = MKCoordinateRegionMake(clLocationCoordinate2D, mkCoordinateSpan)
+////    val mkMapCameraBoundary = MKMapCameraBoundary(mkCoordinateRegion)
+////    mkMapView.setCameraBoundary(mkMapCameraBoundary)
+///////////////////////////
+//    // Создание координат для углов границы карты
+//    val northEastCoordinate = CLLocationCoordinate2DMake(northLatitude, eastLongitude)
+//    val southWestCoordinate = CLLocationCoordinate2DMake(southLatitude, westLongitude)
+//
+//
+//// Создание координаты центра карты
+//    val centerLatitude = (northLatitude + southLatitude) / 2
+//    val centerLongitude = (eastLongitude + westLongitude) / 2
+//    val centerCoordinate = CLLocationCoordinate2DMake(centerLatitude, centerLongitude)
+//
+//// Вычисление ширины и высоты области карты
+//    val spanLatitude = northLatitude - southLatitude
+//    val spanLongitude = eastLongitude - westLongitude
+//    val span1 = MKCoordinateSpanMake(spanLatitude, spanLongitude)
+//
+//// Создание области карты на основе координат центра и размера области
+//    val region1 = MKCoordinateRegionMake(centerCoordinate, span1)
+//
+//// Создание ограничения карты для камеры
+//    val cameraBoundary = MKMapCameraBoundary(region1)
+//
+//// Установка ограничений камеры на карте
+//    mkMapView.setCameraBoundary(cameraBoundary)
 
 
     /////////////////////
@@ -783,15 +783,15 @@ fun MapScreenIosActual(
 //
 ////
 //
-//            mapCityCams?.let { listMarker ->
-//                val pins: List<MKPointAnnotation> = listMarker.map { item ->
-//                    val pin = MKPointAnnotation()
-//                    pin.setCoordinate(CLLocationCoordinate2DMake(item.latitude, item.longitude))
-//                    pin.setTitle(item.title)
-//                    pin
-//                }
-//                mapViewGlobal?.addAnnotations(pins)
-//            }
+            mapCityCams?.let { listMarker ->
+                val pins: List<MKPointAnnotation> = listMarker.map { item ->
+                    val pin = MKPointAnnotation()
+                    pin.setCoordinate(CLLocationCoordinate2DMake(item.latitude, item.longitude))
+                    pin.setTitle(item.title)
+                    pin
+                }
+                mapViewGlobal?.addAnnotations(pins)
+            }
 
             TopControl(
                 locations = locations,
@@ -802,7 +802,7 @@ fun MapScreenIosActual(
 
 //            ZoomControl()
 
-            FindMeControl(paddingValue = paddingValue)
+           // FindMeControl(paddingValue = paddingValue)
 //
 //            BottomControl(
 //                paddingValue = paddingValue,

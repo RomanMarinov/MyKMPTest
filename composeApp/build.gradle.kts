@@ -5,7 +5,6 @@ plugins {
     kotlin("plugin.serialization") version "1.9.23"
 
 
-
 //    implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.2")
     //id("dev.icerock.mobile.multiplatform-resources")
 }
@@ -69,6 +68,7 @@ kotlin {
             //implementation(libs.ktor.client.cio)
             implementation(libs.ktor.client.serialization)
 
+
             implementation(libs.kermit.v203) //Add latest version
 
             // отключил для теста на работу koin
@@ -108,6 +108,7 @@ kotlin {
 //            implementation("com.google.maps.android:maps-compose:4.4.0")
 //            implementation("com.google.android.gms:play-services-maps:18.2.0")
             ///////////
+
 
         }
 
@@ -202,5 +203,6 @@ dependencies {
     // красивый переход от Лакнера
     // https://www.youtube.com/watch?v=mE5bLb42_Os
     //implementation("androidx.compose.animation:animation:1.7.0-alpha07")
+
 }
 

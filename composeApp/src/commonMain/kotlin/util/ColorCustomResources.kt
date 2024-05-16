@@ -37,6 +37,10 @@ object ColorCustomResources {
 
     val colorBackgroundClose = Color(0XFFF4F4F4)
 
+    // HomeScreen
+    val colorDiscount = Color(0XFFCC4B51)
+
+
 
 
 

@@ -76,7 +76,9 @@ fun BottomSheetOrder(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.Center),
+                            .padding(end = 16.dp)
+                        //    .align(Alignment.Center)
+                        ,
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -88,7 +90,7 @@ fun BottomSheetOrder(
                     }
                     Card(
                         modifier = Modifier
-                            // .padding(end = 16.dp)
+                             .padding(start = 16.dp)
                             .size(24.dp)
                             .align(Alignment.CenterEnd),
                         shape = RoundedCornerShape(8.dp),
