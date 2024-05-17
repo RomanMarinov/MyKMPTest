@@ -50,7 +50,6 @@ import org.koin.compose.KoinContext
 import util.ColorCustomResources
 import util.ScreenRoute
 
-
 data class BottomNavigationItem(
     val title: String,
     val selectedIcon: ImageVector,
@@ -59,15 +58,6 @@ data class BottomNavigationItem(
     val badgeCount: Int? = null,
     val route: String,
 )
-
-//@OptIn(ExperimentalResourceApi::class)
-//@Composable
-//fun imageResource(resource: DrawableResource): ImageBitmap {
-//    val context = ContextAmbient.current
-//    val drawable = ContextCompat.getDrawable(context, resource) ?: error("Resource not found")
-//    val bitmap = (drawable as BitmapDrawable).bitmap
-//    return bitmap.asImageBitmap()
-//}
 
 @Composable
 fun App() {
