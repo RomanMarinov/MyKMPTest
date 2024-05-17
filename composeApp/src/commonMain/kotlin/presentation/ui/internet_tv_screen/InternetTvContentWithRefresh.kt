@@ -32,6 +32,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import domain.model.home.tariffs_by_location.LocationsTariffsBody
 import domain.model.home.tariffs_by_location.PackageTariffCheckable
+import kotlinx.coroutines.launch
 import moe.tlaster.precompose.navigation.Navigator
 import org.koin.compose.koinInject
 import util.ColorCustomResources
@@ -63,6 +65,8 @@ fun InternetTvContentWithRefresh(
     var dropdownMenuWidth by remember { mutableStateOf(0) }
     var dropdownMenuHeight by remember { mutableStateOf(0) }
 
+    val scope = rememberCoroutineScope()
+
     val locationTariffsByLocation by viewModel.locationTariffsByLocation.collectAsState()
     val locationTariffsByLocationState = remember { mutableStateOf(locationTariffsByLocation) }
 
@@ -76,6 +80,9 @@ fun InternetTvContentWithRefresh(
 
     LaunchedEffect(labelClick) {
         viewModel.setSelectedLocation(location = labelClick)
+        scope.launch {
+            lazyListState.animateScrollToItem(0)
+        }
     }
 
     LaunchedEffect(selectedLocation) {

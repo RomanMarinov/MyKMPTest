@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -39,21 +40,22 @@ import mykmptest.composeapp.generated.resources.ic_internet_tv
 import mykmptest.composeapp.generated.resources.ic_internet_wi_fi
 import mykmptest.composeapp.generated.resources.promo_flag
 import org.jetbrains.compose.resources.vectorResource
+import presentation.ui.internet_tv_screen.model.Price
 import util.ColorCustomResources
 
 @Composable
 fun TariffsContent(tariff: DataTariffs) {
-    Logger.d{"444tariff=" + tariff}
+    Logger.d { "444tariff=" + tariff }
 
-//    val bitrate: Int? = null,
-//    val channels: Int? = null,
-//    val durationMonth: Int? = null,
-//    val name: String,
-//    val packagePrice: Int? = null,
-//    val prepayPrice: Int? = null,
+//    val bitrate: Int? = null, -
+//    val channels: Int? = null, -
+//    val durationMonth: Int? = null, -
+//    val name: String, -
+//    val packagePrice: Int? = null, // когда кабель отключ то
+//    val prepayPrice: Int? = null, // не
 //    val price: Int,
-//    val sale: Int? = null,
-//    val type: String
+//    val sale: Int? = null, -
+//    val type: String  // ktv(меленький) и inet (большой)
 
     val nameState = remember { mutableStateOf(tariff.name) }
     val bitrateState = remember { mutableStateOf(tariff.bitrate?.div(1000)) }
@@ -65,9 +67,14 @@ fun TariffsContent(tariff: DataTariffs) {
     val typeState = remember { mutableStateOf(tariff.type) }
 
 
-
-
     val checkedState = remember { mutableStateOf(true) }
+    val prices = getPrices(tariff = tariff, checkedState = checkedState.value)
+
+    // есть еще ktv для него другой макет
+    // для него скрывать строку Интернет
+    // чек бокс
+    // скидку
+
 
     Card(
         modifier = Modifier
@@ -78,7 +85,17 @@ fun TariffsContent(tariff: DataTariffs) {
     ) {
         Column(
             modifier = Modifier
-                .background(ColorCustomResources.colorBazaMainBlue)
+                // .background(ColorCustomResources.colorBazaMainBlue)
+
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            ColorCustomResources.colorTariffMain,
+                            ColorCustomResources.colorTariffCenter
+                        )
+                    )
+                )
+
                 .fillMaxSize()
         ) {
             Row(modifier = Modifier.fillMaxWidth()) {
@@ -96,70 +113,76 @@ fun TariffsContent(tariff: DataTariffs) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                Box(
-                    modifier = Modifier
-                //        .weight(1f)
-                        .padding(end = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(60.dp),
-                        imageVector = vectorResource(Res.drawable.promo_flag),
-                        contentDescription = null,
-                        tint = ColorCustomResources.colorDiscount
-                    )
-                    Text(
-                        color = Color.White,
-                        text = "50%"
-                    )
-                }
 
-            }
+                if (tariff.type == "inet" && tariff.sale != null) {
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(24.dp),
-                    imageVector = vectorResource(Res.drawable.ic_internet_wi_fi),
-                    contentDescription = null,
-                    tint = Color.White
-                )
-                Text(
-                    text = "Интернет",
-                    color = Color.White
-                )
-                Box(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .weight(1f),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+
+                    Box(
+                        modifier = Modifier
+                            //        .weight(1f)
+                            .padding(end = 16.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            modifier = Modifier
-                                .padding(end = 8.dp),
-                            text = tariff.bitrate.toString(),
-                            color = Color.White,
-                            fontSize = 30.sp
+                        Icon(
+                            modifier = Modifier.size(60.dp),
+                            imageVector = vectorResource(Res.drawable.promo_flag),
+                            contentDescription = null,
+                            tint = ColorCustomResources.colorDiscount
                         )
+
                         Text(
-                            modifier = Modifier
-                                .padding(end = 8.dp),
-                            text = "Мбит/с",
-                            fontSize = 20.sp,
-                            color = Color.White
+                            color = Color.White,
+                            text = "${tariff.sale}%"
                         )
                     }
                 }
-
-
             }
+
+            if (tariff.type == "inet") {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(24.dp),
+                        imageVector = vectorResource(Res.drawable.ic_internet_wi_fi),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Интернет",
+                        color = Color.White
+                    )
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .weight(1f),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(end = 8.dp),
+                                text = tariff.bitrate?.div(1000).toString(),
+                                color = Color.White,
+                                fontSize = 30.sp
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .padding(end = 8.dp),
+                                text = "Мбит/с",
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -189,10 +212,16 @@ fun TariffsContent(tariff: DataTariffs) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val channels = if (channelsState.value == null) {
+                            "120"
+                        } else {
+                            channelsState.value.toString()
+                        }
+
                         Text(
                             modifier = Modifier
                                 .padding(end = 8.dp),
-                            text = channelsState.value.toString(),
+                            text = channels,
                             color = Color.White,
                             fontSize = 30.sp
                         )
@@ -207,30 +236,32 @@ fun TariffsContent(tariff: DataTariffs) {
                 }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
+            if (tariff.type == "inet") {
+                Row(
                     modifier = Modifier
-                        .padding(8.dp)
-                        .size(24.dp),
-                    checked = checkedState.value,
-                    onCheckedChange = { checkedState.value = it },
-                    colors = CheckboxDefaults.colors(
-                        uncheckedColor = Color.White,
-                        checkmarkColor = ColorCustomResources.colorBazaMainBlue,
-                        checkedColor = Color.White
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(24.dp),
+                        checked = checkedState.value,
+                        onCheckedChange = { checkedState.value = it },
+                        colors = CheckboxDefaults.colors(
+                            uncheckedColor = Color.White,
+                            checkmarkColor = ColorCustomResources.colorBazaMainBlue,
+                            checkedColor = Color.White
+                        )
                     )
-                )
 
-                Text(
-                    modifier = Modifier
-                        .padding(end = 8.dp),
-                    text = "В пакет включено кабельное ТВ",
-                    color = Color.White
-                )
+                    Text(
+                        modifier = Modifier
+                            .padding(end = 8.dp),
+                        text = "В пакет включено кабельное ТВ",
+                        color = Color.White
+                    )
+                }
             }
 
             Box(
@@ -241,50 +272,77 @@ fun TariffsContent(tariff: DataTariffs) {
                     .height(1.dp)
             )
 
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ElevatedCard(
-                    shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier
-                        // .fillMaxWidth()
-                        //.background(ColorCustomResources.colorBazaMainRed)
-                        .padding(start = 8.dp, end = 8.dp),
-                ) {
-                    Row(
+
+            if (tariff.type == "inet" && tariff.sale != null) {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    ElevatedCard(
+                        shape = RoundedCornerShape(20.dp),
                         modifier = Modifier
                             // .fillMaxWidth()
-                            .background(ColorCustomResources.colorBazaMainRed),
-                        verticalAlignment = Alignment.CenterVertically
+                            //.background(ColorCustomResources.colorBazaMainRed)
+                            .padding(start = 8.dp, end = 8.dp),
                     ) {
-                        Text(
+                        Row(
                             modifier = Modifier
-                                .padding(16.dp)
+                                // .fillMaxWidth()
                                 .background(ColorCustomResources.colorBazaMainRed),
-                            text = "Скидка",
-                            color = Color.White
-                        )
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .background(ColorCustomResources.colorBazaMainRed),
+                                text = "Скидка",
+                                color = Color.White
+                            )
+                        }
                     }
-                }
 
-                Text(
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp),
-                    color = Color.White,
-                    text = "Успейте подключиться и получите скидку 50% на 90 дней"
-                )
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp),
+                        color = Color.White,
+                        text = "Успейте подключиться и получите скидку 50% на ${tariff.durationMonth} месяца(ев)"
+                    )
+                }
             }
+
+
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
+
+
+                // if (prices.oldPrice.isNotEmpty()) {
                 Text(
                     modifier = Modifier.padding(8.dp),
                     style = MaterialTheme.typography.titleMedium.copy(textDecoration = TextDecoration.LineThrough),
-                    text = "500", color = Color.White
+                    text = prices.oldPrice, color = Color.White
                 )
+                //}
+
+
+//                val price = if (tariff.type == "ktv") {
+//                    tariff.price.toString()
+//                } else if (tariff.type == "inet" && checkedState.value) {
+//                    tariff.packagePrice.toString()
+//                } else {
+//                    tariff.price.toString()
+//                }
+
+
+//                val price = if (checkedState.value) {
+//                    tariff.packagePrice.toString()
+//                } else {
+//                    tariff.price.toString()
+//                }
+
                 Text(
                     modifier = Modifier.padding(end = 8.dp),
-                    text = "250", color = Color.White,
+                    text = prices.price, color = Color.White,
                     fontSize = 34.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -310,5 +368,72 @@ fun TariffsContent(tariff: DataTariffs) {
             }
         }
     }
+}
 
+fun getPrices(tariff: DataTariffs, checkedState: Boolean): Price {
+
+    Logger.d { "4444 getPrices tariff=" + tariff + " checkedState=" + checkedState }
+
+    val discount = tariff.sale ?: 0
+
+    if (tariff.packagePrice == null) {
+        if (discount > 0) {
+            return if (checkedState) {
+                Price(
+                    oldPrice = tariff.packagePrice.toString(),
+                    price = ((tariff.packagePrice ?: 0) * discount).div(100).toString()
+                )
+            } else {
+                Price(
+                    oldPrice = tariff.price.toString(),
+                    price = (tariff.price * discount).div(100).toString()
+                )
+            }
+        } else {
+            return Price(
+                oldPrice = "",
+                price = tariff.price.toString()
+            )
+        }
+    } else {
+        if (checkedState) {
+            if (discount > 0) {
+                return if (checkedState) {
+                    Price(
+                        oldPrice = tariff.packagePrice.toString(),
+                        price = ((tariff.packagePrice ?: 0) * discount).div(100).toString()
+                    )
+                } else {
+                    Price(
+                        oldPrice = tariff.price.toString(),
+                        price = (tariff.price * discount).div(100).toString()
+                    )
+                }
+            } else {
+                return Price(
+                    oldPrice = "",
+                    price = tariff.packagePrice.toString()
+                )
+            }
+        } else {
+            if (discount > 0) {
+                return if (checkedState) {
+                    Price(
+                        oldPrice = tariff.packagePrice.toString(),
+                        price = ((tariff.packagePrice ?: 0) * discount).div(100).toString()
+                    )
+                } else {
+                    Price(
+                        oldPrice = tariff.price.toString(),
+                        price = (tariff.price * discount).div(100).toString()
+                    )
+                }
+            } else {
+                return Price(
+                    oldPrice = "",
+                    price = tariff.price.toString()
+                )
+            }
+        }
+    }
 }

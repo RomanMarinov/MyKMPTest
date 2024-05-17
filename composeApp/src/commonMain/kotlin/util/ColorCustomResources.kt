@@ -39,6 +39,10 @@ object ColorCustomResources {
 
     // HomeScreen
     val colorDiscount = Color(0XFFCC4B51)
+    val colorTariffMain = Color(0XFF63ABBE)
+    val colorTariffCenter = Color(0XFF276675)
+
+
 
 
 
