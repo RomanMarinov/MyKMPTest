@@ -205,7 +205,7 @@ fun LoginByPhoneNumber(
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
                         if (inputTextPhoneNumber.length == 10) {
-                           // isShowCallContainer.value = true
+                            // isShowCallContainer.value = true
                             onShowCallContainer(true)
                             //onMoveToMainActivity()
                         } else {
@@ -293,7 +293,8 @@ fun LoginByPhoneNumber(
 //                .shadow(2.dp, RoundedCornerShape(2.dp)),
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
-                        onMakeCall()
+                        isCallingPhone.value = true
+                        //onMakeCall()
                     },
                     content = {
                         Text(
@@ -348,7 +349,17 @@ fun LoginByPhoneNumber(
     }
 
     if (isCallingPhone.value) {
-        Dialer()
+        CallPhonePlatform().MakeCall()
+//        MapViewPlatform().SetMapView(
+//            paddingValue = paddingValue,
+//            viewModel = viewModel,
+//            moveToBottomSheetMapFragment = { markerDetail ->
+//                markerDetail.titleType?.let {
+//                    markerDetailTitleTypeState.value = it
+//                    markerDetailState.value = markerDetail
+//                }
+//            }
+//        )
     }
 }
 
@@ -375,13 +386,15 @@ fun LoginByWiFi(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        Text(
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
+                  .fillMaxWidth()
                 .padding(top = 20.dp, bottom = 16.dp),
-            text = "Если Вы являетесь нашим абонентом, возможен вход по Вашей сети WI-FI"
-        )
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically // Add this line
+        ) {
+            Text(text = "Если Вы являетесь нашим абонентом,\nвозможен вход по Вашей сети WI-FI")
+        }
 
         Row(
             modifier = Modifier
@@ -389,7 +402,6 @@ fun LoginByWiFi(
             //.padding(start = 26.dp, end = 26.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-
             ElevatedButton(
                 modifier = Modifier
                     .padding(top = 20.dp, bottom = 8.dp),

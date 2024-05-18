@@ -16,17 +16,17 @@ fun MainViewController() = ComposeUIViewController {
         },
         onMakeCall = {
 
+
         }
     )
-    if(moveState.value) {
-       // moveState.value = false
+    if (moveState.value) {
+        // moveState.value = false
         App()
     }
 
-   // App()
+    // App()
 
 }
-
 
 
 fun initKoin() {

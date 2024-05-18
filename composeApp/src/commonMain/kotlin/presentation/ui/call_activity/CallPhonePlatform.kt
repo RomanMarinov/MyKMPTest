@@ -2,7 +2,7 @@ package presentation.ui.call_activity
 
 import androidx.compose.runtime.Composable
 
-@Composable
-fun Dialer() {
-
+expect class CallPhonePlatform() {
+    @Composable
+    fun MakeCall()
 }
