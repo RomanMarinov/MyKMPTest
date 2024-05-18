@@ -84,6 +84,12 @@ class CallActivity : ComponentActivity() {
 //}
 //
 //
+
+// как работает
+// при длине inputText(это только Х-ы) в диапазоне от 1 до 2 я буду видеть (00
+// как только длина будет от 3 до 7
+
+//
 //@Composable
 //fun TutorialManualVisualTransformation() {
 //    class ManualVisualTransformation(val enableCursorMove: Boolean) : VisualTransformation {
@@ -92,7 +98,7 @@ class CallActivity : ComponentActivity() {
 //            // "(XX) XXXXX - XXXX"
 //            val formattedText = when(inputText.length) {
 //                in (1..2) -> "($inputText"
-//                in (3..7) -> "(${inputText.substring(0, 2)}) ${inputText.substring(2)}"
+//                in (3..7) -> "(${inputText.substring(0, 2)}) ${inputText.substring(2)}" // inputText.substring(2) вернет с 3 символа и до конца
 //                in (8..11) ->  {
 //                    "(${inputText.substring(0, 2)}) ${inputText.substring(2, 7)} - ${inputText.substring(7)}"
 //                }

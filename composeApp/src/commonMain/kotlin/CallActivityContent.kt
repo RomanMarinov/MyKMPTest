@@ -1,11 +1,9 @@
-
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedButton
@@ -47,13 +46,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.launch
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.call_activity_logo
@@ -62,7 +63,7 @@ import util.ColorCustomResources
 
 @Composable
 fun CallActivityContent(
-    onMoveToMainActivity: () -> Unit
+    onMoveToMainActivity: () -> Unit,
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -73,7 +74,7 @@ fun CallActivityContent(
             .fillMaxSize()
             .hideKeyboardOnOutsideClick() // убираем клаву
             .pointerInput(Unit) { // снимаем фокус
-                detectTapGestures {  focusManager.clearFocus() }
+                detectTapGestures { focusManager.clearFocus() }
             },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -120,7 +121,7 @@ fun CallActivityContent(
         Text(
             modifier = Modifier
                 .padding(bottom = 16.dp)
-                .padding(16.dp) .imePadding(),
+                .padding(16.dp).imePadding(),
             text = "Версия четкая"
         )
     }
@@ -129,7 +130,7 @@ fun CallActivityContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ViewPagerAuth(
-    onMoveToMainActivity: () -> Unit
+    onMoveToMainActivity: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { TabsAuth.entries.size })
@@ -183,6 +184,7 @@ fun ViewPagerAuth(
                         onMoveToMainActivity()
                     }
                 )
+
                 1 -> LoginByWiFi(
                     onMoveToMainActivity = {
                         onMoveToMainActivity()
@@ -196,7 +198,7 @@ fun ViewPagerAuth(
 
 @Composable
 fun LoginByPhoneNumber(
-    onMoveToMainActivity: () -> Unit
+    onMoveToMainActivity: () -> Unit,
 //    callActivity: CallActivity
 ) {
     var textLastNameState by remember { mutableStateOf("") }
@@ -237,9 +239,7 @@ fun LoginByPhoneNumber(
             ElevatedButton(
                 modifier = Modifier
                     // .fillMaxWidth()
-                    .padding(top = 30.dp, bottom = 16.dp)
-
-                 ,
+                    .padding(top = 30.dp, bottom = 16.dp),
 //                .shadow(2.dp, RoundedCornerShape(2.dp)),
                 shape = RoundedCornerShape(8.dp),
 
@@ -250,7 +250,9 @@ fun LoginByPhoneNumber(
                     Text(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp),
-                        text = "Далее") },
+                        text = "Далее"
+                    )
+                },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White,
                     containerColor = ColorCustomResources.colorBazaMainBlue
@@ -264,7 +266,7 @@ fun LoginByPhoneNumber(
 
 @Composable
 fun LoginByWiFi(
-    onMoveToMainActivity: () -> Unit
+    onMoveToMainActivity: () -> Unit,
 ) {
     var numberContractState by remember { mutableStateOf("") }
     var isFocusTextFiled by remember { mutableStateOf(false) }
@@ -305,7 +307,9 @@ fun LoginByWiFi(
                     Text(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp),
-                        text = "Войти по Wi-Fi") },
+                        text = "Войти по Wi-Fi"
+                    )
+                },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White,
                     containerColor = ColorCustomResources.colorBazaMainBlue
@@ -334,66 +338,58 @@ enum class TabsAuth(
 }
 
 ////////////////////////////////////////////////////////////////////////
-
-//@Composable
-//fun TutorialInputMaskScreen() {
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.spacedBy(30.dp, Alignment.CenterVertically)
-//    ) {
-//        TutorialManualVisualTransformation()
-//    }
-//}
-
-
-
 @Composable
 fun TutorialManualVisualTransformation() {
-
-
-
-
-
     class ManualVisualTransformation(val enableCursorMove: Boolean) : VisualTransformation {
+        // Этот метод преобразует входной текст в форматированный текст согласно маске.
         override fun filter(text: AnnotatedString): TransformedText {
-            val inputText = text.text // "1111"
-            // "(XX) XXXXX - XXXX"
-            // "(XXX) XXX - XXXX" // мой
-            val formattedText = when(inputText.length) {
+            val inputText = text.text
+            // "(XXX) - XXX - XX - XX" // моя маска 21 символ с пробелами
+            val formattedText = when (inputText.length) {
                 in (1..3) -> "($inputText"
-                in (4..6) -> "(${inputText.substring(0, 3)}) ${inputText.substring(3)}"
-                in (7..10) ->  {
-                    "(${inputText.substring(0, 3)}) ${inputText.substring(3, 6)} - ${inputText.substring(6)}"
-                }
+                in (4..6) -> "(${inputText.substring(0, 3)}) - ${inputText.substring(3)}"
+                in (7..8) -> "(${inputText.substring(0, 3)}) - ${inputText.substring(3, 6)} - ${inputText.substring(6)}"
+                in (9..10) -> "(${inputText.substring(0, 3)}) - ${inputText.substring(3, 6)} - ${inputText.substring(6, 8)} - ${inputText.substring(8)}"
                 else -> ""
             }
 
             val offsetTranslator = object : OffsetMapping {
+                // Преобразует позицию курсора вперед из оригинального текста в позицию курсора в форматированном тексте.
+                // offset: Int - позиция курсора в оригинальном тексте.
+                // Int - позиция курсора в форматированном тексте.
                 override fun originalToTransformed(offset: Int): Int {
                     // offset = input.count/original at cursor position -- "(11) 1|" offset = 3
+
+                   // Logger.d{"4444 originalToTransformed offset=" + offset}
                     val transformedCursor = when (offset) {
                         in (1..3) -> offset + 1 // "(XX|" offset = 2, sep = 1, result = 3
-                        in (4..6) -> offset + 3 // "(XX) X|" offset = 3, sep = 3, result = 6
-                        in (7..10) -> offset + 6
+                        in (4..6) -> offset + 5 // "(XX) X|" offset = 3, sep = 3, result = 6
+                        in (7..8) -> offset + 8
+                        in (9..10) -> offset + 11
                         else -> offset
                     }
 
+                   // Logger.d{"4444 originalToTransformed transformedCursor=" + transformedCursor}
                     return if (enableCursorMove) transformedCursor // formattedText
                     else formattedText.length // "(XX) XXXXX - XXXX" return 17
                 }
 
+                // Преобразует позицию курсора назад из форматированного текста в позицию курсора в оригинальном тексте.
+                // offset: Int - позиция курсора в форматированном тексте.
+                // Int - позиция курсора в оригинальном тексте.
                 override fun transformedToOriginal(offset: Int): Int {
-                    // offset = formatted.length/transformed at cursor position -- "(11) 1|" offset = 6
                     val originalCursor = when (offset) {
-                        in (1..3) -> offset - 1 // "(XX|" offset = 3, sep = 1, result = 2
-                        in (4..10) -> offset - 3 // "(XX) X|" offset = 6, sep = 3, result = 3
-                        in (11..17) -> offset - 6
+                        in (1..4) -> offset - 1
+                        in (7..12) -> offset - 5
+                        in (13..16) -> offset - 8
+                        in (17..21) -> offset - 11
                         else -> offset
                     }
 
+                  //  Logger.d{"4444 originalCursor=" + originalCursor}
+
                     return if (enableCursorMove) originalCursor // inputs
-                    else inputText.length // "(XX) XXXXX - XXXX" return 11
+                    else inputText.length // "(XXX) - XXX - XX - XX" return 10
                 }
             }
             return TransformedText(AnnotatedString(formattedText), offsetTranslator)
@@ -401,26 +397,15 @@ fun TutorialManualVisualTransformation() {
     }
 
     var inputText by remember { mutableStateOf("") }
-    val mask = "(XXX) XXX - XXXX"
+    val mask = "(XXX) - XXX - XX - XX"
     val maskCharInput = 'X'
     val inputMaxLength = mask.count { maskChar -> maskChar == maskCharInput }
 
     val focusRequester = remember { FocusRequester() }
 
     val interactionSource = remember { MutableInteractionSource() }
-    val isFocused by interactionSource.collectIsFocusedAsState()
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focus = LocalTextInputService.current
 
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .hideKeyboardOnOutsideClick()
-//    ) {
-//        // Your app's content here
-//    }
-
+    Logger.d{" 4444 inputText=" + inputText}
 
     TextField(
         interactionSource = interactionSource,
@@ -435,34 +420,109 @@ fun TutorialManualVisualTransformation() {
             focusedIndicatorColor = ColorCustomResources.colorBazaMainBlue,
 //            unfocusedLeadingIconColor = ColorCustomResources.colorBazaMainBlue
 
-
-            ),
-
+        ),
+        textStyle = TextStyle.Default.copy(fontSize = 28.sp),
         modifier = Modifier
             .background(Color.White)
-            .focusRequester(focusRequester = focusRequester)
-   ,
+            .focusRequester(focusRequester = focusRequester),
         value = inputText,
         onValueChange = { currentText ->
             inputText = currentText.take(inputMaxLength).filter { it.isDigit() }
         },
-        //label = { Text(text = "Manual") },
-//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-//        keyboardActions = KeyboardActions(onDone = {keyboardController?.hide()}),
-        visualTransformation = ManualVisualTransformation(enableCursorMove = true),
-
-//        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-//        keyboardActions = KeyboardActions(onDone = {
-//            keyboardController?.hide()
-//        }),
-
-//                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
-//        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done, keyboardType = KeyboardType.Password),
-
-      //  keyboardActions = KeyboardActions(onDone = { focus?.hideSoftwareKeyboard() }),
-
-        )
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        visualTransformation = ManualVisualTransformation(enableCursorMove = true)
+    )
 }
+
+
+//@Composable
+//fun TutorialManualVisualTransformation() {
+//    class ManualVisualTransformation(val enableCursorMove: Boolean) : VisualTransformation {
+//        // Этот метод преобразует входной текст в форматированный текст согласно вашим условиям.
+//        // text: AnnotatedString - входной текст, который нужно преобразовать.
+//        override fun filter(text: AnnotatedString): TransformedText {
+//            val inputText = text.text // "1111"
+//            // "(XX) XXXXX - XXXX"
+//            // "(XXX) XXX - XXXX" // мой
+//            val formattedText = when (inputText.length) {
+//                in (1..3) -> "($inputText"
+//                in (4..6) -> "(${inputText.substring(0, 3)}) ${inputText.substring(3)}"
+//                in (7..10) -> {"(${inputText.substring(0, 3)}) ${inputText.substring(3, 6)} - ${inputText.substring(6)}"}
+//                else -> ""
+//            }
+//
+//            val offsetTranslator = object : OffsetMapping {
+//                // Преобразует позицию курсора из оригинального текста в позицию курсора в форматированном тексте.
+//                // offset: Int - позиция курсора в оригинальном тексте.
+//                // Int - позиция курсора в форматированном тексте.
+//                override fun originalToTransformed(offset: Int): Int {
+//                    // offset = input.count/original at cursor position -- "(11) 1|" offset = 3
+//                    val transformedCursor = when (offset) {
+//                        in (1..3) -> offset + 1 // "(XX|" offset = 2, sep = 1, result = 3
+//                        in (4..6) -> offset + 3 // "(XX) X|" offset = 3, sep = 3, result = 6
+//                        in (7..10) -> offset + 6
+//                        else -> offset
+//                    }
+//
+//                    return if (enableCursorMove) transformedCursor // formattedText
+//                    else formattedText.length // "(XX) XXXXX - XXXX" return 17
+//                }
+//
+//                // Преобразует позицию курсора из форматированного текста в позицию курсора в оригинальном тексте.
+//                // offset: Int - позиция курсора в форматированном тексте.
+//                // Int - позиция курсора в оригинальном тексте.
+//                override fun transformedToOriginal(offset: Int): Int {
+//                    // offset = formatted.length/transformed at cursor position -- "(11) 1|" offset = 6
+//                    val originalCursor = when (offset) {
+//                        in (1..3) -> offset - 1 // "(XX|" offset = 3, sep = 1, result = 2
+//                        in (4..10) -> offset - 3 // "(XX) X|" offset = 6, sep = 3, result = 3
+//                        in (11..17) -> offset - 6
+//                        else -> offset
+//                    }
+//
+//                    return if (enableCursorMove) originalCursor // inputs
+//                    else inputText.length // "(XX) XXXXX - XXXX" return 11
+//                }
+//            }
+//            return TransformedText(AnnotatedString(formattedText), offsetTranslator)
+//        }
+//    }
+//
+//    var inputText by remember { mutableStateOf("") }
+//    val mask = "(XXX) XXX - XXXX"
+//    val maskCharInput = 'X'
+//    val inputMaxLength = mask.count { maskChar -> maskChar == maskCharInput }
+//
+//    val focusRequester = remember { FocusRequester() }
+//
+//    val interactionSource = remember { MutableInteractionSource() }
+//
+//    TextField(
+//        interactionSource = interactionSource,
+//        colors = TextFieldDefaults.colors(
+//            cursorColor = ColorCustomResources.colorBazaMainBlue,
+//            focusedContainerColor = Color.White,
+//            unfocusedContainerColor = Color.White,
+//            focusedTextColor = Color.Black,
+//            unfocusedTextColor = Color.Black,
+//
+//            unfocusedIndicatorColor = ColorCustomResources.colorBazaMainBlue,
+//            focusedIndicatorColor = ColorCustomResources.colorBazaMainBlue,
+////            unfocusedLeadingIconColor = ColorCustomResources.colorBazaMainBlue
+//
+//        ),
+//
+//        modifier = Modifier
+//            .background(Color.White)
+//            .focusRequester(focusRequester = focusRequester),
+//        value = inputText,
+//        onValueChange = { currentText ->
+//            inputText = currentText.take(inputMaxLength).filter { it.isDigit() }
+//        },
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+//        visualTransformation = ManualVisualTransformation(enableCursorMove = true)
+//        )
+//}
 
 fun Modifier.hideKeyboardOnOutsideClick(): Modifier = composed {
     val controller = LocalSoftwareKeyboardController.current
