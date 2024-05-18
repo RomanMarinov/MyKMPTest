@@ -337,19 +337,29 @@ enum class TabsAuth(
     TabTwoAuth(text = "Вход по WI-FI")
 }
 
-////////////////////////////////////////////////////////////////////////
 @Composable
 fun TutorialManualVisualTransformation() {
     class ManualVisualTransformation(val enableCursorMove: Boolean) : VisualTransformation {
         // Этот метод преобразует входной текст в форматированный текст согласно маске.
         override fun filter(text: AnnotatedString): TransformedText {
             val inputText = text.text
-            // "(XXX) - XXX - XX - XX" // моя маска 21 символ с пробелами
+            Logger.d{"4444 inputText=" + inputText}
+            // "+7 (XXX)-XXX-XX-XX" // моя маска 15 символов с пробелами
             val formattedText = when (inputText.length) {
-                in (1..3) -> "($inputText"
-                in (4..6) -> "(${inputText.substring(0, 3)}) - ${inputText.substring(3)}"
-                in (7..8) -> "(${inputText.substring(0, 3)}) - ${inputText.substring(3, 6)} - ${inputText.substring(6)}"
-                in (9..10) -> "(${inputText.substring(0, 3)}) - ${inputText.substring(3, 6)} - ${inputText.substring(6, 8)} - ${inputText.substring(8)}"
+
+                in (1..3) -> "+7 ($inputText"
+                in (4..6) -> "+7 (${inputText.substring(0, 3)})-${inputText.substring(3)}"
+                in (7..8) -> "+7 (${inputText.substring(0, 3)})-${inputText.substring(3, 6)}-${inputText.substring(6)}"
+                in (9..10) -> "+7 (${inputText.substring(0, 3)})-${inputText.substring(3, 6)}-${inputText.substring(6, 8)}-${inputText.substring(8)}"
+
+
+
+
+
+//                in (1..3) -> "($inputText"
+//                in (4..6) -> "(${inputText.substring(0, 3)})-${inputText.substring(3)}"
+//                in (7..8) -> "(${inputText.substring(0, 3)})-${inputText.substring(3, 6)}-${inputText.substring(6)}"
+//                in (9..10) -> "(${inputText.substring(0, 3)})-${inputText.substring(3, 6)}-${inputText.substring(6, 8)}-${inputText.substring(8)}"
                 else -> ""
             }
 
@@ -360,33 +370,33 @@ fun TutorialManualVisualTransformation() {
                 override fun originalToTransformed(offset: Int): Int {
                     // offset = input.count/original at cursor position -- "(11) 1|" offset = 3
 
-                   // Logger.d{"4444 originalToTransformed offset=" + offset}
+                    Logger.d{"4444 originalToTransformed offset=" + offset}
                     val transformedCursor = when (offset) {
-                        in (1..3) -> offset + 1 // "(XX|" offset = 2, sep = 1, result = 3
-                        in (4..6) -> offset + 5 // "(XX) X|" offset = 3, sep = 3, result = 6
-                        in (7..8) -> offset + 8
-                        in (9..10) -> offset + 11
+                        in (1..3) -> offset + 4 // "(XX|" offset = 2, sep = 1, result = 3
+                        in (4..6) -> offset + 6 // "(XX) X|" offset = 3, sep = 3, result = 6
+                        in (7..8) -> offset + 7
+                        in (9..10) -> offset + 8
                         else -> offset
                     }
 
-                   // Logger.d{"4444 originalToTransformed transformedCursor=" + transformedCursor}
+                    // Logger.d{"4444 originalToTransformed transformedCursor=" + transformedCursor}
                     return if (enableCursorMove) transformedCursor // formattedText
-                    else formattedText.length // "(XX) XXXXX - XXXX" return 17
+                    else formattedText.length // "+7 (XXX)-XXX-XX-XX" return 17
                 }
 
-                // Преобразует позицию курсора назад из форматированного текста в позицию курсора в оригинальном тексте.
+                // Преобразует позицию курсора при клике из форматированного текста в позицию курсора в оригинальном тексте.
                 // offset: Int - позиция курсора в форматированном тексте.
-                // Int - позиция курсора в оригинальном тексте.
+                // Int - позиция курсора в оригинальном номере телефона (на Х-ах).
                 override fun transformedToOriginal(offset: Int): Int {
                     val originalCursor = when (offset) {
-                        in (1..4) -> offset - 1
-                        in (7..12) -> offset - 5
-                        in (13..16) -> offset - 8
-                        in (17..21) -> offset - 11
-                        else -> offset
+                        in (4..7) -> offset - 4
+                        in (9..12) -> offset - 6
+                        in (13..15) -> offset - 7
+                        in (16..18) -> offset - 8 // надо здесь
+                        else -> offset // "+7 (XXX)-XXX-XX-XX" 18 элементов
                     }
 
-                  //  Logger.d{"4444 originalCursor=" + originalCursor}
+                      Logger.d{"4444 originalCursor=" + originalCursor}
 
                     return if (enableCursorMove) originalCursor // inputs
                     else inputText.length // "(XXX) - XXX - XX - XX" return 10
@@ -397,7 +407,7 @@ fun TutorialManualVisualTransformation() {
     }
 
     var inputText by remember { mutableStateOf("") }
-    val mask = "(XXX) - XXX - XX - XX"
+    val mask = "+7 (XXX)-XXX-XX-XX"
     val maskCharInput = 'X'
     val inputMaxLength = mask.count { maskChar -> maskChar == maskCharInput }
 
@@ -434,54 +444,59 @@ fun TutorialManualVisualTransformation() {
     )
 }
 
-
+////////////////////////////////////////////////////////////////////////
 //@Composable
 //fun TutorialManualVisualTransformation() {
 //    class ManualVisualTransformation(val enableCursorMove: Boolean) : VisualTransformation {
-//        // Этот метод преобразует входной текст в форматированный текст согласно вашим условиям.
-//        // text: AnnotatedString - входной текст, который нужно преобразовать.
+//        // Этот метод преобразует входной текст в форматированный текст согласно маске.
 //        override fun filter(text: AnnotatedString): TransformedText {
-//            val inputText = text.text // "1111"
-//            // "(XX) XXXXX - XXXX"
-//            // "(XXX) XXX - XXXX" // мой
+//            val inputText = text.text
+//            // "(XXX)-XXX-XX-XX" // моя маска 15 символов с пробелами
 //            val formattedText = when (inputText.length) {
 //                in (1..3) -> "($inputText"
-//                in (4..6) -> "(${inputText.substring(0, 3)}) ${inputText.substring(3)}"
-//                in (7..10) -> {"(${inputText.substring(0, 3)}) ${inputText.substring(3, 6)} - ${inputText.substring(6)}"}
+//                in (4..6) -> "(${inputText.substring(0, 3)})-${inputText.substring(3)}"
+//                in (7..8) -> "(${inputText.substring(0, 3)})-${inputText.substring(3, 6)}-${inputText.substring(6)}"
+//                in (9..10) -> "(${inputText.substring(0, 3)})-${inputText.substring(3, 6)}-${inputText.substring(6, 8)}-${inputText.substring(8)}"
 //                else -> ""
 //            }
 //
 //            val offsetTranslator = object : OffsetMapping {
-//                // Преобразует позицию курсора из оригинального текста в позицию курсора в форматированном тексте.
+//                // Преобразует позицию курсора вперед из оригинального текста в позицию курсора в форматированном тексте.
 //                // offset: Int - позиция курсора в оригинальном тексте.
 //                // Int - позиция курсора в форматированном тексте.
 //                override fun originalToTransformed(offset: Int): Int {
 //                    // offset = input.count/original at cursor position -- "(11) 1|" offset = 3
+//
+//                    Logger.d{"4444 originalToTransformed offset=" + offset}
 //                    val transformedCursor = when (offset) {
 //                        in (1..3) -> offset + 1 // "(XX|" offset = 2, sep = 1, result = 3
 //                        in (4..6) -> offset + 3 // "(XX) X|" offset = 3, sep = 3, result = 6
-//                        in (7..10) -> offset + 6
+//                        in (7..8) -> offset + 4
+//                        in (9..10) -> offset + 5
 //                        else -> offset
 //                    }
 //
+//                   // Logger.d{"4444 originalToTransformed transformedCursor=" + transformedCursor}
 //                    return if (enableCursorMove) transformedCursor // formattedText
 //                    else formattedText.length // "(XX) XXXXX - XXXX" return 17
 //                }
 //
-//                // Преобразует позицию курсора из форматированного текста в позицию курсора в оригинальном тексте.
+//                // Преобразует позицию курсора при клике из форматированного текста в позицию курсора в оригинальном тексте.
 //                // offset: Int - позиция курсора в форматированном тексте.
-//                // Int - позиция курсора в оригинальном тексте.
+//                // Int - позиция курсора в оригинальном номере телефона (на Х-ах).
 //                override fun transformedToOriginal(offset: Int): Int {
-//                    // offset = formatted.length/transformed at cursor position -- "(11) 1|" offset = 6
 //                    val originalCursor = when (offset) {
-//                        in (1..3) -> offset - 1 // "(XX|" offset = 3, sep = 1, result = 2
-//                        in (4..10) -> offset - 3 // "(XX) X|" offset = 6, sep = 3, result = 3
-//                        in (11..17) -> offset - 6
-//                        else -> offset
+//                        in (1..4) -> offset - 1
+//                        in (6..9) -> offset - 3
+//                        in (10..12) -> offset - 4
+//                        in (13..15) -> offset - 5 // надо здесь
+//                        else -> offset // "(XXX)-XXX-XX-XX"
 //                    }
 //
+//                  //  Logger.d{"4444 originalCursor=" + originalCursor}
+//
 //                    return if (enableCursorMove) originalCursor // inputs
-//                    else inputText.length // "(XX) XXXXX - XXXX" return 11
+//                    else inputText.length // "(XXX) - XXX - XX - XX" return 10
 //                }
 //            }
 //            return TransformedText(AnnotatedString(formattedText), offsetTranslator)
@@ -489,13 +504,15 @@ fun TutorialManualVisualTransformation() {
 //    }
 //
 //    var inputText by remember { mutableStateOf("") }
-//    val mask = "(XXX) XXX - XXXX"
+//    val mask = "(XXX)-XXX-XX-XX"
 //    val maskCharInput = 'X'
 //    val inputMaxLength = mask.count { maskChar -> maskChar == maskCharInput }
 //
 //    val focusRequester = remember { FocusRequester() }
 //
 //    val interactionSource = remember { MutableInteractionSource() }
+//
+//    Logger.d{" 4444 inputText=" + inputText}
 //
 //    TextField(
 //        interactionSource = interactionSource,
@@ -511,7 +528,7 @@ fun TutorialManualVisualTransformation() {
 ////            unfocusedLeadingIconColor = ColorCustomResources.colorBazaMainBlue
 //
 //        ),
-//
+//        textStyle = TextStyle.Default.copy(fontSize = 28.sp),
 //        modifier = Modifier
 //            .background(Color.White)
 //            .focusRequester(focusRequester = focusRequester),
@@ -521,8 +538,9 @@ fun TutorialManualVisualTransformation() {
 //        },
 //        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
 //        visualTransformation = ManualVisualTransformation(enableCursorMove = true)
-//        )
+//    )
 //}
+/////////////////////////////////////////////////
 
 fun Modifier.hideKeyboardOnOutsideClick(): Modifier = composed {
     val controller = LocalSoftwareKeyboardController.current
