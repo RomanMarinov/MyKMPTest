@@ -4,6 +4,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.window.ComposeUIViewController
 import di.commonModule
 import org.koin.core.context.startKoin
+import presentation.ui.call_activity.CallActivityContent
 
 fun MainViewController() = ComposeUIViewController {
 
@@ -12,6 +13,9 @@ fun MainViewController() = ComposeUIViewController {
     CallActivityContent(
         onMoveToMainActivity = {
             moveState.value = true
+        },
+        onMakeCall = {
+
         }
     )
     if(moveState.value) {

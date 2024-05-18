@@ -1,14 +1,15 @@
 package com.dev_marinov.my_compose_multi
 
-import CallActivityContent
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
+import presentation.ui.call_activity.CallActivityContent
 
 class CallActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,11 +40,165 @@ class CallActivity : ComponentActivity() {
                 onMoveToMainActivity = {
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
+                },
+                onMakeCall = {
+                    val uri = Uri.parse("tel:" + "88001000249")
+                    // Create the intent and set the data for the
+                    // intent as the phone number.
+                    val i = Intent(Intent.ACTION_DIAL, uri)
+                    startActivity(i)
                 }
             )
         }
     }
 }
+
+//@Composable
+//fun Perm() {
+//    val permissionsState = rememberMultiplePermissionsState(
+//        permissions = listOf(
+//            Manifest.permission.READ_PHONE_NUMBERS,
+//            Manifest.permission.READ_CONTACTS,
+//            Manifest.permission.CAMERA,
+//            Manifest.permission.RECORD_AUDIO
+//        )
+//    )
+//    permissionsState.permissions.forEach {
+//        when (it.permission) {
+//            Manifest.permission.READ_PHONE_NUMBERS -> {
+//                when {
+//                    it.status.isGranted -> {
+//                        Log.d("4444", " MainScreensActivity READ_PHONE_NUMBERS isGranted")
+//                        savePermissionReadPhoneNumbers(viewModel = viewModel, isGranted = true)
+//                    }
+//
+//                    it.status.shouldShowRationale -> {
+//                        Log.d("4444", " MainScreensActivity READ_PHONE_NUMBERS shouldShowRationale ")
+//                        savePermissionReadPhoneNumbers(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_READ_PHONE_NUMBERS),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//
+//                    it.isAlwaysDenied() -> {
+//                        Log.d("4444", " MainScreensActivity READ_PHONE_NUMBERS isAlwaysDenied")
+//                        savePermissionReadPhoneNumbers(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_denied_READ_PHONE_NUMBERS),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//                }
+//            }
+//
+//            Manifest.permission.READ_CONTACTS -> {
+//                when {
+//                    it.status.isGranted -> {
+//                        Log.d("4444", " MainScreensActivity READ_CONTACTS isGranted")
+//                        savePermissionReadContacts(viewModel = viewModel, isGranted = true)
+//                    }
+//
+//                    it.status.shouldShowRationale -> {
+//                        Log.d("4444", " MainScreensActivity READ_CONTACTS shouldShowRationale")
+//                        savePermissionReadContacts(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_CONTACTS),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//
+//                    it.isAlwaysDenied() -> {
+//                        Log.d("4444", " MainScreensActivity READ_CONTACTS isAlwaysDenied")
+//                        savePermissionReadContacts(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_denied_CONTACTS),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//                }
+//            }
+//
+//            Manifest.permission.CAMERA -> {
+//                when {
+//                    it.status.isGranted -> {
+//                        Log.d("4444", " MainScreensActivity CAMERA isGranted")
+//                        savePermissionCamera(viewModel = viewModel, isGranted = true)
+//                    }
+//
+//                    it.status.shouldShowRationale -> {
+//                        Log.d("4444", " MainScreensActivity CAMERA shouldShowRationale")
+//                        savePermissionCamera(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_CAMERA),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//
+//                    it.isAlwaysDenied() -> {
+//                        Log.d("4444", " MainScreensActivity CAMERA isAlwaysDenied")
+//                        savePermissionCamera(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_denied_CAMERA),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//                }
+//            }
+//
+//            Manifest.permission.RECORD_AUDIO -> {
+//                when {
+//                    it.status.isGranted -> {
+//                        Log.d("4444", " MainScreensActivity RECORD_AUDIO isGranted")
+//                        savePermissionRecordAudio(viewModel = viewModel, isGranted = true)
+//                    }
+//
+//                    it.status.shouldShowRationale -> {
+//                        Log.d("4444", " MainScreensActivity RECORD_AUDIO shouldShowRationale")
+//                        savePermissionRecordAudio(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_RECORD_AUDIO),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//
+//                    it.isAlwaysDenied() -> {
+//                        Log.d("4444", " MainScreensActivity RECORD_AUDIO isAlwaysDenied")
+//                        savePermissionRecordAudio(viewModel = viewModel, isGranted = false)
+//                        DialogPermissions(
+//                            message = stringResource(id = R.string.justification_denied_RECORD_AUDIO),
+//                            onDismiss = { },
+//                            onConfirm = {
+//                                openAppSettings(context = context)
+//                            }
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 
 // код из туториала
