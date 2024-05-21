@@ -36,10 +36,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.touchlab.kermit.Logger
 import domain.model.auth.AuthLoginBody
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-//import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_help_number
 import org.jetbrains.compose.resources.vectorResource
@@ -157,11 +157,21 @@ fun ViewPagerAuth(
 }
 
 fun getCorrectSupportCallNumber(phone: String?) : String {
-    val supportCallNumber = phone ?: "88001000249"
-    return "${supportCallNumber.substring(0, 1)}-" +
-            "${supportCallNumber.substring(1, 4)}-" +
-            "${supportCallNumber.substring(4, 8)}-" +
-            "${supportCallNumber.substring(8)}"
+    Logger.d { "4444 phone=" + phone }
+    var supportCallNumber = ""
+    phone?.let {
+        supportCallNumber = if (it.isNotEmpty()) {
+            "${it.substring(0, 1)}-" +
+                    "${it.substring(1, 4)}-" +
+                    "${it.substring(4, 8)}-" +
+                    "${it.substring(8)}"
+        } else {
+            "8-800-1000-249"
+        }
+    } ?: run {
+        supportCallNumber = "8-800-1000-249"
+    }
+    return supportCallNumber
 }
 
 @Composable
@@ -225,7 +235,6 @@ fun LoginByPhoneNumber(
                     errorTextWarning.value = "Только мобильные номера"
                 }
             )
-
 
             Box(
                 modifier = Modifier

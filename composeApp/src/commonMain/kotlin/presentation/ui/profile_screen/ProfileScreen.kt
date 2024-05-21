@@ -28,9 +28,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_profile
@@ -43,10 +43,8 @@ import util.ScreenRoute
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navigator: Navigator
+    navHostController: NavHostController
 ) {
-
-
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
     val openBottomSheetPersonalAccountState = remember { mutableStateOf(false) }
@@ -86,7 +84,7 @@ fun ProfileScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navigator.popBackStack()
+                                navHostController.popBackStack()
                             }
                         ) {
                             Icon(
@@ -104,7 +102,7 @@ fun ProfileScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                                navigator.navigate(ScreenRoute.ProfileScreen.route)
+                                navHostController.navigate(ScreenRoute.ProfileScreen.route)
                             }
                         ) {
                             Icon(
@@ -142,17 +140,10 @@ fun ProfileScreen(
                             isRefreshing = false
                         }
                     },
-                    navigator = navigator,
+                    navHostController = navHostController,
                     paddingValue = paddingValue
                 )
             }
         }
     }
-
-
-
-
-
-
-
 }

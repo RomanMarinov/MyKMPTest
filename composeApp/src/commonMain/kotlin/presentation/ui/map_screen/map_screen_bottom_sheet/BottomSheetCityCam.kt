@@ -36,9 +36,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_close
 import mykmptest.composeapp.generated.resources.ic_heart_off
@@ -56,7 +56,7 @@ import util.shimmerEffect
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun BottomSheetCityCam(
-    navigator: Navigator,
+    navHostController: NavHostController,
     markerDetail: MarkerDetail,
     openBottomSheet: (Boolean) -> Unit,
 ) {
@@ -282,7 +282,7 @@ fun BottomSheetCityCam(
                             .clip(RoundedCornerShape(10.dp))
                             .clickable {
                                 navigateToWebViewHelper(
-                                    navigator = navigator,
+                                    navHostController = navHostController,
                                     route = ScreenRoute.MapScreen.route,
                                     address = markerDetail.titleAddress.toString(),
                                     videoUrl = markerDetail.videoUrl.toString()
@@ -298,7 +298,7 @@ fun BottomSheetCityCam(
                             .clip(RoundedCornerShape(50.dp))
                             .clickable {
                                 navigateToWebViewHelper(
-                                    navigator = navigator,
+                                    navHostController = navHostController,
                                     route = ScreenRoute.MapScreen.route,
                                     address = markerDetail.titleAddress.toString(),
                                     videoUrl = markerDetail.videoUrl.toString()

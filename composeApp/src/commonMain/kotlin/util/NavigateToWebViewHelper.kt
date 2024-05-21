@@ -1,24 +1,24 @@
 package util
 
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
 
-fun navigateToWebViewHelper(navigator: Navigator, route: String, address: String, videoUrl: String) {
+fun navigateToWebViewHelper(
+    navHostController: NavHostController,
+    route: String,
+    address: String,
+    videoUrl: String
+) {
     val videoUrlEncode = UrlEncoderUtil.encode(videoUrl)
-    navigator.navigate(
+    navHostController.navigate(
         ScreenRoute.WebViewScreen.withArgs(
             address = address,
             videourl = videoUrlEncode
         ),
-        NavOptions(
-            popUpTo = PopUpTo(
-                // The destination of popUpTo
-                route = route,
-                // Whether the popUpTo destination should be popped from the back stack.
-                inclusive = false,
-            )
-        )
+        NavOptions.Builder().setPopUpTo(
+            route = route,
+            inclusive = false
+        ).build()
     )
 }

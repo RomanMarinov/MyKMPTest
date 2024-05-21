@@ -28,10 +28,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_profile
@@ -46,7 +46,7 @@ import util.ScreenRoute
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OutdoorScreen(
-    navigator: Navigator,
+    navHostController: NavHostController,
     viewModel: OutdoorScreenViewModel = koinInject(),
     //viewModel: OutdoorScreenViewModel = koinViewModel()
     // viewModel: OutdoorScreenViewModel =
@@ -97,7 +97,7 @@ fun OutdoorScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navigator.popBackStack()
+                                navHostController.popBackStack()
                             }
                         ) {
                             Icon(
@@ -115,7 +115,7 @@ fun OutdoorScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                                navigator.navigate(ScreenRoute.ProfileScreen.route)
+                                navHostController.navigate(ScreenRoute.ProfileScreen.route)
                             }
                         ) {
                             Icon(
@@ -153,7 +153,7 @@ fun OutdoorScreen(
                             isRefreshing = false
                         }
                     },
-                    navigator = navigator,
+                    navHostController = navHostController,
                     paddingValue = paddingValue
                 )
             }

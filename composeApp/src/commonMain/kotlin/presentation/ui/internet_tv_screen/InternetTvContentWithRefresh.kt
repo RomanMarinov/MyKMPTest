@@ -43,18 +43,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import domain.model.home.tariffs_by_location.LocationsTariffsBody
 import domain.model.home.tariffs_by_location.PackageTariffCheckable
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.Navigator
 import org.koin.compose.koinInject
 import util.ColorCustomResources
 
 @Composable
 fun InternetTvContentWithRefresh(
     locationsInternetTv: List<String>,
-    navigator: Navigator,
+    navHostController: NavHostController,
     viewModel: InternetTvScreenViewModel = koinInject(),
     paddingValue: PaddingValues,
 

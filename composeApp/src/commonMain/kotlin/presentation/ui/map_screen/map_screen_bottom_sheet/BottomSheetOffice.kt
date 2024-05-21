@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import moe.tlaster.precompose.navigation.Navigator
+import androidx.navigation.NavHostController
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_close
 import mykmptest.composeapp.generated.resources.ic_tg
@@ -49,7 +49,7 @@ import util.ColorCustomResources
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun BottomSheetOffice(
-    navigator: Navigator,
+    navHostController: NavHostController,
     markerDetail: MarkerDetail,
     openBottomSheet: (Boolean) -> Unit,
 ){

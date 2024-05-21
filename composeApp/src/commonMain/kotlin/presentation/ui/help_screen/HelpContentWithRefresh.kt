@@ -52,9 +52,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import data.public_info.remote.dto.Faq
 import data.public_info.remote.dto.MarkerOffice
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.help_call_number_one
 import mykmptest.composeapp.generated.resources.help_call_number_two
@@ -88,7 +88,7 @@ fun HelpContentWithRefresh(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    navigator: Navigator,
+    navHostController: NavHostController,
     paddingValue: PaddingValues,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()

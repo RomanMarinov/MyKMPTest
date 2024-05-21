@@ -25,9 +25,9 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_profile
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -37,7 +37,9 @@ import util.ScreenRoute
 
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navigator: Navigator) {
+fun HomeScreen(
+    navHostController: NavHostController
+) {
 
 
 
@@ -89,7 +91,7 @@ fun HomeScreen(navigator: Navigator) {
                     actions = {
                         IconButton(
                             onClick = {
-                                navigator.navigate(ScreenRoute.ProfileScreen.route)
+                                navHostController.navigate(ScreenRoute.ProfileScreen.route)
                             }
                         ) {
                             Icon(
@@ -125,7 +127,7 @@ fun HomeScreen(navigator: Navigator) {
                             isRefreshing = false
                         }
                     },
-                    navigator = navigator,
+                    navHostController = navHostController,
                     paddingValue = paddingValue
                 )
 

@@ -23,9 +23,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_profile
@@ -45,7 +44,7 @@ import util.Strings
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun MapScreen(
-    navigator: Navigator,
+    navHostController: NavHostController,
     viewModel: MapScreenViewModel = koinInject(),
 ) {
 
@@ -89,16 +88,14 @@ fun MapScreen(
                         IconButton(
                             onClick = {
 //                                navigator.popBackStack()
-                                navigator.navigate(
+                                navHostController.navigate(
                                     ScreenRoute.HomeScreen.route,
-                                    NavOptions(
-                                        popUpTo = PopUpTo(
-                                            // The destination of popUpTo
-                                            route = ScreenRoute.HomeScreen.route,
-                                            // Whether the popUpTo destination should be popped from the back stack.
-                                            inclusive = false,
-                                        )
-                                    )
+                                    NavOptions.Builder().setPopUpTo(
+                                        // The destination of popUpTo
+                                        route = ScreenRoute.HomeScreen.route,
+                                        // Whether the popUpTo destination should be popped from the back stack.
+                                        inclusive = false,
+                                    ).build()
                                 )
                             }
                         ) {
@@ -117,7 +114,7 @@ fun MapScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                                navigator.navigate(ScreenRoute.ProfileScreen.route)
+                                navHostController.navigate(ScreenRoute.ProfileScreen.route)
                             }
                         ) {
                             Icon(
@@ -156,7 +153,7 @@ fun MapScreen(
         when (markerDetailTitleTypeState.value) {
             Strings.typeCity -> {
                 BottomSheetCityCam(
-                    navigator = navigator,
+                    navHostController = navHostController,
                     markerDetailState.value,
                     openBottomSheet = {
                         markerDetailTitleTypeState.value = ""
@@ -165,7 +162,7 @@ fun MapScreen(
             }
             Strings.typeOutDoor -> {
                 BottomSheetOutdoorCam(
-                    navigator = navigator,
+                    navHostController = navHostController,
                     markerDetailState.value,
                     openBottomSheet = {
                         markerDetailTitleTypeState.value = ""
@@ -175,7 +172,7 @@ fun MapScreen(
 
             Strings.typeDomofon -> {
                 BottomSheetDomofonCam(
-                    navigator = navigator,
+                    navHostController = navHostController,
                     markerDetailState.value,
                     openBottomSheet = {
                         markerDetailTitleTypeState.value = ""
@@ -185,7 +182,7 @@ fun MapScreen(
 
             Strings.typeOffice -> {
                 BottomSheetOffice(
-                    navigator = navigator,
+                    navHostController = navHostController,
                     markerDetailState.value,
                     openBottomSheet = {
                         markerDetailTitleTypeState.value = ""

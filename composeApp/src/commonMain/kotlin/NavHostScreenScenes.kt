@@ -1,9 +1,9 @@
-
 import androidx.compose.runtime.Composable
-import moe.tlaster.precompose.navigation.NavHost
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.path
-import moe.tlaster.precompose.navigation.transition.NavTransition
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import presentation.ui.domofon_screen.DomofonScreen
 import presentation.ui.help_screen.HelpScreen
 import presentation.ui.home_screen.HomeScreen
@@ -15,82 +15,71 @@ import presentation.ui.webview_screen.WebViewScreen
 import util.ScreenRoute
 
 
+const val ADDRESS = "ADDRESS"
+const val VIDEO_URL = "VIDEO_URL"
+
 @Composable
-fun NavHostScreenScenes(navigator: Navigator) {
-    NavHost(
-        navigator = navigator, // Назначаем навигатор NavHost
-        navTransition = NavTransition(), // Переход навигации для сцен в этом NavHost, это необязательно
-        initialRoute = ScreenRoute.HomeScreen.route, // Начальный пункт назначения
-    ) {
-        scene(
-            // Определить сцену для навигационного графа
-            route = ScreenRoute.HomeScreen.route,  // Путь маршрута сцены
-            navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
-        ) {
-            HomeScreen(navigator = navigator)
+fun NavHostScreenScenes(navHostController: NavHostController) {
+
+    NavHost(navController = navHostController, startDestination = ScreenRoute.HomeScreen.route) {
+        composable(route = ScreenRoute.HomeScreen.route) {
+            HomeScreen(navHostController = navHostController)
         }
 
-        scene(
-            // Определить сцену для навигационного графа
-            route = ScreenRoute.OutdoorScreen.route,  // Путь маршрута сцены
-            navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
+        composable(
+            route = ScreenRoute.OutdoorScreen.route,
         ) {
-            OutdoorScreen(navigator = navigator)
+            OutdoorScreen(navHostController = navHostController)
         }
 
-        scene(
-            // Определить сцену для навигационного графа
-            route = ScreenRoute.MapScreen.route,  // Путь маршрута сцены
-            navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
+        composable(
+            route = ScreenRoute.OutdoorScreen.route,
         ) {
-            MapScreen(navigator = navigator)
+            MapScreen(navHostController = navHostController)
         }
 
-        scene(
-            // Определить сцену для навигационного графа
-            route = ScreenRoute.DomofonScreen.route,  // Путь маршрута сцены
-            navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
+        composable(
+            route = ScreenRoute.OutdoorScreen.route,
         ) {
-            DomofonScreen(navigator = navigator)
+            DomofonScreen(navHostController = navHostController)
         }
 
-        scene(
-            // Определить сцену для навигационного графа
-            route = ScreenRoute.HelpScreen.route,  // Путь маршрута сцены
-            navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
+        composable(
+            route = ScreenRoute.OutdoorScreen.route,
         ) {
-            HelpScreen(navigator = navigator)
+            HelpScreen(navHostController = navHostController)
         }
 
-        scene(
-            // Определить сцену для навигационного графа
-            route = "/webview_screen/{address}/{videourl}",  // Путь маршрута сцены
-            navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
+        composable(
+            route = ScreenRoute.WebViewScreen.route,
+            arguments = listOf(
+                navArgument(ADDRESS) {
+                    type = NavType.StringType
+                },
+                navArgument(VIDEO_URL) {
+                    type = NavType.StringType
+                }
+            )
         ) {
-            val address: String? = it.path<String>("address")
-            val videoUrl: String? = it.path<String>("videourl")
+            val address = it.arguments?.getString(ADDRESS)
+            val videoUrl = it.arguments?.getString(VIDEO_URL)
             WebViewScreen(
-                navigator = navigator,
+                navHostController = navHostController,
                 address = address,
                 videoUrl = videoUrl
             )
         }
 
-        scene(
-            // Определить сцену для навигационного графа
-            route = ScreenRoute.ProfileScreen.route,  // Путь маршрута сцены
-            navTransition = NavTransition(),  // Переход навигации для этой сцены, это необязательно
+        composable(
+            route = ScreenRoute.ProfileScreen.route
         ) {
-            ProfileScreen(
-                navigator = navigator
-            )
+            ProfileScreen(navHostController = navHostController)
         }
 
-        scene(
-            route = ScreenRoute.InternetTvScreen.route,
-            navTransition = NavTransition()
+        composable(
+            route = ScreenRoute.InternetTvScreen.route
         ) {
-            InternetTvScreen(navigator = navigator)
+            InternetTvScreen(navHostController = navHostController)
         }
     }
 }

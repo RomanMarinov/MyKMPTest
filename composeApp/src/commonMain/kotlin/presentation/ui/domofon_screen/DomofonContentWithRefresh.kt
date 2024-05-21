@@ -48,15 +48,14 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import data.domofon.remote.model.Sputnik
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_lock
 import mykmptest.composeapp.generated.resources.ic_play
@@ -81,7 +80,7 @@ fun DomofonContentWithRefresh(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    navigator: Navigator,
+    navHostController: NavHostController,
     paddingValue: PaddingValues,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -115,7 +114,7 @@ fun DomofonContentWithRefresh(
                 ContentLazyList(
                     sputnik = sputnik,
                     snackbarHostState = snackbarHostState,
-                    navigator = navigator
+                    navHostController = navHostController
                 )
 
 
@@ -213,7 +212,7 @@ fun ContentLazyList(
     sputnik: Sputnik,
     //snackBarState: Boolean,
     snackbarHostState: SnackbarHostState,
-    navigator: Navigator,
+    navHostController: NavHostController,
 ) {
 
     var switchCheckedState by remember { mutableStateOf(false) }
@@ -348,7 +347,7 @@ fun ContentLazyList(
 //                        )
                         .clickable {
                             navigateToWebViewHelper(
-                                navigator = navigator,
+                                navHostController = navHostController,
                                 route = ScreenRoute.DomofonScreen.route,
                                 address = sputnik.title,
                                 videoUrl = sputnik.videoUrl
@@ -371,7 +370,7 @@ fun ContentLazyList(
                             .size(80.dp)
                             .clickable {
                                 navigateToWebViewHelper(
-                                    navigator = navigator,
+                                    navHostController = navHostController,
                                     route = ScreenRoute.DomofonScreen.route,
                                     address = sputnik.title,
                                     videoUrl = sputnik.videoUrl
@@ -421,20 +420,22 @@ fun ContentLazyList(
     }
 }
 
-fun navigateDomofonToWebView(navigator: Navigator, address: String, videoUrl: String) {
+fun navigateDomofonToWebView(
+    navHostController: NavHostController,
+    address: String,
+    videoUrl: String
+) {
     val videoUrlEncode = UrlEncoderUtil.encode(videoUrl)
-    navigator.navigate(
+    navHostController.navigate(
         ScreenRoute.WebViewScreen.withArgs(
             address = address,
             videourl = videoUrlEncode
         ),
-        NavOptions(
-            popUpTo = PopUpTo(
-                // The destination of popUpTo
-                route = ScreenRoute.DomofonScreen.route,
-                // Whether the popUpTo destination should be popped from the back stack.
-                inclusive = false,
-            )
-        )
+        NavOptions.Builder().setPopUpTo(
+            // The destination of popUpTo
+            route = ScreenRoute.DomofonScreen.route,
+            // Whether the popUpTo destination should be popped from the back stack.
+            inclusive = false,
+        ).build()
     )
 }

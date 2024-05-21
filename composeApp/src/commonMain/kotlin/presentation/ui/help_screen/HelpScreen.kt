@@ -25,12 +25,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.help_title
 import mykmptest.composeapp.generated.resources.ic_back
@@ -45,7 +44,7 @@ import util.ScreenRoute
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HelpScreen(
-    navigator: Navigator,
+    navHostController: NavHostController,
     viewModel: HelpScreenViewModel = koinInject(),
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
@@ -88,16 +87,14 @@ fun HelpScreen(
                         IconButton(
                             onClick = {
 //                                navigator.popBackStack()
-                                navigator.navigate(
+                                navHostController.navigate(
                                     ScreenRoute.HomeScreen.route,
-                                    NavOptions(
-                                        popUpTo = PopUpTo(
-                                            // The destination of popUpTo
-                                            route = ScreenRoute.HomeScreen.route,
-                                            // Whether the popUpTo destination should be popped from the back stack.
-                                            inclusive = false,
-                                        )
-                                    )
+                                    NavOptions.Builder().setPopUpTo(
+                                        // The destination of popUpTo
+                                        route = ScreenRoute.HomeScreen.route,
+                                        // Whether the popUpTo destination should be popped from the back stack.
+                                        inclusive = false,
+                                    ).build()
                                 )
                             }
                         ) {
@@ -116,7 +113,7 @@ fun HelpScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                                navigator.navigate(ScreenRoute.ProfileScreen.route)
+                                navHostController.navigate(ScreenRoute.ProfileScreen.route)
                             }
                         ) {
                             Icon(
@@ -152,11 +149,9 @@ fun HelpScreen(
                             isRefreshing = false
                         }
                     },
-                    navigator = navigator,
+                    navHostController = navHostController,
                     paddingValue = paddingValue
                 )
-
-
             }
         }
     }

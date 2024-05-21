@@ -32,9 +32,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_close
 import mykmptest.composeapp.generated.resources.map_sheet_outdoor
@@ -50,7 +50,7 @@ import util.shimmerEffect
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun BottomSheetOutdoorCam(
-    navigator: Navigator,
+    navHostController: NavHostController,
     markerDetail: MarkerDetail,
     openBottomSheet: (Boolean) -> Unit,
 ) {
@@ -167,7 +167,7 @@ fun BottomSheetOutdoorCam(
                             .clip(RoundedCornerShape(10.dp))
                             .clickable {
                                 navigateToWebViewHelper(
-                                    navigator = navigator,
+                                    navHostController = navHostController,
                                     route = ScreenRoute.MapScreen.route,
                                     address = markerDetail.titleAddress.toString(),
                                     videoUrl = markerDetail.videoUrl.toString()

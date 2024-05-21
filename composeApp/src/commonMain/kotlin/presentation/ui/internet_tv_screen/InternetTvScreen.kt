@@ -45,9 +45,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import data.public_info.remote.dto.Location
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_favorite
@@ -63,13 +63,12 @@ import util.ScreenRoute
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InternetTvScreen(
-    navigator: Navigator,
+    navHostController: NavHostController,
     viewModel: InternetTvScreenViewModel = koinInject(),
     //viewModel: OutdoorScreenViewModel = koinViewModel()
     // viewModel: OutdoorScreenViewModel =
 
 ) {
-
    // val outDoorsUiState by viewModel.outDoorsUiState.collectAsState()
     val locationsInternetTv by viewModel.locationsTitle.collectAsStateWithLifecycle()
     var isRefreshing by remember { mutableStateOf(false) }
@@ -106,7 +105,7 @@ fun InternetTvScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                navigator.popBackStack()
+                                navHostController.popBackStack()
                             }
                         ) {
                             Icon(
@@ -124,7 +123,7 @@ fun InternetTvScreen(
                     actions = {
                         IconButton(
                             onClick = {
-                                navigator.navigate(ScreenRoute.ProfileScreen.route)
+                                navHostController.navigate(ScreenRoute.ProfileScreen.route)
                             }
                         ) {
                             Icon(
@@ -162,7 +161,7 @@ fun InternetTvScreen(
 //                            isRefreshing = false
 //                        }
 //                    },
-                    navigator = navigator,
+                    navHostController = navHostController,
                     paddingValue = paddingValue
                 )
 

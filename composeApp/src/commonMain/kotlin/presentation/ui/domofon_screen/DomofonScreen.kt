@@ -29,11 +29,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.NavOptions
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.PopUpTo
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.domofon_title
 import mykmptest.composeapp.generated.resources.ic_back
@@ -48,7 +47,7 @@ import util.ScreenRoute
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DomofonScreen(
-   navigator: Navigator,
+   navHostController: NavHostController,
    viewModel: DomofonScreenViewModel = koinInject()) {
 
    val sputnikUiState by viewModel.sputnikUiState.collectAsState()
@@ -87,16 +86,14 @@ fun DomofonScreen(
                   IconButton(
                      onClick = {
 //                                navigator.popBackStack()
-                        navigator.navigate(
+                        navHostController.navigate(
                            ScreenRoute.HomeScreen.route,
-                           NavOptions(
-                              popUpTo = PopUpTo(
+                           NavOptions.Builder().setPopUpTo(
                                  // The destination of popUpTo
                                  route = ScreenRoute.HomeScreen.route,
                                  // Whether the popUpTo destination should be popped from the back stack.
                                  inclusive = false,
-                              )
-                           )
+                           ).build()
                         )
                      }
                   ) {
@@ -115,7 +112,7 @@ fun DomofonScreen(
                actions = {
                   IconButton(
                      onClick = {
-                        navigator.navigate(ScreenRoute.ProfileScreen.route)
+                        navHostController.navigate(ScreenRoute.ProfileScreen.route)
                      }
                   ) {
                      Icon(
@@ -153,7 +150,7 @@ fun DomofonScreen(
                             isRefreshing = false
                         }
                     },
-                    navigator = navigator,
+                    navHostController = navHostController,
                     paddingValue = paddingValue
                 )
 

@@ -85,6 +85,7 @@ fun PhoneNumberTransformation(
                 // offset: Int - позиция курсора в форматированном тексте.
                 // Int - позиция курсора в оригинальном номере телефона (на Х-ах).
                 override fun transformedToOriginal(offset: Int): Int {
+                    Logger.d { "4444 transformedToOriginal offset=" + offset }
                     val originalCursor = when (offset) {
                         in (4..7) -> offset - 4
                         in (9..12) -> offset - 6
@@ -92,11 +93,16 @@ fun PhoneNumberTransformation(
                         in (16..18) -> offset - 8 // надо здесь
                         else -> offset // "+7 (XXX)-XXX-XX-XX" 18 элементов
                     }
+                    val validCursor = if (originalCursor > inputText.length) inputText.length else originalCursor
 
-                    Logger.d { "4444 originalCursor=" + originalCursor }
+                    Logger.d { "4444 originalCursor=" + validCursor }
 
-                    return if (enableCursorMove) originalCursor // inputs
+                    return if (enableCursorMove) validCursor // inputs
                     else inputText.length // "(XXX) - XXX - XX - XX" return 10
+
+//                    Logger.d { "4444 transformedToOriginal originalCursor=" + originalCursor }
+//                    return if (enableCursorMove) originalCursor // inputs
+//                    else inputText.length // "(XXX) - XXX - XX - XX" return 10
                 }
             }
             return TransformedText(AnnotatedString(formattedText), offsetTranslator)

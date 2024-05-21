@@ -43,13 +43,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import domain.model.outdoor.Dvr
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_play
 import mykmptest.composeapp.generated.resources.ic_plus_square
@@ -72,7 +72,7 @@ fun OutdoorContentWithRefresh(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    navigator: Navigator,
+    navHostController: NavHostController,
     paddingValue: PaddingValues,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -102,7 +102,7 @@ fun OutdoorContentWithRefresh(
                 ContentLazyList(
                     dvr = dvr,
                     snackbarHostState = snackbarHostState,
-                    navigator = navigator
+                    navHostController = navHostController
                 )
             }
 
@@ -185,7 +185,7 @@ fun ContentLazyList(
     dvr: Dvr,
     //snackBarState: Boolean,
     snackbarHostState: SnackbarHostState,
-    navigator: Navigator,
+    navHostController: NavHostController,
 ) {
 
     Column(modifier = Modifier.fillMaxWidth().navigationBarsPadding()) {
@@ -293,7 +293,7 @@ fun ContentLazyList(
                     .clip(RoundedCornerShape(10.dp))
                     .clickable {
                         navigateToWebViewHelper(
-                            navigator = navigator,
+                            navHostController = navHostController,
                             route = ScreenRoute.OutdoorScreen.route,
                             address = dvr.address,
                             videoUrl = dvr.videoUrl
@@ -309,7 +309,7 @@ fun ContentLazyList(
                     .size(80.dp)
                     .clickable {
                         navigateToWebViewHelper(
-                            navigator = navigator,
+                            navHostController = navHostController,
                             route = ScreenRoute.OutdoorScreen.route,
                             address = dvr.address,
                             videoUrl = dvr.videoUrl

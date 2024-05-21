@@ -19,8 +19,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-//import moe.tlaster.precompose.viewmodel.ViewModel
-//import moe.tlaster.precompose.viewmodel.viewModelScope
 import presentation.ui.map_screen.model.GeoPointScreen
 import presentation.ui.map_screen.model.MapCategory
 

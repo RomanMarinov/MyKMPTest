@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.dev_marinov.my_compose_multi.R
 import data.public_info.remote.dto.Data
 import data.public_info.remote.dto.Location
@@ -60,7 +61,6 @@ import data.public_info.remote.dto.MarkerOffice
 import data.public_info.remote.dto.MarkerOutdoor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_favorite
 import mykmptest.composeapp.generated.resources.ic_map_zoom_minus

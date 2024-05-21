@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
@@ -26,17 +27,14 @@ import com.multiplatform.webview.web.WebContent
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
-import moe.tlaster.precompose.navigation.Navigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
 import net.thauvin.erik.urlencoder.UrlEncoderUtil
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WebViewScreen(
-    navigator: Navigator,
+    navHostController: NavHostController,
     address: String?,
     videoUrl: String?,
 ) {
@@ -64,7 +62,7 @@ fun WebViewScreen(
                     .size(60.dp)
                     .padding(start = 16.dp, top = 30.dp, end = 16.dp)
                     .clickable {
-                        navigator.popBackStack()
+                        navHostController.popBackStack()
                     }
             )
             Text(

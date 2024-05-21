@@ -56,11 +56,11 @@ kotlin {
             //https://github.com/Tlaster/PreCompose/blob/master/docs/setup.md
             //  api(compose.foundation) // до ветки
             //    api(compose.animation) // до ветки
-            api(libs.precompose)
-            // api(libs.precompose.molecule) // For Molecule intergration
-            api(libs.precompose.viewmodel) // For ViewModel intergration
+//            api(libs.precompose)
+//            // api(libs.precompose.molecule) // For Molecule intergration
+//            api(libs.precompose.viewmodel) // For ViewModel intergration
             // api(libs.precompose.koin) // For Koin intergration
-
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
 
 //            ////////////////////////
 //            // CompositionLocal LocalLifecycleOwner not present

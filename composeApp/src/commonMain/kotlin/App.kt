@@ -16,7 +16,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -27,11 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import co.touchlab.kermit.Logger
-import kotlinx.coroutines.flow.collectLatest
-import moe.tlaster.precompose.PreComposeApp
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.rememberNavigator
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.domofon_name_nav
 import mykmptest.composeapp.generated.resources.help_name_nav
@@ -72,14 +70,12 @@ fun App() {
 
 @Composable
 fun GetCurrentEntry(
-    navigator: Navigator,
+    navHostController: NavHostController,
     onEntryChanged: (String) -> Unit
 ) {
-    LaunchedEffect(true) {
-        navigator.currentEntry.collectLatest { entry ->
-            onEntryChanged(entry?.route?.route ?: "")
-        }
-    }
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination
+    onEntryChanged(currentRoute?.route ?: "")
 }
 
 @OptIn(ExperimentalResourceApi::class)
@@ -102,65 +98,182 @@ fun AppContent() {
         ) {
 
         }
-        PreComposeApp {
 
+        val currentEntryState = remember { mutableStateOf("") }
+        var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+        val navHostController: NavHostController = rememberNavController()
 
-            val currentEntryState = remember { mutableStateOf("") }
-            var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
-            val navigator = rememberNavigator()
+        Logger.d {" 4444 hui currentEntryState=" + currentEntryState.value}
+        Logger.d {" 4444 hui selectedItemIndex=" + selectedItemIndex}
 
-            Logger.d {" 4444 hui currentEntryState=" + currentEntryState.value}
-            Logger.d {" 4444 hui selectedItemIndex=" + selectedItemIndex}
+        val items = listOf(
+            BottomNavigationItem(
+                title = stringResource(Res.string.home_name_nav),
+                selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
+                unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
+                hasNews = false,
+                badgeCount = null,
+                route = ScreenRoute.HomeScreen.route
+            ),
+            BottomNavigationItem(
+                title = stringResource(Res.string.outdoor_name_nav),
+                selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
+                unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
+                hasNews = false,
+                badgeCount = null,
+                route = ScreenRoute.OutdoorScreen.route
+            ),
+            BottomNavigationItem(
+                title = stringResource(Res.string.map_name_nav),
+                selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
+                unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
+                hasNews = false,
+                badgeCount = null,
+                route = ScreenRoute.MapScreen.route
+            ),
 
-            val items = listOf(
-                BottomNavigationItem(
-                    title = stringResource(Res.string.home_name_nav),
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.HomeScreen.route
-                ),
-                BottomNavigationItem(
-                    title = stringResource(Res.string.outdoor_name_nav),
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.OutdoorScreen.route
-                ),
-                BottomNavigationItem(
-                    title = stringResource(Res.string.map_name_nav),
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.MapScreen.route
-                ),
-
-                BottomNavigationItem(
-                    title = stringResource(Res.string.domofon_name_nav),
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.DomofonScreen.route
-                ),
-                BottomNavigationItem(
-                    title = stringResource(Res.string.help_name_nav),
-                    selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
-                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
-                    hasNews = false,
-                    badgeCount = null,
-                    route = ScreenRoute.HelpScreen.route
-                )
+            BottomNavigationItem(
+                title = stringResource(Res.string.domofon_name_nav),
+                selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
+                unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
+                hasNews = false,
+                badgeCount = null,
+                route = ScreenRoute.DomofonScreen.route
+            ),
+            BottomNavigationItem(
+                title = stringResource(Res.string.help_name_nav),
+                selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
+                unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
+                hasNews = false,
+                badgeCount = null,
+                route = ScreenRoute.HelpScreen.route
             )
+        )
+
+//        Scaffold(
+//            modifier = Modifier.navigationBarsPadding(),
+//            bottomBar = {
+//
+////                    items = listOf(
+////                        ChatalyzeBottomNavItem(
+////                            name = "Chat",
+////                            route = ScreenRoute.ChatsScreen.route,
+////                            icon = Icons.Default.Chat,
+////                            // badgeCount = 2
+////                        ),
+////                        ChatalyzeBottomNavItem(
+////                            name = "Call",
+////                            route = ScreenRoute.CallsScreen.route,
+////                            icon = Icons.Default.Call,
+////                            // badgeCount = 4
+////                        ),
+////                        ChatalyzeBottomNavItem(
+////                            name = "Profile",
+////                            route = ScreenRoute.ProfileScreen.route,
+////                            icon = Icons.Default.Person,
+//////                                badgeCount =
+////                        ),
+////                    ),
+////                    navController = navController,
+////                    onItemClick = {
+////                        navController.navigate(it.route)
+////                    }
+//////                navController = authNavController,
+//////                onItemClick = {
+//////                    authNavController.navigate(it.route)
+//////                }
+//
+//            },
+//        ) { paddingValues ->
+//            // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
+//            Box(
+//                modifier = Modifier
+//                    .background(colorResource(id = R.color.main_violet_light))
+//                    .padding(paddingValues = paddingValues)
+//            ) {
+//                // было
+//                Log.d("4444", " MainScreensActivity SetPermissionsAndNavigation box ")
+//                //вызывается 3 раза
+//
+//                MainScreensNavigationGraph(navHostController = navController)
+//            }
+//        }
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //    PreComposeApp {
+
+
+//            val currentEntryState = remember { mutableStateOf("") }
+//            var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+//            val navigator = rememberNavigator()
+//
+//            Logger.d {" 4444 hui currentEntryState=" + currentEntryState.value}
+//            Logger.d {" 4444 hui selectedItemIndex=" + selectedItemIndex}
+
+//            val items = listOf(
+//                BottomNavigationItem(
+//                    title = stringResource(Res.string.home_name_nav),
+//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
+//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
+//                    hasNews = false,
+//                    badgeCount = null,
+//                    route = ScreenRoute.HomeScreen.route
+//                ),
+//                BottomNavigationItem(
+//                    title = stringResource(Res.string.outdoor_name_nav),
+//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
+//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
+//                    hasNews = false,
+//                    badgeCount = null,
+//                    route = ScreenRoute.OutdoorScreen.route
+//                ),
+//                BottomNavigationItem(
+//                    title = stringResource(Res.string.map_name_nav),
+//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
+//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
+//                    hasNews = false,
+//                    badgeCount = null,
+//                    route = ScreenRoute.MapScreen.route
+//                ),
+//
+//                BottomNavigationItem(
+//                    title = stringResource(Res.string.domofon_name_nav),
+//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
+//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
+//                    hasNews = false,
+//                    badgeCount = null,
+//                    route = ScreenRoute.DomofonScreen.route
+//                ),
+//                BottomNavigationItem(
+//                    title = stringResource(Res.string.help_name_nav),
+//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
+//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
+//                    hasNews = false,
+//                    badgeCount = null,
+//                    route = ScreenRoute.HelpScreen.route
+//                )
+//            )
 
             GetCurrentEntry(
-                navigator = navigator,
+                navHostController = navHostController,
                 onEntryChanged = {
                     currentEntryState.value = it
-
                     // установка цвета в момент переключения навигации
                     items.forEachIndexed { index, item ->
                         if (item.route.contains(it)) {
@@ -191,7 +304,9 @@ fun AppContent() {
                                         selected = selectedItemIndex == index,
                                         onClick = {
                                             selectedItemIndex = index
-                                            navigator.navigate(item.route)
+
+                                            navHostController.navigate(item.route)
+                                            //navigator.navigate(item.route)
                                         },
                                         label = {
                                             Text(
@@ -245,7 +360,7 @@ fun AppContent() {
 //                    ) {
 //
 //                    }
-                    NavHostScreenScenes(navigator = navigator)
+                    NavHostScreenScenes(navHostController = navHostController)
                 }
             }
             //   }
@@ -253,7 +368,7 @@ fun AppContent() {
 
             val lazyListState: LazyListState = rememberLazyListState()
             //     }
-        }
+   //     }
     }
 
 }

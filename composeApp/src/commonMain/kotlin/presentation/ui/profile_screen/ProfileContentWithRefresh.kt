@@ -37,7 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import moe.tlaster.precompose.navigation.Navigator
+import androidx.navigation.NavHostController
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_addresses
 import mykmptest.composeapp.generated.resources.ic_arrow_right
@@ -57,7 +57,7 @@ import util.ColorCustomResources
 @Composable
 fun ProfileContentWithRefresh(
     onRefresh: Any,
-    navigator: Navigator,
+    navHostController: NavHostController,
     paddingValue: PaddingValues,
 ) {
 

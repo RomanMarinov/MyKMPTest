@@ -40,7 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import moe.tlaster.precompose.navigation.Navigator
+import androidx.navigation.NavHostController
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.home_button_order
 import mykmptest.composeapp.generated.resources.home_img_domofon
@@ -68,7 +68,7 @@ fun HomeContentWithRefresh(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    navigator: Navigator,
+    navHostController: NavHostController,
     paddingValue: PaddingValues,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -117,11 +117,11 @@ fun HomeContentWithRefresh(
             homeOrderCard(openBottomSheet = {
                 openBottomSheetOrderState.value = it
             })
-            homeInternetTvCard(navigator = navigator)
-            homeMobileCard(navigator = navigator)
-            homeOutdoorCard(navigator = navigator)
-            homeMapCard(navigator = navigator)
-            homeDomofonCard(navigator = navigator)
+            homeInternetTvCard(navHostController = navHostController)
+            homeMobileCard(navHostController = navHostController)
+            homeOutdoorCard(navHostController = navHostController)
+            homeMapCard(navHostController = navHostController)
+            homeDomofonCard(navHostController = navHostController)
         }
 
         if (pullToRefreshState.isRefreshing) {
@@ -148,7 +148,7 @@ fun HomeContentWithRefresh(
 
     if (openBottomSheetPersonalAccountState.value) {
         BottomSheetPersonalAccount(
-            navigator = navigator,
+            navHostController = navHostController,
             //markerDetailState.value,
             openBottomSheet = {
                 openBottomSheetPersonalAccountState.value = false
@@ -157,7 +157,7 @@ fun HomeContentWithRefresh(
     }
     if (openBottomSheetOrderState.value) {
         BottomSheetOrder(
-            navigator = navigator,
+            navHostController = navHostController,
             //markerDetailState.value,
             openBottomSheet = {
                 openBottomSheetOrderState.value = false
@@ -266,7 +266,7 @@ fun LazyListScope.homeOrderCard(
     }
 }
 
-fun LazyListScope.homeInternetTvCard(navigator: Navigator) {
+fun LazyListScope.homeInternetTvCard(navHostController: NavHostController) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
@@ -279,7 +279,7 @@ fun LazyListScope.homeInternetTvCard(navigator: Navigator) {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-                        navigator.navigate(ScreenRoute.InternetTvScreen.route)
+                        navHostController.navigate(ScreenRoute.InternetTvScreen.route)
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -330,7 +330,7 @@ fun LazyListScope.homeInternetTvCard(navigator: Navigator) {
     }
 }
 
-fun LazyListScope.homeMobileCard(navigator: Navigator) {
+fun LazyListScope.homeMobileCard(navHostController: NavHostController) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
@@ -394,7 +394,7 @@ fun LazyListScope.homeMobileCard(navigator: Navigator) {
     }
 }
 
-fun LazyListScope.homeOutdoorCard(navigator: Navigator) {
+fun LazyListScope.homeOutdoorCard(navHostController: NavHostController) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
@@ -407,7 +407,7 @@ fun LazyListScope.homeOutdoorCard(navigator: Navigator) {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-                        navigator.navigate(ScreenRoute.OutdoorScreen.route)
+                        navHostController.navigate(ScreenRoute.OutdoorScreen.route)
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -460,7 +460,7 @@ fun LazyListScope.homeOutdoorCard(navigator: Navigator) {
     }
 }
 
-fun LazyListScope.homeMapCard(navigator: Navigator) {
+fun LazyListScope.homeMapCard(navHostController: NavHostController) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
@@ -473,7 +473,7 @@ fun LazyListScope.homeMapCard(navigator: Navigator) {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-                        navigator.navigate(ScreenRoute.MapScreen.route)
+                        navHostController.navigate(ScreenRoute.MapScreen.route)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -513,7 +513,7 @@ fun LazyListScope.homeMapCard(navigator: Navigator) {
     }
 }
 
-fun LazyListScope.homeDomofonCard(navigator: Navigator) {
+fun LazyListScope.homeDomofonCard(navHostController: NavHostController) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
@@ -526,7 +526,7 @@ fun LazyListScope.homeDomofonCard(navigator: Navigator) {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-                        navigator.navigate(ScreenRoute.DomofonScreen.route)
+                        navHostController.navigate(ScreenRoute.DomofonScreen.route)
                     },
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
