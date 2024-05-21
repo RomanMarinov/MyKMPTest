@@ -1,6 +1,7 @@
 package di
 
 import org.koin.dsl.module
+import presentation.ui.call_activity.CallActivityViewModel
 import presentation.ui.domofon_screen.DomofonScreenViewModel
 import presentation.ui.help_screen.HelpScreenViewModel
 import presentation.ui.home_screen.HomeScreenViewModel
@@ -20,6 +21,8 @@ val viewModelModule = module {
     factory { HelpScreenViewModel(get()) }
 
     factory { InternetTvScreenViewModel(get()) }
+
+    factory { CallActivityViewModel(get()) }
 
 }
 

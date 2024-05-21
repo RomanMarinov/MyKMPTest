@@ -1,5 +1,7 @@
 package presentation.ui.internet_tv_screen
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import domain.model.home.locations_internet_tv.DataLocations
 import domain.model.home.tariffs_by_location.DataTariffs
@@ -11,8 +13,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
+//import moe.tlaster.precompose.viewmodel.ViewModel
+//import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class InternetTvScreenViewModel(
     private val homeRepository: HomeRepository,

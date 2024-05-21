@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     kotlin("plugin.serialization") version "1.9.23"
-   // alias(libs.plugins.jetbrainsKotlinAndroid)
+    // alias(libs.plugins.jetbrainsKotlinAndroid)
 
 
 //    implementation("org.jetbrains.compose:compose-gradle-plugin:1.6.2")
@@ -18,7 +18,7 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -32,7 +32,7 @@ kotlin {
 //            export("dev.icerock.moko:graphics:0.9.0")
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling.preview)
@@ -46,20 +46,36 @@ kotlin {
 //            implementation("net.thauvin.erik.urlencoder:urlencoder-lib:1.5.0")
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
+//            implementation(compose.runtime) // до ветки
+//            implementation(compose.foundation) // до ветки
             implementation(compose.material3)
-            implementation(compose.ui)
+            // implementation(compose.ui) // до ветки
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
             //https://github.com/Tlaster/PreCompose/blob/master/docs/setup.md
-            api(compose.foundation)
-            api(compose.animation)
+            //  api(compose.foundation) // до ветки
+            //    api(compose.animation) // до ветки
             api(libs.precompose)
-           // api(libs.precompose.molecule) // For Molecule intergration
+            // api(libs.precompose.molecule) // For Molecule intergration
             api(libs.precompose.viewmodel) // For ViewModel intergration
-           // api(libs.precompose.koin) // For Koin intergration
+            // api(libs.precompose.koin) // For Koin intergration
+
+
+//            ////////////////////////
+//            // CompositionLocal LocalLifecycleOwner not present
+//            implementation("androidx.compose.ui:ui:1.6.7")
+//            implementation("androidx.compose.runtime:runtime:1.6.7")
+//            implementation("androidx.compose.foundation:foundation:1.6.7")
+//            implementation("androidx.compose.animation:animation:1.6.7")
+//            implementation("androidx.compose.material:material:1.6.7")
+
+//            implementation("androidx.compose.ui:ui:1.7.0-beta01")
+//            implementation("androidx.compose.runtime:runtime:1.7.0-beta01")
+//            implementation("androidx.compose.foundation:foundation:1.7.0-beta01")
+//            implementation("androidx.compose.animation:animation:1.7.0-beta01")
+//            implementation("androidx.compose.material:material:1.7.0-beta01")
+//            /////////////////////////
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
@@ -85,7 +101,7 @@ kotlin {
 
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
-           // implementation(libs.kotlinx.coroutines.core)
+            // implementation(libs.kotlinx.coroutines.core)
             implementation("media.kamel:kamel-image:0.9.4")
 
 
@@ -111,21 +127,34 @@ kotlin {
             ///////////
 
 
+            //  implementation("androidx.datastore:datastore-core-jvm:1.1.1")
+
+            implementation(libs.androidx.data.store.core)
+            implementation(libs.androidx.datastore.core)
+            // https://otsembo.hashnode.dev/jetpack-datastore-a-multiplatform-solution
+            implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
+
+
+            // implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+
+            //
+
+
+
         }
 
         iosMain {
             dependencies {
-               // implementation("io.ktor:ktor-client-ios:2.3.10")
+                // implementation("io.ktor:ktor-client-ios:2.3.10")
                 implementation(libs.ktor.client.darwin)
 
 
-                
             }
             //sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
             //resources.srcDirs("src/commonMain/resources","src/iosMain/resources")
 //            resources.srcDirs("src/commonMain/resources","src/iosMain/resources")
-
 
 
         }
@@ -179,7 +208,14 @@ android {
         kotlinCompilerExtensionVersion = "1.5.2"
     }
     dependencies {
-        debugImplementation(libs.compose.ui.tooling)
+        // debugImplementation(libs.compose.ui.tooling)
+
+        // не было
+        implementation("androidx.compose.ui:ui:1.7.0-alpha08")
+        implementation("androidx.compose.runtime:runtime:1.7.0-alpha08")
+        implementation("androidx.compose.foundation:foundation:1.7.0-alpha08")
+        implementation("androidx.compose.animation:animation:1.7.0-alpha08")
+        implementation("androidx.compose.material:material:1.7.0-alpha08")
     }
 }
 dependencies {
@@ -187,19 +223,18 @@ dependencies {
     //implementation(libs.androidx.core.ktx)
 
     // отключил для теста на работу koin
-      implementation(libs.koin.android)
-     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
     implementation(libs.koin.compose)
 
     // отключил для теста на работу koin
     implementation(libs.koin.core)
 
-   // implementation("io.insert-koin:koin-annotations:1.3.0")
+    // implementation("io.insert-koin:koin-annotations:1.3.0")
     // ksp("io.insert-koin:koin-ksp-compiler:1.3.0")
 
     implementation("org.jetbrains.compose.annotation-internal:annotation:1.6.2")
     implementation(libs.androidx.constraintlayout)
-    
 
 
 //    implementation(libs.kotlinx.coroutines.core)
@@ -207,26 +242,71 @@ dependencies {
 
 
     implementation("org.osmdroid:osmdroid-android:6.1.16")
-   // implementation("tech.utsmankece:osm-android-compose:0.0.3")
+    // implementation("tech.utsmankece:osm-android-compose:0.0.3")
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.runtime)
+
+//    implementation("androidx.compose.runtime:runtime:1.7.0-beta01")
+
+
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.compose.ui.tooling.preview)
+//    implementation(libs.compose.ui.tooling.preview)
     implementation(libs.androidx.material3)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.compose.ui.tooling)
+    //debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 //    implementation(libs.firebase.crashlytics.buildtools)
-   // implementation(libs.androidx.compose.material)
+    // implementation(libs.androidx.compose.material)
+
 
     // красивый переход от Лакнера
     // https://www.youtube.com/watch?v=mE5bLb42_Os
     //implementation("androidx.compose.animation:animation:1.7.0-alpha07")
 
+
+    implementation(libs.androidx.data.store.core)
+    implementation(libs.androidx.datastore.core)
+    // https://otsembo.hashnode.dev/jetpack-datastore-a-multiplatform-solution
+
+
+    ////////////////////////
+    // CompositionLocal LocalLifecycleOwner not present
+//    implementation("androidx.compose.ui:ui:1.6.7")
+//    implementation("androidx.compose.runtime:runtime:1.6.7")
+//    implementation("androidx.compose.foundation:foundation:1.6.7")
+//    implementation("androidx.compose.animation:animation:1.6.7")
+//    implementation("androidx.compose.material:material:1.6.7")
+
+
+
+
+//    implementation("androidx.compose.ui:ui:1.7.0-alpha05")
+//    implementation("androidx.compose.runtime:runtime:1.7.0-alpha05")
+//    implementation("androidx.compose.foundation:foundation:1.7.0-alpha05")
+//    implementation("androidx.compose.animation:animation:1.7.0-alpha05")
+//    implementation("androidx.compose.material:material:1.7.0-alpha05")
+
+//    implementation("androidx.compose.ui:ui:1.7.0-beta01")
+//    implementation("androidx.compose.runtime:runtime:1.7.0-beta01")
+//    implementation("androidx.compose.foundation:foundation:1.7.0-beta01")
+//    implementation("androidx.compose.animation:animation:1.7.0-beta01")
+//    implementation("androidx.compose.material:material:1.7.0-beta01")
+
+    //         // не было
+    implementation("androidx.compose.ui:ui:1.7.0-alpha08")
+    implementation("androidx.compose.runtime:runtime:1.7.0-alpha08")
+    implementation("androidx.compose.foundation:foundation:1.7.0-alpha08")
+    implementation("androidx.compose.animation:animation:1.7.0-alpha08")
+    implementation("androidx.compose.material:material:1.7.0-alpha08")
+
+    /////////////////////////
 }
 

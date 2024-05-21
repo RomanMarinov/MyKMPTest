@@ -1,12 +1,14 @@
 package presentation.ui.domofon_screen
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import domain.repository.DomofonRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
+//import moe.tlaster.precompose.viewmodel.ViewModel
+//import moe.tlaster.precompose.viewmodel.viewModelScope
 import presentation.ui.domofon_screen.model.SputnikUiState
 
 class DomofonScreenViewModel(

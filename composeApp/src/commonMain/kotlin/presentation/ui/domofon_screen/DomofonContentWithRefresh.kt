@@ -174,7 +174,6 @@ fun DomofonContentWithRefresh(
             )
 
         SnackbarHost(
-
             hostState = snackbarHostState,
             snackbar = {
                 Snackbar(

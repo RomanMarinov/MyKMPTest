@@ -14,10 +14,10 @@ fun MainViewController() = ComposeUIViewController {
         onMoveToMainActivity = {
             moveState.value = true
         },
-        onMakeCall = {
-
-
-        }
+//        onMakeCall = {
+//
+//
+//        }
     )
     if (moveState.value) {
         // moveState.value = false

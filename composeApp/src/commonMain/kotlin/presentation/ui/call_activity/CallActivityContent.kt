@@ -33,7 +33,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun CallActivityContent(
     onMoveToMainActivity: () -> Unit,
-    onMakeCall: () -> Unit
+   // onMakeCall: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -79,6 +79,9 @@ fun CallActivityContent(
                     .padding(16.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             ) {
+
+
+
                 ViewPagerAuth(
                     inputTextPhoneNumber = inputTextPhoneNumber.value,
                     onInputTextPhoneNumber = {
@@ -87,9 +90,9 @@ fun CallActivityContent(
                     onMoveToMainActivity = {
                         onMoveToMainActivity()
                     },
-                    onMakeCall = {
-                        onMakeCall()
-                    }
+//                    onMakeCall = {
+//                        onMakeCall()
+//                    }
                 )
             }
         }

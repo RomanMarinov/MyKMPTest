@@ -23,6 +23,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,13 +33,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import domain.model.auth.AuthLoginBody
 import kotlinx.coroutines.launch
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
+//import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_help_number
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.koinInject
 import util.ColorCustomResources
+import util.SnackbarBackOnlineHelper
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -46,12 +53,32 @@ fun ViewPagerAuth(
     inputTextPhoneNumber: String,
     onInputTextPhoneNumber: (String) -> Unit,
     onMoveToMainActivity: () -> Unit,
-    onMakeCall: () -> Unit
+    viewModel: CallActivityViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { TabsAuth.entries.size })
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
     val isShowCallContainer = remember { mutableStateOf(false) }
+
+    val logInStatusCode by viewModel.logInStatusCode.collectAsState()
+    val logInStatusCodeState = remember { mutableStateOf(logInStatusCode) }
+    when (logInStatusCodeState.value) {
+        200 -> {
+            onMoveToMainActivity()
+        }
+        404 -> {
+            SnackbarBackOnlineHelper.execute(
+                isShow = true,
+                text = "С указанного номера не было звонка"
+            )
+        }
+        0 -> {
+            SnackbarBackOnlineHelper.execute(
+                isShow = true,
+                text = "не правильно введен номер телефона"
+            )
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -108,9 +135,10 @@ fun ViewPagerAuth(
                     onMoveToMainActivity = {
                         onMoveToMainActivity()
                     },
-                    onMakeCall = {
-                        onMakeCall()
-                    }
+//                    onMakeCall = {
+//                        onMakeCall()
+//                    }
+                    viewModel = viewModel
                 )
 
                 1 -> LoginByWiFi(
@@ -128,6 +156,14 @@ fun ViewPagerAuth(
     }
 }
 
+fun getCorrectSupportCallNumber(phone: String?) : String {
+    val supportCallNumber = phone ?: "88001000249"
+    return "${supportCallNumber.substring(0, 1)}-" +
+            "${supportCallNumber.substring(1, 4)}-" +
+            "${supportCallNumber.substring(4, 8)}-" +
+            "${supportCallNumber.substring(8)}"
+}
+
 @Composable
 fun LoginByPhoneNumber(
     isShowCallContainer: Boolean,
@@ -135,19 +171,29 @@ fun LoginByPhoneNumber(
     inputTextPhoneNumber: String,
     onInputTextPhoneNumber: (String) -> Unit,
     onMoveToMainActivity: () -> Unit,
-    onMakeCall: () -> Unit
+    // onMakeCall: () -> Unit
 //    callActivity: CallActivity
+    viewModel: CallActivityViewModel
 ) {
     var textLastNameState by remember { mutableStateOf("") }
     var textNameState by remember { mutableStateOf("") }
     var textMiddleNameState by remember { mutableStateOf("") }
     var isFocusTextFiled by remember { mutableStateOf(false) }
-
+    val isCallingPhone = remember { mutableStateOf(false) }
     val isShowWarning = remember { mutableStateOf(false) }
     val errorTextWarning = remember { mutableStateOf("") }
     val errorLineColorClick = remember { mutableStateOf(ColorCustomResources.colorBazaMainBlue) }
 
-    val isCallingPhone = remember { mutableStateOf(false) }
+    val supportCallNumber by viewModel.supportCallNumber.collectAsStateWithLifecycle()
+    val supportCallNumberState = remember { mutableStateOf(getCorrectSupportCallNumber(supportCallNumber)) }
+
+    val focusManager = LocalFocusManager.current
+    LaunchedEffect(inputTextPhoneNumber) {
+        if (inputTextPhoneNumber.length == 10) {
+            focusManager.clearFocus()
+            isCallingPhone.value = false
+        }
+    }
 
     if (!isShowCallContainer) {
         Column(
@@ -213,7 +259,6 @@ fun LoginByPhoneNumber(
                             errorTextWarning.value = "Обязательное поле для ввода"
                             errorLineColorClick.value = Color.Red
                         }
-
                     },
                     content = {
                         Text(
@@ -262,7 +307,7 @@ fun LoginByPhoneNumber(
             ) {
                 Text(
                     modifier = Modifier.padding(end = 16.dp),
-                    text = "8-800-1000-249",
+                    text = supportCallNumberState.value,
                     fontSize = 30.sp
                 )
                 Icon(
@@ -348,20 +393,26 @@ fun LoginByPhoneNumber(
         }
     }
 
+    if (isShowCallContainer) {
+        val authLoginBody = getAuthLoginBody(phone = inputTextPhoneNumber)
+
+        //
+        //viewModel.login(authLoginBody = authLoginBody)
+    }
+
     if (isCallingPhone.value) {
+        isCallingPhone.value = false
         CallPhonePlatform().MakeCall()
-//        MapViewPlatform().SetMapView(
-//            paddingValue = paddingValue,
-//            viewModel = viewModel,
-//            moveToBottomSheetMapFragment = { markerDetail ->
-//                markerDetail.titleType?.let {
-//                    markerDetailTitleTypeState.value = it
-//                    markerDetailState.value = markerDetail
-//                }
-//            }
-//        )
     }
 }
+
+@Composable
+fun getAuthLoginBody(phone: String): AuthLoginBody {
+    val phoneLong = phone.toLong()
+    val fingerprint = CallPhonePlatform().getFingerprint()
+    return AuthLoginBody(phoneLong, fingerprint)
+}
+
 
 @Composable
 fun LoginByWiFi(
@@ -388,7 +439,7 @@ fun LoginByWiFi(
     ) {
         Row(
             modifier = Modifier
-                  .fillMaxWidth()
+                .fillMaxWidth()
                 .padding(top = 20.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically // Add this line
@@ -428,6 +479,7 @@ fun LoginByWiFi(
         }
     }
 }
+
 
 enum class TabsAuth(
     val text: String,

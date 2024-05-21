@@ -33,7 +33,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,13 +47,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import com.dev_marinov.my_compose_multi.R
 import data.public_info.remote.dto.Data
 import data.public_info.remote.dto.Location
@@ -130,7 +126,7 @@ fun MapScreenAndroidActual(
     paddingValue: PaddingValues,
     moveToBottomSheetMapFragment: (MarkerDetail) -> Unit,
 ) {
-    SetLocalLifecycleOwner()
+   // SetLocalLifecycleOwner()
     val context = LocalContext.current
     //val scope = rememberCoroutineScope()
 
@@ -393,36 +389,36 @@ private fun setMarkerParams(
     }
 }
 
-@Composable
-fun SetLocalLifecycleOwner() {
-    val localLifecycleOwner = LocalLifecycleOwner.current
-    DisposableEffect(
-        key1 = localLifecycleOwner,
-        effect = {
-            val observer = LifecycleEventObserver { _, event ->
-                when (event) {
-                    Lifecycle.Event.ON_START -> {
-                        Log.d("4444", " MapScreen Lifecycle.Event.ON_START")
-                    }
-
-                    Lifecycle.Event.ON_STOP -> { // когда свернул
-                        Log.d("4444", " MapScreen Lifecycle.Event.ON_STOP")
-                    }
-
-                    Lifecycle.Event.ON_DESTROY -> { // когда удалил из стека
-                        Log.d("4444", " MapScreen Lifecycle.Event.ON_DESTROY")
-                    }
-
-                    else -> {}
-                }
-            }
-            localLifecycleOwner.lifecycle.addObserver(observer)
-            onDispose {
-                localLifecycleOwner.lifecycle.removeObserver(observer)
-            }
-        }
-    )
-}
+//@Composable
+//fun SetLocalLifecycleOwner() {
+//    val localLifecycleOwner = LocalLifecycleOwner.current
+//    DisposableEffect(
+//        key1 = localLifecycleOwner,
+//        effect = {
+//            val observer = LifecycleEventObserver { _, event ->
+//                when (event) {
+//                    Lifecycle.Event.ON_START -> {
+//                        Log.d("4444", " MapScreen Lifecycle.Event.ON_START")
+//                    }
+//
+//                    Lifecycle.Event.ON_STOP -> { // когда свернул
+//                        Log.d("4444", " MapScreen Lifecycle.Event.ON_STOP")
+//                    }
+//
+//                    Lifecycle.Event.ON_DESTROY -> { // когда удалил из стека
+//                        Log.d("4444", " MapScreen Lifecycle.Event.ON_DESTROY")
+//                    }
+//
+//                    else -> {}
+//                }
+//            }
+//            localLifecycleOwner.lifecycle.addObserver(observer)
+//            onDispose {
+//                localLifecycleOwner.lifecycle.removeObserver(observer)
+//            }
+//        }
+//    )
+//}
 
 
 @OptIn(ExperimentalResourceApi::class)

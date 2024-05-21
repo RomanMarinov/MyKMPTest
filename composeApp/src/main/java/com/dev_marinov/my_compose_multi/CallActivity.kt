@@ -1,21 +1,28 @@
 package com.dev_marinov.my_compose_multi
 
-import android.content.Intent
+import App
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import presentation.ui.call_activity.CallActivityContent
+
+//import util.ConnectivityLiveDataHelper
 
 class CallActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
         setContent {
+
+            val context = LocalContext.current
+            val moveState = remember { mutableStateOf(false) }
 
             // https://stackoverflow.com/questions/78190854/status-bar-color-change-in-compose-multiplatform
             enableEdgeToEdge(
@@ -31,24 +38,19 @@ class CallActivity : ComponentActivity() {
             // сначала работало потом изменений не заметил
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
+            //ConnectivityLiveDataHelper(context = context)
             // App()
 
-            // TutorialInputMaskScreen()
-//App2()
-//                CallActivityContent(this)
+
             CallActivityContent(
                 onMoveToMainActivity = {
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+                    moveState.value = true
                 },
-                onMakeCall = {
-                    val uri = Uri.parse("tel:" + "88001000249")
-                    // Create the intent and set the data for the
-                    // intent as the phone number.
-                    val i = Intent(Intent.ACTION_DIAL, uri)
-                    startActivity(i)
-                }
             )
+
+            if (moveState.value) {
+                App()
+            }
         }
     }
 }

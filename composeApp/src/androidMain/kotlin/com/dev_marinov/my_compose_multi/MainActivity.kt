@@ -28,6 +28,8 @@ class MainActivity : ComponentActivity() {
             // сначала работало потом изменений не заметил
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
+
+
             App()
 
         }

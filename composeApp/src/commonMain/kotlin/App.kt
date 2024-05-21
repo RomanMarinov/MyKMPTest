@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,6 +62,9 @@ data class BottomNavigationItem(
 
 @Composable
 fun App() {
+
+
+
     KoinContext {
         AppContent()
     }
@@ -85,7 +89,22 @@ fun AppContent() {
     // KoinContext{
     MaterialTheme {
 
+
+//        CompositionLocalProvider(
+//            androidx.lifecycle.compose.LocalLifecycleOwner provides androidx.compose.ui.platform.LocalLifecycleOwner.current,
+//        ) {
+//            // ...
+//        }
+
+
+        CompositionLocalProvider(
+            androidx.lifecycle.compose.LocalLifecycleOwner provides androidx.compose.ui.platform.LocalLifecycleOwner.current,
+        ) {
+
+        }
         PreComposeApp {
+
+
             val currentEntryState = remember { mutableStateOf("") }
             var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
             val navigator = rememberNavigator()
@@ -221,7 +240,11 @@ fun AppContent() {
                     //вызывается 3 раза
 
                     // MainScreensNavigationGraph(navHostController = navController)
-
+//                    CompositionLocalProvider(
+//                        androidx.lifecycle.compose.LocalLifecycleOwner provides androidx.compose.ui.platform.LocalLifecycleOwner.current,
+//                    ) {
+//
+//                    }
                     NavHostScreenScenes(navigator = navigator)
                 }
             }

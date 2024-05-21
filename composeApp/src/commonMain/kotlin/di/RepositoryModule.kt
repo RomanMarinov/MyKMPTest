@@ -1,9 +1,12 @@
 package di
 
+import data.auth.local.AppPreferencesRepository
+import data.auth.remote.AuthRepositoryImpl
 import data.domofon.remote.DomofonRepositoryImpl
 import data.home.remote.HomeRepositoryImpl
 import data.outdoor.remote.OutdoorRepositoryImpl
 import data.public_info.remote.PublicInfoRepositoryImpl
+import domain.repository.AuthRepository
 import domain.repository.DomofonRepository
 import domain.repository.HomeRepository
 import domain.repository.OutdoorRepository
@@ -27,6 +30,20 @@ val repositoryModule = module {
     single<HomeRepository> { HomeRepositoryImpl(get()) } withOptions {
         createdAtStart()
     }
+
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) } withOptions {
+        createdAtStart()
+    }
+
+
+//
+//        single {
+//        getDataStore {
+//            androidContext().filesDir?.resolve(dataStoreFileName)?.absolutePath
+//                ?: throw Exception("Couldn't get Android Datastore context.")
+//        }
+  //  }
+    single { AppPreferencesRepository(get()) }
 
 }
 

@@ -3,5 +3,6 @@ package di
 fun commonModule() = listOf(
     networkModule,
     repositoryModule,
-    viewModelModule
+    viewModelModule,
+    getDatastoreModulePlatform()
 )

@@ -13,4 +13,9 @@ actual class CallPhonePlatform actual constructor() {
             application.openURL(nsUrl)
         }
     }
+
+    @Composable
+    actual fun getFingerprint(): String {
+        TODO("Not yet implemented")
+    }
 }

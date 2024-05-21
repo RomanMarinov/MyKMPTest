@@ -1,5 +1,7 @@
 package presentation.ui.help_screen
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import domain.repository.PublicInfoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -7,8 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
+//import moe.tlaster.precompose.viewmodel.ViewModel
+//import moe.tlaster.precompose.viewmodel.viewModelScope
 import presentation.ui.help_screen.model.HelpFaqUiState
 import presentation.ui.help_screen.model.HelpOfficesUiState
 
