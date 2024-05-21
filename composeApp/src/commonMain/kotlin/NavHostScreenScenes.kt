@@ -33,19 +33,19 @@ fun NavHostScreenScenes(navHostController: NavHostController) {
         }
 
         composable(
-            route = ScreenRoute.OutdoorScreen.route,
+            route = ScreenRoute.MapScreen.route,
         ) {
             MapScreen(navHostController = navHostController)
         }
 
         composable(
-            route = ScreenRoute.OutdoorScreen.route,
+            route = ScreenRoute.DomofonScreen.route,
         ) {
             DomofonScreen(navHostController = navHostController)
         }
 
         composable(
-            route = ScreenRoute.OutdoorScreen.route,
+            route = ScreenRoute.HelpScreen.route,
         ) {
             HelpScreen(navHostController = navHostController)
         }

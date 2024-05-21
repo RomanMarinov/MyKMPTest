@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +60,6 @@ data class BottomNavigationItem(
 fun App() {
 
 
-
     KoinContext {
         AppContent()
     }
@@ -85,26 +82,12 @@ fun AppContent() {
     // KoinContext{
     MaterialTheme {
 
-
-//        CompositionLocalProvider(
-//            androidx.lifecycle.compose.LocalLifecycleOwner provides androidx.compose.ui.platform.LocalLifecycleOwner.current,
-//        ) {
-//            // ...
-//        }
-
-
-        CompositionLocalProvider(
-            androidx.lifecycle.compose.LocalLifecycleOwner provides androidx.compose.ui.platform.LocalLifecycleOwner.current,
-        ) {
-
-        }
-
         val currentEntryState = remember { mutableStateOf("") }
         var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
         val navHostController: NavHostController = rememberNavController()
 
-        Logger.d {" 4444 hui currentEntryState=" + currentEntryState.value}
-        Logger.d {" 4444 hui selectedItemIndex=" + selectedItemIndex}
+        Logger.d { " 4444 hui currentEntryState=" + currentEntryState.value }
+        Logger.d { " 4444 hui selectedItemIndex=" + selectedItemIndex }
 
         val items = listOf(
             BottomNavigationItem(
@@ -150,143 +133,23 @@ fun AppContent() {
             )
         )
 
-//        Scaffold(
-//            modifier = Modifier.navigationBarsPadding(),
-//            bottomBar = {
-//
-////                    items = listOf(
-////                        ChatalyzeBottomNavItem(
-////                            name = "Chat",
-////                            route = ScreenRoute.ChatsScreen.route,
-////                            icon = Icons.Default.Chat,
-////                            // badgeCount = 2
-////                        ),
-////                        ChatalyzeBottomNavItem(
-////                            name = "Call",
-////                            route = ScreenRoute.CallsScreen.route,
-////                            icon = Icons.Default.Call,
-////                            // badgeCount = 4
-////                        ),
-////                        ChatalyzeBottomNavItem(
-////                            name = "Profile",
-////                            route = ScreenRoute.ProfileScreen.route,
-////                            icon = Icons.Default.Person,
-//////                                badgeCount =
-////                        ),
-////                    ),
-////                    navController = navController,
-////                    onItemClick = {
-////                        navController.navigate(it.route)
-////                    }
-//////                navController = authNavController,
-//////                onItemClick = {
-//////                    authNavController.navigate(it.route)
-//////                }
-//
-//            },
-//        ) { paddingValues ->
-//            // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
-//            Box(
-//                modifier = Modifier
-//                    .background(colorResource(id = R.color.main_violet_light))
-//                    .padding(paddingValues = paddingValues)
-//            ) {
-//                // было
-//                Log.d("4444", " MainScreensActivity SetPermissionsAndNavigation box ")
-//                //вызывается 3 раза
-//
-//                MainScreensNavigationGraph(navHostController = navController)
-//            }
-//        }
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //    PreComposeApp {
-
-
-//            val currentEntryState = remember { mutableStateOf("") }
-//            var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
-//            val navigator = rememberNavigator()
-//
-//            Logger.d {" 4444 hui currentEntryState=" + currentEntryState.value}
-//            Logger.d {" 4444 hui selectedItemIndex=" + selectedItemIndex}
-
-//            val items = listOf(
-//                BottomNavigationItem(
-//                    title = stringResource(Res.string.home_name_nav),
-//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_home),
-//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_home),
-//                    hasNews = false,
-//                    badgeCount = null,
-//                    route = ScreenRoute.HomeScreen.route
-//                ),
-//                BottomNavigationItem(
-//                    title = stringResource(Res.string.outdoor_name_nav),
-//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
-//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_outdoor),
-//                    hasNews = false,
-//                    badgeCount = null,
-//                    route = ScreenRoute.OutdoorScreen.route
-//                ),
-//                BottomNavigationItem(
-//                    title = stringResource(Res.string.map_name_nav),
-//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_map),
-//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_map),
-//                    hasNews = false,
-//                    badgeCount = null,
-//                    route = ScreenRoute.MapScreen.route
-//                ),
-//
-//                BottomNavigationItem(
-//                    title = stringResource(Res.string.domofon_name_nav),
-//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
-//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_domofon),
-//                    hasNews = false,
-//                    badgeCount = null,
-//                    route = ScreenRoute.DomofonScreen.route
-//                ),
-//                BottomNavigationItem(
-//                    title = stringResource(Res.string.help_name_nav),
-//                    selectedIcon = vectorResource(Res.drawable.ic_navbar_help),
-//                    unSelectedIcon = vectorResource(Res.drawable.ic_navbar_help),
-//                    hasNews = false,
-//                    badgeCount = null,
-//                    route = ScreenRoute.HelpScreen.route
-//                )
-//            )
-
-            GetCurrentEntry(
-                navHostController = navHostController,
-                onEntryChanged = {
-                    currentEntryState.value = it
-                    // установка цвета в момент переключения навигации
-                    items.forEachIndexed { index, item ->
-                        if (item.route.contains(it)) {
-                            selectedItemIndex = index
-                        }
+        GetCurrentEntry(
+            navHostController = navHostController,
+            onEntryChanged = {
+                currentEntryState.value = it
+                // установка цвета в момент переключения навигации
+                items.forEachIndexed { index, item ->
+                    if (item.route.contains(it)) {
+                        selectedItemIndex = index
                     }
                 }
-            )
+            }
+        )
 
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background
-            ) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
             Scaffold(
                 bottomBar = {
                     if (!currentEntryState.value.contains("webview_screen")) {
@@ -331,7 +194,7 @@ fun AppContent() {
                                             indicatorColor = Color.LightGray
                                         ),
 
-                                    )
+                                        )
 
                                 }
 
@@ -346,7 +209,7 @@ fun AppContent() {
                 // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
                 Box(
 
-                   // modifier = Modifier.shadow(40.dp)
+                    // modifier = Modifier.shadow(40.dp)
 //                        modifier = Modifier
 //                            .padding(paddingValues = paddingValues)
                 ) {
@@ -364,11 +227,11 @@ fun AppContent() {
                 }
             }
             //   }
-               }
+        }
 
-            val lazyListState: LazyListState = rememberLazyListState()
-            //     }
-   //     }
+        val lazyListState: LazyListState = rememberLazyListState()
+        //     }
+        //     }
     }
 
 }

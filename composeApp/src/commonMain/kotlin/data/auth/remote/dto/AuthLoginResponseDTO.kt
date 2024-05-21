@@ -2,7 +2,9 @@ package data.auth.remote.dto
 
 import domain.model.auth.AuthLoginResponse
 import domain.model.auth.PayloadLogin
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AuthLoginResponseDTO(
     val accessToken: String,
     val refreshToken: String,
@@ -17,6 +19,7 @@ data class AuthLoginResponseDTO(
     }
 }
 
+@Serializable
 data class PayloadLoginDTO(
     val phone: Long
 ) {

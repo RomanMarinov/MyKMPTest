@@ -60,6 +60,8 @@ class AuthRepositoryImpl(
                     setBody(body = authLoginBodyDTO)
                 }
 //
+                Logger.d{"4444 ViewPagerAuth response=" + httpResponse?.status?.value}
+
                 CURRENT_REQUEST_INTERVAL += INCREASE_REQUEST_INTERVAL
 
                 when (response.status.value) {
@@ -96,13 +98,13 @@ class AuthRepositoryImpl(
                             //appAuth.removeAuthFromPrefsAndAuthState() // Галино
                             return response
                         }
-                        //          continue
+                                  continue
                     }
 
                     else -> {
 //                logManager.writeLogToDB("Ошибка авторизации с номером телефона '${body.phone}'")
                         //              appAuth.removeAuthFromPrefsAndAuthState()
-                        //            continue
+                                    continue
                     }
                 }
             }
@@ -110,6 +112,7 @@ class AuthRepositoryImpl(
             e.printStackTrace()
             //logManager.writeLogToDB("Ошибка авторизации с номером телефона '${body.phone}'")
             //logManager.writeLogToDB(e.stackTraceToString())
+            Logger.d{"4444 try catch AuthRepositoryImpl e=" + e}
             return httpResponse
         }
     }

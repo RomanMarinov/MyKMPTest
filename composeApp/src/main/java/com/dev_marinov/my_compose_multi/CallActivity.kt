@@ -42,6 +42,13 @@ class CallActivity : ComponentActivity() {
             // App()
 
 
+//            SnackbarBackOnlineHelper.execute(
+//                isShow = true,
+//                text = "С указанного номера не было звонка"
+//            )
+
+
+
             CallActivityContent(
                 onMoveToMainActivity = {
                     moveState.value = true

@@ -23,7 +23,6 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +44,7 @@ import mykmptest.composeapp.generated.resources.ic_help_number
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
 import util.ColorCustomResources
-import util.SnackbarBackOnlineHelper
+import util.SnackBarHostHelper
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -60,23 +59,17 @@ fun ViewPagerAuth(
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
     val isShowCallContainer = remember { mutableStateOf(false) }
 
-    val logInStatusCode by viewModel.logInStatusCode.collectAsState()
+    val logInStatusCode by viewModel.logInStatusCode.collectAsStateWithLifecycle()
     val logInStatusCodeState = remember { mutableStateOf(logInStatusCode) }
-    when (logInStatusCodeState.value) {
+    when (logInStatusCode) {
         200 -> {
             onMoveToMainActivity()
         }
         404 -> {
-            SnackbarBackOnlineHelper.execute(
-                isShow = true,
-                text = "С указанного номера не было звонка"
-            )
+            SnackBarHostHelper.WithOkButton("С указанного номера не было звонка")
         }
         0 -> {
-            SnackbarBackOnlineHelper.execute(
-                isShow = true,
-                text = "не правильно введен номер телефона"
-            )
+            SnackBarHostHelper.WithOkButton("Hе правильно введен номер телефона")
         }
     }
 
@@ -406,7 +399,7 @@ fun LoginByPhoneNumber(
         val authLoginBody = getAuthLoginBody(phone = inputTextPhoneNumber)
 
         //
-        //viewModel.login(authLoginBody = authLoginBody)
+        viewModel.login(authLoginBody = authLoginBody)
     }
 
     if (isCallingPhone.value) {

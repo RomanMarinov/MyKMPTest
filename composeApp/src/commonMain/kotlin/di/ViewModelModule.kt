@@ -22,7 +22,7 @@ val viewModelModule = module {
 
     factory { InternetTvScreenViewModel(get()) }
 
-    factory { CallActivityViewModel(get()) }
+    factory { CallActivityViewModel(get(), get()) }
 
 }
 
