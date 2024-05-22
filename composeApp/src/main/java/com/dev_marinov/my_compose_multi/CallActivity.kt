@@ -7,11 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
+import co.touchlab.kermit.Logger
 import presentation.ui.call_activity.CallActivityContent
+import util.SnackBarHostHelper
 
 //import util.ConnectivityLiveDataHelper
 
@@ -23,6 +26,7 @@ class CallActivity : ComponentActivity() {
 
             val context = LocalContext.current
             val moveState = remember { mutableStateOf(false) }
+            val snackBarState = remember { mutableIntStateOf(-1) }
 
             // https://stackoverflow.com/questions/78190854/status-bar-color-change-in-compose-multiplatform
             enableEdgeToEdge(
@@ -38,25 +42,44 @@ class CallActivity : ComponentActivity() {
             // сначала работало потом изменений не заметил
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            //ConnectivityLiveDataHelper(context = context)
-            // App()
-
-
-//            SnackbarBackOnlineHelper.execute(
-//                isShow = true,
-//                text = "С указанного номера не было звонка"
-//            )
-
-
-
             CallActivityContent(
                 onMoveToMainActivity = {
                     moveState.value = true
                 },
+                onShowSnackBarAuth = {
+                    Logger.d{"4444 onShowSnackBarAuth доходит ли сюда it=" + it}
+                    snackBarState.intValue = it
+                }
             )
 
             if (moveState.value) {
                 App()
+            }
+
+            when (snackBarState.intValue) {
+                404 -> {
+                    // statusCodeSnackBarState = -1
+                    SnackBarHostHelper.WithOkButton(
+                        message = "С указанного номера не было звонка",
+                        onShowSnackBarAuth = {
+                            snackBarState.intValue - 1
+                        }
+                    )
+                }
+
+                0 -> {
+                    //statusCodeSnackBarState = -1
+                    SnackBarHostHelper.WithOkButton(
+                        message = "Hе правильно введен номер телефона",
+                        onShowSnackBarAuth = {
+                            snackBarState.intValue - 1
+                        }
+                    )
+                }
+                -1 -> {
+                    Logger.d{" 4444 snackBarState.intValue=" + snackBarState.intValue}
+
+                }
             }
         }
     }

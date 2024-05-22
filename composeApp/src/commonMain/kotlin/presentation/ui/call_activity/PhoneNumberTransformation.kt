@@ -37,7 +37,7 @@ fun PhoneNumberTransformation(
         // Этот метод преобразует входной текст в форматированный текст согласно маске.
         override fun filter(text: AnnotatedString): TransformedText {
             val inputText = text.text
-            Logger.d { "4444 inputText=" + inputText }
+            //Logger.d { "4444 inputText=" + inputText }
             // "+7 (XXX)-XXX-XX-XX" // моя маска 15 символов с пробелами
 
             val formattedText = when (inputText.length) {
@@ -67,7 +67,7 @@ fun PhoneNumberTransformation(
                 override fun originalToTransformed(offset: Int): Int {
                     // offset = input.count/original at cursor position -- "(11) 1|" offset = 3
 
-                    Logger.d { "4444 originalToTransformed offset=" + offset }
+                   // Logger.d { "4444 originalToTransformed offset=" + offset }
                     val transformedCursor = when (offset) {
                         in (1..3) -> offset + 4 // "(XX|" offset = 2, sep = 1, result = 3
                         in (4..6) -> offset + 6 // "(XX) X|" offset = 3, sep = 3, result = 6
@@ -85,7 +85,7 @@ fun PhoneNumberTransformation(
                 // offset: Int - позиция курсора в форматированном тексте.
                 // Int - позиция курсора в оригинальном номере телефона (на Х-ах).
                 override fun transformedToOriginal(offset: Int): Int {
-                    Logger.d { "4444 transformedToOriginal offset=" + offset }
+                   // Logger.d { "4444 transformedToOriginal offset=" + offset }
                     val originalCursor = when (offset) {
                         in (4..7) -> offset - 4
                         in (9..12) -> offset - 6
@@ -95,7 +95,7 @@ fun PhoneNumberTransformation(
                     }
                     val validCursor = if (originalCursor > inputText.length) inputText.length else originalCursor
 
-                    Logger.d { "4444 originalCursor=" + validCursor }
+                    //Logger.d { "4444 originalCursor=" + validCursor }
 
                     return if (enableCursorMove) validCursor // inputs
                     else inputText.length // "(XXX) - XXX - XX - XX" return 10

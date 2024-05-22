@@ -9,6 +9,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.WindowCompat
 
+
+// навигация лакнера проще
+// https://www.youtube.com/watch?v=AIC_OFQ1r3k
+
+// room
+// https://www.youtube.com/watch?v=IHs0yPa2Nv4
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

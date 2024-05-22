@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -102,8 +104,8 @@ fun HelpScreen(
                                 modifier = Modifier
                                     //.padding(),
                                     //.systemBarsPadding() // Добавить отступ от скрытого статус-бара
-                                    .size(35.dp),
-                                // .clip(RoundedCornerShape(50)),
+                                    .size(35.dp)
+                                    .clip(RoundedCornerShape(50)),
                                 imageVector = vectorResource(Res.drawable.ic_back),
                                 contentDescription = "Go back",
 

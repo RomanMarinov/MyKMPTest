@@ -21,8 +21,8 @@ class CallActivityViewModel(
     private var _supportCallNumber: MutableStateFlow<String> = MutableStateFlow("")
     val supportCallNumber: StateFlow<String> = _supportCallNumber
 
-    private var _logInStatusCode: MutableStateFlow<Int?> = MutableStateFlow(null)
-    val logInStatusCode: StateFlow<Int?> = _logInStatusCode
+    private var _logInStatusCode: MutableStateFlow<Int> = MutableStateFlow(-1)
+    val logInStatusCode: StateFlow<Int> = _logInStatusCode
 
     init {
         getSupportCallNumber()
@@ -37,6 +37,7 @@ class CallActivityViewModel(
 
     fun login(authLoginBody: AuthLoginBody) {
         viewModelScope.launch(Dispatchers.IO) {
+            _logInStatusCode.value = -1 // установить по умолчанию для повторных запросов
             Logger.d{"4444 ViewPagerAuth authLoginBody=" + authLoginBody}
 
             val httpResponse: HttpResponse? = authRepository.logIn(authLoginBody = authLoginBody)
@@ -57,5 +58,9 @@ class CallActivityViewModel(
                 }
             }
         }
+    }
+
+    fun resetIntervalCounters() {
+        authRepository.resetIntervalCounters(true)
     }
 }

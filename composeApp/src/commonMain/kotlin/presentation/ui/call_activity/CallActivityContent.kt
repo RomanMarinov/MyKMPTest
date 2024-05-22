@@ -34,7 +34,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun CallActivityContent(
     onMoveToMainActivity: () -> Unit,
-   // onMakeCall: () -> Unit
+    onShowSnackBarAuth: (Int) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
@@ -88,9 +88,9 @@ fun CallActivityContent(
                     onMoveToMainActivity = {
                         onMoveToMainActivity()
                     },
-//                    onMakeCall = {
-//                        onMakeCall()
-//                    }
+                    onShowSnackBarAuth = {
+                        onShowSnackBarAuth(it)
+                    }
                 )
             }
         }

@@ -3,6 +3,7 @@ package presentation.ui.call_activity
 import androidx.compose.runtime.Composable
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
+import platform.UIKit.UIDevice
 
 actual class CallPhonePlatform actual constructor() {
     @Composable
@@ -16,6 +17,7 @@ actual class CallPhonePlatform actual constructor() {
 
     @Composable
     actual fun getFingerprint(): String {
-        TODO("Not yet implemented")
+        val identifierForVendor = UIDevice.currentDevice.identifierForVendor
+        return identifierForVendor?.UUIDString ?: ""
     }
 }

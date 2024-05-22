@@ -2,6 +2,7 @@ package presentation.ui.call_activity
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
@@ -44,7 +46,6 @@ import mykmptest.composeapp.generated.resources.ic_help_number
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
 import util.ColorCustomResources
-import util.SnackBarHostHelper
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,6 +53,7 @@ fun ViewPagerAuth(
     inputTextPhoneNumber: String,
     onInputTextPhoneNumber: (String) -> Unit,
     onMoveToMainActivity: () -> Unit,
+    onShowSnackBarAuth: (Int) -> Unit,
     viewModel: CallActivityViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
@@ -60,16 +62,20 @@ fun ViewPagerAuth(
     val isShowCallContainer = remember { mutableStateOf(false) }
 
     val logInStatusCode by viewModel.logInStatusCode.collectAsStateWithLifecycle()
-    val logInStatusCodeState = remember { mutableStateOf(logInStatusCode) }
     when (logInStatusCode) {
         200 -> {
+            Logger.d { "4444 ViewPagerAuth 200" }
             onMoveToMainActivity()
         }
         404 -> {
-            SnackBarHostHelper.WithOkButton("С указанного номера не было звонка")
+            onShowSnackBarAuth(logInStatusCode)
+            Logger.d { "4444 ViewPagerAuth 404" }
+           // SnackBarHostHelper.WithOkButton("С указанного номера не было звонка")
         }
         0 -> {
-            SnackBarHostHelper.WithOkButton("Hе правильно введен номер телефона")
+            onShowSnackBarAuth(logInStatusCode)
+            Logger.d { "4444 ViewPagerAuth 0" }
+           // SnackBarHostHelper.WithOkButton("Hе правильно введен номер телефона")
         }
     }
 
@@ -128,6 +134,9 @@ fun ViewPagerAuth(
                     onMoveToMainActivity = {
                         onMoveToMainActivity()
                     },
+                    onShowSnackBarAuth = {
+                        onShowSnackBarAuth(it)
+                    },
 //                    onMakeCall = {
 //                        onMakeCall()
 //                    }
@@ -174,6 +183,7 @@ fun LoginByPhoneNumber(
     inputTextPhoneNumber: String,
     onInputTextPhoneNumber: (String) -> Unit,
     onMoveToMainActivity: () -> Unit,
+    onShowSnackBarAuth: (Int) -> Unit,
     // onMakeCall: () -> Unit
 //    callActivity: CallActivity
     viewModel: CallActivityViewModel
@@ -184,11 +194,15 @@ fun LoginByPhoneNumber(
     var isFocusTextFiled by remember { mutableStateOf(false) }
     val isCallingPhone = remember { mutableStateOf(false) }
     val isShowWarning = remember { mutableStateOf(false) }
+    val isShowBottomSheetQuestion = remember { mutableStateOf(false) }
+
     val errorTextWarning = remember { mutableStateOf("") }
     val errorLineColorClick = remember { mutableStateOf(ColorCustomResources.colorBazaMainBlue) }
 
     val supportCallNumber by viewModel.supportCallNumber.collectAsStateWithLifecycle()
     val supportCallNumberState = remember { mutableStateOf(getCorrectSupportCallNumber(supportCallNumber)) }
+
+    val logInStatusCode by viewModel.logInStatusCode.collectAsStateWithLifecycle()
 
     val focusManager = LocalFocusManager.current
     LaunchedEffect(inputTextPhoneNumber) {
@@ -313,6 +327,11 @@ fun LoginByPhoneNumber(
                     fontSize = 30.sp
                 )
                 Icon(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(50))
+                        .clickable {
+                            isShowBottomSheetQuestion.value = true
+                        },
                     imageVector = vectorResource(Res.drawable.ic_help_number),
                     contentDescription = null
                     //  modifier = Modifier.padding(end = 16.dp) // Отступ справа
@@ -376,6 +395,8 @@ fun LoginByPhoneNumber(
                     onClick = {
 //                        isShowCallContainer.value = false
                         onShowCallContainer(false)
+                        viewModel.resetIntervalCounters()
+                        onShowSnackBarAuth(-1)
                     },
                     content = {
                         Text(
@@ -397,14 +418,21 @@ fun LoginByPhoneNumber(
 
     if (isShowCallContainer) {
         val authLoginBody = getAuthLoginBody(phone = inputTextPhoneNumber)
-
-        //
         viewModel.login(authLoginBody = authLoginBody)
     }
 
     if (isCallingPhone.value) {
         isCallingPhone.value = false
+        viewModel.resetIntervalCounters()
         CallPhonePlatform().MakeCall()
+    }
+
+    if (isShowBottomSheetQuestion.value) {
+        BottomSheetCallNumberQuestion(
+            openBottomSheet = {
+                isShowBottomSheetQuestion.value = it
+            }
+        )
     }
 }
 
@@ -412,6 +440,7 @@ fun LoginByPhoneNumber(
 fun getAuthLoginBody(phone: String): AuthLoginBody {
     val phoneLong = phone.toLong()
     val fingerprint = CallPhonePlatform().getFingerprint()
+
     return AuthLoginBody(phoneLong, fingerprint)
 }
 

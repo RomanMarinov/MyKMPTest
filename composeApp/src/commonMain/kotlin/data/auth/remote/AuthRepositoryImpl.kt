@@ -73,14 +73,12 @@ class AuthRepositoryImpl(
                         val accessToken = responseBody.accessToken
                         val refreshToken = responseBody.refreshToken
 
-
                         appPreferencesRepository.setAuthToPrefsAndAuthState(
                             phone = authLoginBody.phone,
                             accessToken = accessToken,
                             refreshToken = refreshToken,
                             fingerprint = authLoginBody.fingerprint
                         )
-
                         return response
                     }
 

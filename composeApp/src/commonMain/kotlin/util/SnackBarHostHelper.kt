@@ -26,12 +26,16 @@ import kotlinx.coroutines.delay
 object SnackBarHostHelper {
 
     @Composable
-    fun WithOkButton(message: String) {
+    fun WithOkButton(
+        message: String,
+        onShowSnackBarAuth: (Int?) -> Unit
+        ) {
         var isSnackBarVisible by remember { mutableStateOf(true) }
         if (isSnackBarVisible) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    //.fillMaxWidth()
                     .padding(bottom = 22.dp)
                     .navigationBarsPadding(),
                 contentAlignment = Alignment.BottomEnd
