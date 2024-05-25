@@ -1,4 +1,4 @@
-package presentation.ui.call_activity
+package presentation.ui.auth_activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +22,6 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.sp
-import co.touchlab.kermit.Logger
 import util.ColorCustomResources
 
 @Composable

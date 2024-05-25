@@ -2,7 +2,7 @@ package presentation.ui.help_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import domain.repository.PublicInfoRepository
+import domain.repository.CommonRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,7 @@ import presentation.ui.help_screen.model.HelpFaqUiState
 import presentation.ui.help_screen.model.HelpOfficesUiState
 
 class HelpScreenViewModel(
-    private val publicInfoRepository: PublicInfoRepository
+    private val commonRepository: CommonRepository
 ) : ViewModel() {
 
     private var _faqUiState: MutableStateFlow<HelpFaqUiState> = MutableStateFlow(HelpFaqUiState(emptyList()))
@@ -29,7 +29,7 @@ class HelpScreenViewModel(
 
     private fun getPublicInfo() {
         viewModelScope.launch(Dispatchers.IO) {
-            val res = publicInfoRepository.getPublicInfo()
+            val res = commonRepository.getPublicInfo()
 
             res.faq?.let { listFaq ->
                 _faqUiState.update {

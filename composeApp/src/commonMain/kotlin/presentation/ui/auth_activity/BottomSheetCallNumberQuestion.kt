@@ -1,4 +1,4 @@
-package presentation.ui.call_activity
+package presentation.ui.auth_activity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +36,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import co.touchlab.kermit.Logger
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_addresses
 import mykmptest.composeapp.generated.resources.ic_arrow_right
@@ -51,6 +52,8 @@ import mykmptest.composeapp.generated.resources.ic_profile_card
 import mykmptest.composeapp.generated.resources.ic_profile_post_card
 import mykmptest.composeapp.generated.resources.ic_profile_setting
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.koinInject
+import presentation.ui.auth_activity.AuthPlatform
 import util.ColorCustomResources
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,13 +62,29 @@ fun ProfileContentWithRefresh(
     onRefresh: Any,
     navHostController: NavHostController,
     paddingValue: PaddingValues,
+    viewModel: ProfileScreenViewModel = koinInject()
 ) {
-
-
     val pullToRefreshState = rememberPullToRefreshState()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
+    var isLoading = remember { mutableStateOf(true) }
 
-    var isLoading by remember { mutableStateOf(true) }
+
+//    LaunchedEffect(moveToAuthScreen) {
+//        if (moveToAuthScreen != null && moveToAuthScreen == true) {
+//            // deeplink on the auth screen
+//            val uri = "scheme_chatalyze://calls_screen".toUri()
+//            val deepLink = Intent(Intent.ACTION_VIEW, uri)
+//            val pendingIntent: PendingIntent =
+//                TaskStackBuilder.create(context).run {
+//                    addNextIntentWithParentStack(deepLink)
+//                    getPendingIntent(
+//                        0,
+//                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//                    )
+//                }
+//            pendingIntent.send()
+//        }
+//    }
 
     Box(
         modifier = Modifier
@@ -81,7 +100,10 @@ fun ProfileContentWithRefresh(
 //            )
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth().padding(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp)
+                .padding(
                 bottom = paddingValue.calculateBottomPadding()
             )
         ) {
@@ -109,7 +131,7 @@ fun ProfileContentWithRefresh(
             profileDeviceAndAccessCard()
             profileUKCard()
             profileSettingCard()
-            profileExit(paddingValue = paddingValue)
+            profileExit(viewModel = viewModel)
         }
 
 //        if (pullToRefreshState.isRefreshing) {
@@ -756,25 +778,23 @@ fun LazyListScope.profileSettingCard() {
     }
 }
 
-fun LazyListScope.profileExit(paddingValue: PaddingValues) {
+fun LazyListScope.profileExit(viewModel: ProfileScreenViewModel) {
     item {
+        val clickState = remember { mutableStateOf(false) }
+        val logout by viewModel.logout.collectAsStateWithLifecycle()
 
         Box(
-            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
                 .padding(start = 16.dp)
-                .padding(bottom = paddingValue.calculateBottomPadding())
                 .clip(RoundedCornerShape(8.dp))
                 .clickable {
-
+                    clickState.value = true
                 },
-               // .navigationBarsPadding()
-
-
+            contentAlignment = Alignment.Center
         ) {
             Row(
-               // modifier = Modifier.background(Color.Cyan),
+                modifier = Modifier
+                    .height(40.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
@@ -795,6 +815,17 @@ fun LazyListScope.profileExit(paddingValue: PaddingValues) {
             }
         }
 
+        if (clickState.value) {
+            val fingerprint = AuthPlatform().getFingerprint()
+            viewModel.logout(fingerprint = fingerprint)
+        }
 
+        logout?.let {
+            if (it) {
+                LogoutPlatform().Logout()
+            } else {
+                Logger.d("4444 не получается lgout")
+            }
+        }
     }
 }

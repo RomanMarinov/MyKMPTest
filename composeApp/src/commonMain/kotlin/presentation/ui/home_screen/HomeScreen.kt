@@ -25,39 +25,33 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_profile
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.koinInject
 import util.ColorCustomResources
 import util.ScreenRoute
+import util.TextUtils
 
-@OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    viewModel: HomeScreenViewModel = koinInject()
 ) {
-
-
-
+    val userInfo by viewModel.userInfo.collectAsStateWithLifecycle()
 
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
-    val colorsList = listOf(
-        ColorCustomResources.colorGradientLightBlueStart,
-        ColorCustomResources.colorGradientWhiteEnd
-    )
 
 //    Surface(
 //        modifier = Modifier.fillMaxSize(),
 //        color = MaterialTheme.colorScheme.background
 //    ) {
-
-
         Scaffold(
             modifier = Modifier
                 .fillMaxSize(),
@@ -76,18 +70,29 @@ fun HomeScreen(
 //                    ),
                     title = {
                         Column(horizontalAlignment = Alignment.Start) {
+
+                            var name = ""
+                            userInfo?.data?.profile?.firstName?.let {
+                                name = ", $it"
+                            } ?: run {
+                                name = ""
+                            }
+
                             Text(
-                                text = "Привет!",
+                                text = "Привет$name!",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 24.sp
                             )
-                            Text(text = "+7 (930) 349 35 63", fontSize = 16.sp)
+
+                            var phone = ""
+                            userInfo?.data?.profile?.phone?.let {
+                                if (it != 0L) {
+                                    phone = TextUtils.getPhoneAsFormattedString(it)
+                                }
+                            }
+                            Text(text = phone, fontSize = 16.sp)
                         }
                     },
-//                    navigationIcon = {
-//
-//
-//                    },
                     actions = {
                         IconButton(
                             onClick = {
@@ -130,8 +135,6 @@ fun HomeScreen(
                     navHostController = navHostController,
                     paddingValue = paddingValue
                 )
-
-
             }
         }
    // }

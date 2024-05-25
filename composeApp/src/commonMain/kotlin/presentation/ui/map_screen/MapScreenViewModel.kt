@@ -10,7 +10,7 @@ import data.public_info.remote.dto.MarkerCityCam
 import data.public_info.remote.dto.MarkerDomofon
 import data.public_info.remote.dto.MarkerOffice
 import data.public_info.remote.dto.MarkerOutdoor
-import domain.repository.PublicInfoRepository
+import domain.repository.CommonRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +23,7 @@ import presentation.ui.map_screen.model.GeoPointScreen
 import presentation.ui.map_screen.model.MapCategory
 
 class MapScreenViewModel(
-    private val publicInfoRepository: PublicInfoRepository,
+    private val commonRepository: CommonRepository,
 ) : ViewModel() {
 
     private var _locationsTitle: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
@@ -72,7 +72,7 @@ class MapScreenViewModel(
 
     private fun getData() {
         viewModelScope.launch(Dispatchers.IO) {
-            val publicInfo = publicInfoRepository.getPublicInfo()
+            val publicInfo = commonRepository.getPublicInfo()
             _publicInfo.value = publicInfo
 
             getMapCategories(publicInfo = publicInfo)

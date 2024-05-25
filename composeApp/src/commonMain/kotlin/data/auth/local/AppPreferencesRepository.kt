@@ -3,6 +3,7 @@ package data.auth.local
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -14,20 +15,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import org.koin.core.component.KoinComponent
 
-
 data class AppPreferences(
-//    val lastOnboardingScreen: Int = 0,
-//    val isOnboardingComplete: Boolean = false,
-//    val userId: Int = 0,
-//    val isSignedOut: Boolean,
-//    val notificationsDenied: Boolean
-
-
     val phone: Long = 0L,
     val accessToken: String = "",
     val refreshToken: String = "",
-    val fingerprint: String = ""
-
+    val fingerPrint: String = ""
 )
 
 class AppPreferencesRepository(
@@ -43,10 +35,7 @@ class AppPreferencesRepository(
         val FINGER_PRINT_KEY = stringPreferencesKey("FINGER_PRINT_KEY")
 
 
-//        val LAST_ONBOARDING_SCREEN = intPreferencesKey("last_onboarding")
-//        val USER_ID = intPreferencesKey("userId")
-//        val IS_SIGNED_OUT = booleanPreferencesKey("isSignedOut")
-//        val NOTIFICATIONS_DENIED = booleanPreferencesKey("notificationsDenied")
+        val MOVE_TO_AUTH_ACTIVITY = booleanPreferencesKey("MOVE_TO_AUTH_ACTIVITY")
     }
 
     suspend fun clear() {
@@ -110,6 +99,9 @@ class AppPreferencesRepository(
 //        }
 //    }
 
+    suspend fun getMoveToAuthActivity() : Flow<Boolean> = dataStore.data.map {
+        it[PreferencesKeys.MOVE_TO_AUTH_ACTIVITY] == true
+    }
 
     suspend fun setAuthToPrefsAndAuthState(
         phone: Long,
@@ -135,31 +127,31 @@ class AppPreferencesRepository(
      * Get the preferences key, then map it to the data class.
      */
     private fun mapAppPreferences(preferences: Preferences): AppPreferences {
-//        val lastScreen = preferences[PreferencesKeys.LAST_ONBOARDING_SCREEN] ?: 0
-//        Logger.d { "lastScreen: $lastScreen" }
 
         val phone: Long = preferences[PreferencesKeys.PHONE_KEY] ?: 0L
         val accessToken: String = preferences[PreferencesKeys.ACCESS_TOKEN_KEY] ?: ""
         val refreshToken: String = preferences[PreferencesKeys.REFRESH_TOKEN_KEY] ?: ""
         val fingerprint: String = preferences[PreferencesKeys.FINGER_PRINT_KEY] ?: ""
 
-
-//        val isOnBoardingComplete: Boolean = (lastScreen >= 1)
-//        val userId = preferences[PreferencesKeys.USER_ID] ?: 0
-//        val isSignedOut = preferences[PreferencesKeys.IS_SIGNED_OUT] ?: false
-//        val showNotifications = preferences[PreferencesKeys.NOTIFICATIONS_DENIED] ?: false
-
         return AppPreferences(
-//            lastScreen,
-//            isOnBoardingComplete,
-//            userId,
-//            isSignedOut,
-//            showNotifications
             phone = phone,
             accessToken = accessToken,
             refreshToken = refreshToken,
-            fingerprint = fingerprint
-
+            fingerPrint = fingerprint
         )
+    }
+
+    suspend fun removePhoneAndAccessTokenFromPrefs() {
+        // _authStateFlow.value = AuthState()
+        dataStore.edit { it[PreferencesKeys.PHONE_KEY] = 0L }
+        dataStore.edit { it[PreferencesKeys.ACCESS_TOKEN_KEY] = "" }
+    }
+
+
+    suspend fun removeRefreshTokenFromPrefsAndAuthState() {
+        // _authStateFlow.value = AuthState()
+        dataStore.edit { it[PreferencesKeys.REFRESH_TOKEN_KEY] = "" }
+        dataStore.edit { it[PreferencesKeys.FINGER_PRINT_KEY] = "" }
+
     }
 }

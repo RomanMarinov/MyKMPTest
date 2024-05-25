@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
     kotlin("plugin.serialization") version "2.0.0"
+  //  alias(libs.plugins.jetbrainsKotlinAndroid)
     // alias(libs.plugins.jetbrainsKotlinAndroid)
 
 
@@ -79,6 +80,7 @@ kotlin {
 
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.logging)
+
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.client.content.negotiation)
 
@@ -147,8 +149,6 @@ kotlin {
             dependencies {
                 // implementation("io.ktor:ktor-client-ios:2.3.10")
                 implementation(libs.ktor.client.darwin)
-
-
             }
             //sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
@@ -206,6 +206,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.2"
     }
+
     dependencies {
         // debugImplementation(libs.compose.ui.tooling)
 
@@ -258,6 +259,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
 //    implementation(libs.compose.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.compose.ui.tooling.preview)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     //debugImplementation(libs.compose.ui.tooling)
@@ -305,6 +307,7 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.7.0-alpha08")
     implementation("androidx.compose.animation:animation:1.7.0-alpha08")
     implementation("androidx.compose.material:material:1.7.0-alpha08")
+    debugImplementation(libs.compose.ui.tooling)
 
     /////////////////////////
 

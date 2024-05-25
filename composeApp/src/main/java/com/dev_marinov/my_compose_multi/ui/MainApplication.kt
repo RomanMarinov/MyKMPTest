@@ -20,7 +20,7 @@ class MainApplication : Application() {
             androidLogger()
             // используется для доступа к ресурсам приложения, управления жизненным циклом и других операций, которые требуют доступа к контексту Android
             androidContext(this@MainApplication)
-            modules(commonModule(), )
+            modules(commonModule())
         }
     }
 }

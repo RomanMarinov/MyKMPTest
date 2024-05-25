@@ -389,38 +389,6 @@ private fun setMarkerParams(
     }
 }
 
-//@Composable
-//fun SetLocalLifecycleOwner() {
-//    val localLifecycleOwner = LocalLifecycleOwner.current
-//    DisposableEffect(
-//        key1 = localLifecycleOwner,
-//        effect = {
-//            val observer = LifecycleEventObserver { _, event ->
-//                when (event) {
-//                    Lifecycle.Event.ON_START -> {
-//                        Log.d("4444", " MapScreen Lifecycle.Event.ON_START")
-//                    }
-//
-//                    Lifecycle.Event.ON_STOP -> { // когда свернул
-//                        Log.d("4444", " MapScreen Lifecycle.Event.ON_STOP")
-//                    }
-//
-//                    Lifecycle.Event.ON_DESTROY -> { // когда удалил из стека
-//                        Log.d("4444", " MapScreen Lifecycle.Event.ON_DESTROY")
-//                    }
-//
-//                    else -> {}
-//                }
-//            }
-//            localLifecycleOwner.lifecycle.addObserver(observer)
-//            onDispose {
-//                localLifecycleOwner.lifecycle.removeObserver(observer)
-//            }
-//        }
-//    )
-//}
-
-
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun TopControl(

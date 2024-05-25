@@ -1,4 +1,4 @@
-package presentation.ui.call_activity
+package presentation.ui.auth_activity
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -40,12 +40,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import domain.model.auth.AuthLoginBody
+import domain.model.auth.FingerprintBody
 import kotlinx.coroutines.launch
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_help_number
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
 import util.ColorCustomResources
+import util.TextUtils
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -54,7 +56,9 @@ fun ViewPagerAuth(
     onInputTextPhoneNumber: (String) -> Unit,
     onMoveToMainActivity: () -> Unit,
     onShowSnackBarAuth: (Int) -> Unit,
-    viewModel: CallActivityViewModel = koinInject()
+    onShowSnackBarAuthWiFi: (String) -> Unit,
+    onShowWarning: (Boolean) -> Unit,
+    viewModel: AuthActivityViewModel = koinInject()
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { TabsAuth.entries.size })
@@ -62,21 +66,27 @@ fun ViewPagerAuth(
     val isShowCallContainer = remember { mutableStateOf(false) }
 
     val logInStatusCode by viewModel.logInStatusCode.collectAsStateWithLifecycle()
+    val logInStatusWiFi by viewModel.logInStatusWiFi.collectAsStateWithLifecycle()
+
     when (logInStatusCode) {
         200 -> {
             Logger.d { "4444 ViewPagerAuth 200" }
             onMoveToMainActivity()
         }
-        404 -> {
+
+        404 -> { // "С указанного номера не было звонка"
             onShowSnackBarAuth(logInStatusCode)
             Logger.d { "4444 ViewPagerAuth 404" }
-           // SnackBarHostHelper.WithOkButton("С указанного номера не было звонка")
         }
-        0 -> {
+
+        0 -> { // "Ошибка авторизации"
             onShowSnackBarAuth(logInStatusCode)
             Logger.d { "4444 ViewPagerAuth 0" }
-           // SnackBarHostHelper.WithOkButton("Hе правильно введен номер телефона")
         }
+    }
+
+    LaunchedEffect(logInStatusWiFi) {
+        onShowSnackBarAuthWiFi(logInStatusWiFi)
     }
 
     Column(
@@ -137,6 +147,9 @@ fun ViewPagerAuth(
                     onShowSnackBarAuth = {
                         onShowSnackBarAuth(it)
                     },
+                    onShowWarning = {
+                        onShowWarning(it)
+                    },
 //                    onMakeCall = {
 //                        onMakeCall()
 //                    }
@@ -144,6 +157,7 @@ fun ViewPagerAuth(
                 )
 
                 1 -> LoginByWiFi(
+                    viewModel = viewModel,
                     isShowCallContainer = isShowCallContainer.value,
                     onShowCallContainer = {
                         isShowCallContainer.value = it
@@ -158,24 +172,6 @@ fun ViewPagerAuth(
     }
 }
 
-fun getCorrectSupportCallNumber(phone: String?) : String {
-    Logger.d { "4444 phone=" + phone }
-    var supportCallNumber = ""
-    phone?.let {
-        supportCallNumber = if (it.isNotEmpty()) {
-            "${it.substring(0, 1)}-" +
-                    "${it.substring(1, 4)}-" +
-                    "${it.substring(4, 8)}-" +
-                    "${it.substring(8)}"
-        } else {
-            "8-800-1000-249"
-        }
-    } ?: run {
-        supportCallNumber = "8-800-1000-249"
-    }
-    return supportCallNumber
-}
-
 @Composable
 fun LoginByPhoneNumber(
     isShowCallContainer: Boolean,
@@ -184,9 +180,10 @@ fun LoginByPhoneNumber(
     onInputTextPhoneNumber: (String) -> Unit,
     onMoveToMainActivity: () -> Unit,
     onShowSnackBarAuth: (Int) -> Unit,
+    onShowWarning: (Boolean) -> Unit,
     // onMakeCall: () -> Unit
 //    callActivity: CallActivity
-    viewModel: CallActivityViewModel
+    viewModel: AuthActivityViewModel
 ) {
     var textLastNameState by remember { mutableStateOf("") }
     var textNameState by remember { mutableStateOf("") }
@@ -200,9 +197,8 @@ fun LoginByPhoneNumber(
     val errorLineColorClick = remember { mutableStateOf(ColorCustomResources.colorBazaMainBlue) }
 
     val supportCallNumber by viewModel.supportCallNumber.collectAsStateWithLifecycle()
-    val supportCallNumberState = remember { mutableStateOf(getCorrectSupportCallNumber(supportCallNumber)) }
-
-    val logInStatusCode by viewModel.logInStatusCode.collectAsStateWithLifecycle()
+    val supportCallNumberState =
+        remember { mutableStateOf(TextUtils.getCorrectSupportCallNumber(supportCallNumber)) }
 
     val focusManager = LocalFocusManager.current
     LaunchedEffect(inputTextPhoneNumber) {
@@ -272,6 +268,7 @@ fun LoginByPhoneNumber(
                             //onMoveToMainActivity()
                         } else {
                             isShowWarning.value = true
+                            onShowWarning(true)
                             errorTextWarning.value = "Обязательное поле для ввода"
                             errorLineColorClick.value = Color.Red
                         }
@@ -422,9 +419,9 @@ fun LoginByPhoneNumber(
     }
 
     if (isCallingPhone.value) {
-        isCallingPhone.value = false
         viewModel.resetIntervalCounters()
-        CallPhonePlatform().MakeCall()
+        AuthPlatform().MakeCall()
+        isCallingPhone.value = false
     }
 
     if (isShowBottomSheetQuestion.value) {
@@ -439,7 +436,7 @@ fun LoginByPhoneNumber(
 @Composable
 fun getAuthLoginBody(phone: String): AuthLoginBody {
     val phoneLong = phone.toLong()
-    val fingerprint = CallPhonePlatform().getFingerprint()
+    val fingerprint = AuthPlatform().getFingerprint()
 
     return AuthLoginBody(phoneLong, fingerprint)
 }
@@ -447,12 +444,12 @@ fun getAuthLoginBody(phone: String): AuthLoginBody {
 
 @Composable
 fun LoginByWiFi(
+    viewModel: AuthActivityViewModel,
     isShowCallContainer: Boolean,
     onShowCallContainer: (Boolean) -> Unit,
     onMoveToMainActivity: () -> Unit,
 ) {
-    var numberContractState by remember { mutableStateOf("") }
-    var isFocusTextFiled by remember { mutableStateOf(false) }
+    val wifiAuthorizationState = remember { mutableStateOf(false) }
 
     val isShowCallContainerState = remember { mutableStateOf(isShowCallContainer) }
 
@@ -489,9 +486,8 @@ fun LoginByWiFi(
                     .padding(top = 20.dp, bottom = 8.dp),
 //                .shadow(2.dp, RoundedCornerShape(2.dp)),
                 shape = RoundedCornerShape(8.dp),
-
                 onClick = {
-                    onMoveToMainActivity()
+                    wifiAuthorizationState.value = true
                 },
                 content = {
                     Text(
@@ -503,12 +499,23 @@ fun LoginByWiFi(
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White,
                     containerColor = ColorCustomResources.colorBazaMainBlue
-                ),
-                //shape = RoundedCornerShape(10.dp)
+                )
             )
-
         }
     }
+
+    if (wifiAuthorizationState.value) {
+        val fingerprint = AuthPlatform().getFingerprint()
+        val isInetCellular: Boolean = AuthPlatform().getInetCellular()
+        // чтобы выполнение было один раз
+        LaunchedEffect(wifiAuthorizationState.value) {
+            viewModel.ipAuthorization(
+                FingerprintBody(fingerprint = fingerprint),
+                isInetCellular = isInetCellular
+            )
+        }
+    }
+
 }
 
 

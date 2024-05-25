@@ -39,6 +39,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import util.ColorCustomResources
 import util.ScreenRoute
+import util.SnackBarHostHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,6 +61,10 @@ fun ProfileScreen(
     ) {
 
         val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+        SnackBarHostHelper.WithOkButton("erferferf",
+           // onAction = {}
+        )
 
         Scaffold(
             modifier = Modifier

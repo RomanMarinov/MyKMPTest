@@ -1,4 +1,4 @@
-package presentation.ui.call_activity
+package presentation.ui.auth_activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -32,13 +32,16 @@ import mykmptest.composeapp.generated.resources.call_activity_logo
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun CallActivityContent(
+fun AuthActivityContent(
     onMoveToMainActivity: () -> Unit,
-    onShowSnackBarAuth: (Int) -> Unit
+    onShowSnackBarAuthPhone: (Int) -> Unit,
+    onShowSnackBarAuthWiFi: (String) -> Unit,
+    onShowWarning: (Boolean) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val scope = rememberCoroutineScope()
     val inputTextPhoneNumber = remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .background(Color.White)
@@ -89,7 +92,13 @@ fun CallActivityContent(
                         onMoveToMainActivity()
                     },
                     onShowSnackBarAuth = {
-                        onShowSnackBarAuth(it)
+                        onShowSnackBarAuthPhone(it)
+                    },
+                    onShowSnackBarAuthWiFi = {
+                        onShowSnackBarAuthWiFi(it)
+                    },
+                    onShowWarning = {
+                        onShowWarning(it)
                     }
                 )
             }

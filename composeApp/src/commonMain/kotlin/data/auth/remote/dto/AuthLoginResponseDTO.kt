@@ -6,22 +6,22 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthLoginResponseDTO(
-    val accessToken: String,
-    val refreshToken: String,
-    val payload: PayloadLoginDTO
+    val accessToken: String? = null,
+    val refreshToken: String? = null,
+    val payload: PayloadLoginDTO? = null
 ) {
     fun mapToDomain() : AuthLoginResponse {
         return AuthLoginResponse(
             accessToken = accessToken,
             refreshToken = refreshToken,
-            payload = payload.mapToDomain()
+            payload = payload?.mapToDomain()
         )
     }
 }
 
 @Serializable
 data class PayloadLoginDTO(
-    val phone: Long
+    val phone: Long? = null
 ) {
     fun mapToDomain() : PayloadLogin {
         return PayloadLogin(

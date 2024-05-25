@@ -1,7 +1,7 @@
 package di
 
 import org.koin.dsl.module
-import presentation.ui.call_activity.CallActivityViewModel
+import presentation.ui.auth_activity.AuthActivityViewModel
 import presentation.ui.domofon_screen.DomofonScreenViewModel
 import presentation.ui.help_screen.HelpScreenViewModel
 import presentation.ui.home_screen.HomeScreenViewModel
@@ -9,12 +9,14 @@ import presentation.ui.internet_tv_screen.InternetTvScreenViewModel
 import presentation.ui.map_screen.MapScreenViewModel
 //import presentation.ui.map_screen.MapScreenViewModel
 import presentation.ui.outdoor_screen.OutdoorScreenViewModel
+import presentation.ui.profile_screen.ProfileScreenViewModel
+import presentation.ui.splash_activity.SplashViewModel
 
 val viewModelModule = module {
     // factory определение, чтобы не хранить какие-либо экземпляры в памяти (избегайте утечек в жизненном цикле Android):
     // Функция get()позволяет попросить Koin разрешить необходимую зависимость.
 
-    factory { HomeScreenViewModel() }
+    factory { HomeScreenViewModel(get()) }
     factory { OutdoorScreenViewModel(get()) }
     factory { DomofonScreenViewModel(get()) }
     factory { MapScreenViewModel(get()) }
@@ -22,7 +24,12 @@ val viewModelModule = module {
 
     factory { InternetTvScreenViewModel(get()) }
 
-    factory { CallActivityViewModel(get(), get()) }
+    factory { AuthActivityViewModel(get(), get()) }
+
+    factory { SplashViewModel(get()) }
+
+    factory { ProfileScreenViewModel(get(), get()) }
+
 
 }
 

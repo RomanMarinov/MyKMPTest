@@ -1,6 +1,6 @@
-package di
+package di.network_module
 
-//import io.ktor.client.engine.cio.CIO
+import data.auth.local.AppPreferencesRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -10,25 +10,16 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.http.URLProtocol
-import io.ktor.serialization.kotlinx.KotlinxSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
-//import org.koin.dsl.module
-
-@OptIn(ExperimentalSerializationApi::class)
 val networkModule = module {
     single<HttpClient> {
         HttpClient() {
-            var converter: KotlinxSerializationConverter? = null
 
-//            HttpClient(CIO) {
-
-            // true говорит HttpClient о том, что вы ожидаете успешный ответ от сервера
-            // по умолчанию, и он будет генерировать исключения в случае неудачного ответа.
-            // expectSuccess = true
+            val appPreferencesRepository: AppPreferencesRepository = get()
+            install(KtorAuthInterceptor(appPreferencesRepository = appPreferencesRepository))
 
             install(ResponseObserver) {
                 onResponse { response ->
@@ -43,19 +34,6 @@ val networkModule = module {
                 }
                 level = LogLevel.ALL
             }
-
-//            /////
-//            install(ContentNegotiation) {
-//                converter = KotlinxSerializationConverter(Json {
-//                    prettyPrint = true
-//                    ignoreUnknownKeys = true
-//                   // explicitNulls = false
-//                })
-//
-//                register(ContentType.Application.Json, converter!!)
-//            }
-//
-//            //////
 
             install(ContentNegotiation) {
                 json(Json {
@@ -84,3 +62,19 @@ val networkModule = module {
         }
     }
 }
+
+
+//Метод proceedWith(response) в контексте использования в Ktor HttpClient означает,
+// что после выполнения операций, указанных в блоке перехвата,
+// происходит продолжение обработки запроса с переданным ответом.
+
+//proceed(): Этот метод не принимает аргументов и просто позволяет продолжить выполнение запроса без изменений.
+// Используется, когда необходимо выполнить обычный запрос без изменений.
+//
+//finish(): Этот метод завершает обработку запроса раньше времени и не передает управление дальше.
+// Может использоваться, например, для предотвращения выполнения остальных обработчиков в цепочке.
+//
+//finishWith(response): Этот метод завершает обработку, возвращая заданный ответ.
+// Может использоваться для возврата собственного ответа вместо оригинального.
+//
+//abort(): Этот метод предотвращает выполнение дальнейших обработчиков в цепочке и прерывает текущее выполнение запроса.

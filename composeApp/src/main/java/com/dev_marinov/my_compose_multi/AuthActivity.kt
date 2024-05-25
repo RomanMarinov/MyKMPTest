@@ -1,32 +1,40 @@
 package com.dev_marinov.my_compose_multi
 
-import App
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import co.touchlab.kermit.Logger
-import presentation.ui.call_activity.CallActivityContent
+import presentation.ui.auth_activity.AuthActivityContent
 import util.SnackBarHostHelper
 
 //import util.ConnectivityLiveDataHelper
 
-class CallActivity : ComponentActivity() {
+class AuthActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //enableEdgeToEdge()
         setContent {
-
+            Logger.d("4444 AuthActivity loaded")
             val context = LocalContext.current
             val moveState = remember { mutableStateOf(false) }
-            val snackBarState = remember { mutableIntStateOf(-1) }
+            val snackBarStateAuthPhone = remember { mutableIntStateOf(-1) }
+            val snackBarStateAuthWiFi = remember { mutableStateOf("") }
+            val snackBarStateWarning = remember { mutableStateOf(false) }
 
             // https://stackoverflow.com/questions/78190854/status-bar-color-change-in-compose-multiplatform
             enableEdgeToEdge(
@@ -42,28 +50,37 @@ class CallActivity : ComponentActivity() {
             // сначала работало потом изменений не заметил
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            CallActivityContent(
+            AuthActivityContent(
                 onMoveToMainActivity = {
                     moveState.value = true
                 },
-                onShowSnackBarAuth = {
+                onShowSnackBarAuthPhone = {
                     Logger.d{"4444 onShowSnackBarAuth доходит ли сюда it=" + it}
-                    snackBarState.intValue = it
+                    snackBarStateAuthPhone.intValue = it
+                },
+                onShowSnackBarAuthWiFi = {
+                    snackBarStateAuthWiFi.value = it
+                },
+                onShowWarning = {
+                    Logger.d{"4444 onShowWarning it=" + it}
+                    snackBarStateWarning.value = it
                 }
             )
 
             if (moveState.value) {
-                App()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+                //App()
             }
 
-            when (snackBarState.intValue) {
+            when (snackBarStateAuthPhone.intValue) {
                 404 -> {
                     // statusCodeSnackBarState = -1
                     SnackBarHostHelper.WithOkButton(
                         message = "С указанного номера не было звонка",
-                        onShowSnackBarAuth = {
-                            snackBarState.intValue - 1
-                        }
+//                        onAction = {
+//                            snackBarStateAuthPhone.intValue - 1
+//                        }
                     )
                 }
 
@@ -71,18 +88,65 @@ class CallActivity : ComponentActivity() {
                     //statusCodeSnackBarState = -1
                     SnackBarHostHelper.WithOkButton(
                         message = "Hе правильно введен номер телефона",
-                        onShowSnackBarAuth = {
-                            snackBarState.intValue - 1
-                        }
+//                        onAction = {
+//                            snackBarStateAuthPhone.intValue - 1
+//                        }
                     )
                 }
-                -1 -> {
-                    Logger.d{" 4444 snackBarState.intValue=" + snackBarState.intValue}
-
-                }
             }
+
+            if(snackBarStateAuthWiFi.value.isNotEmpty()) {
+                SnackBarHostHelper.WithOkButton(
+                    message = snackBarStateAuthWiFi.value,
+//                    onAction = {
+//                        snackBarStateAuthWiFi.value = ""
+//                    }
+                )
+            }
+
+            if(snackBarStateWarning.value) {
+                SnackBarHostHelper.ShortShortTime(
+                    message = "Проверьте правильность введенного номера",
+                    onFinishTime = {
+                        snackBarStateWarning.value = false
+                    }
+                )
+            }
+
+            LifecycleOwnerAuthActivity()
         }
     }
+}
+
+@Composable
+fun LifecycleOwnerAuthActivity() {
+    val localLifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(
+        key1 = localLifecycleOwner,
+        effect = {
+            val observer = LifecycleEventObserver { _, event ->
+                when (event) {
+                    Lifecycle.Event.ON_START -> {
+                        Log.d("4444", " AuthActivity Lifecycle.Event.ON_START")
+                    }
+
+                    Lifecycle.Event.ON_STOP -> { // когда свернул
+                        Log.d("4444", " AuthActivity Lifecycle.Event.ON_STOP")
+                    }
+
+                    Lifecycle.Event.ON_DESTROY -> { // когда удалил из стека
+                        Log.d("4444", " AuthActivity Lifecycle.Event.ON_DESTROY")
+                    }
+
+                    else -> {}
+                }
+            }
+            localLifecycleOwner.lifecycle.addObserver(observer)
+            onDispose {
+                localLifecycleOwner.lifecycle.removeObserver(observer)
+            }
+        }
+    )
 }
 
 //@Composable

@@ -90,11 +90,11 @@ fun WebViewScreen(
                 isAlgorithmicDarkeningAllowed = true
                 safeBrowsingEnabled = true
 
-                Logger.d { " WebViewScreen webViewState.isLoading=" + webViewState.isLoading }
+                Logger.d { "4444 WebViewScreen webViewState.isLoading=" + webViewState.isLoading }
 
-                Logger.d { " WebViewScreen KLogSeverity.Error=" + KLogSeverity.Error.toKermitSeverity() }
-                Logger.d { " WebViewScreen KLogSeverity.Assert=" + KLogSeverity.Assert.toKermitSeverity() }
-                Logger.d { " WebViewScreen KLogSeverity.Info=" + KLogSeverity.Info.toKermitSeverity() }
+                Logger.d { "4444 WebViewScreen KLogSeverity.Error=" + KLogSeverity.Error.toKermitSeverity() }
+                Logger.d { "4444 WebViewScreen KLogSeverity.Assert=" + KLogSeverity.Assert.toKermitSeverity() }
+                Logger.d { "4444 WebViewScreen KLogSeverity.Info=" + KLogSeverity.Info.toKermitSeverity() }
             }
         }
 
