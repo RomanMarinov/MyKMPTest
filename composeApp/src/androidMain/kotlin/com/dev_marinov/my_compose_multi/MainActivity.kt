@@ -1,6 +1,7 @@
 package com.dev_marinov.my_compose_multi
 
 import App
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -43,7 +44,11 @@ class MainActivity : ComponentActivity() {
             // сначала работало потом изменений не заметил
             WindowCompat.setDecorFitsSystemWindows(window, false)
 
-            App()
+            App(
+                onMoveToAuthActivity = {
+                    startActivity(Intent(this, AuthActivity::class.java))
+                }
+            )
             LifecycleOwnerMainActivity()
         }
     }

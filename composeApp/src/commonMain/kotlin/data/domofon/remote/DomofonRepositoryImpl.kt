@@ -1,6 +1,6 @@
 package data.domofon.remote
 
-import data.domofon.remote.model.Sputnik
+import domain.model.domofon.SputnikSelected
 import domain.repository.DomofonRepository
 import io.ktor.client.HttpClient
 
@@ -10,9 +10,9 @@ class DomofonRepositoryImpl(
 
     override suspend fun getDomofon() = getFakeSputnik()
 
-    private fun getFakeSputnik(): List<Sputnik> {
+    private fun getFakeSputnik(): List<SputnikSelected> {
         return listOf(
-            Sputnik(
+            SputnikSelected(
                 title = "Тестовая (ул.) 1, 2 подъезд",
                 addrId = 980,
                 deviceID = "e344f4bb-fd97-4f7d-b12c-2aab350abcdd",
@@ -24,7 +24,7 @@ class DomofonRepositoryImpl(
                 videoUrl = "https://sputnikdvr1.baza.net/e344f4bb-fd97-4f7d-b12c-2aab350abcdd/embed.html?dvr=true&token=MjkwYTFkNjY5ODIxMjJhYzI2MWIyZjQyMmFkZjQ0YWFhN2MzOGFiNS4xNzE2MjE1OTM1",
                 isSelected = false
             ),
-            Sputnik(
+            SputnikSelected(
                 title = "Тестовая(ул.)1, 3 подъезд",
                 addrId = 980,
                 deviceID = "a8afbbde-981b-492f-8b4c-e1af5edd5b2b",
@@ -36,7 +36,7 @@ class DomofonRepositoryImpl(
                 videoUrl = "https://sputnikdvr1.baza.net/a8afbbde-981b-492f-8b4c-e1af5edd5b2b/embed.html?dvr=true&token=YjA0NTFiNzU3OTFmMWM0YjRhODkzODM5NjY5OGIzZTJjOThkMmZkNi4xNzE2MjE1OTM1",
                 isSelected = true
             ),
-            Sputnik(
+            SputnikSelected(
                 title = "Ярославская (ул.) 42, 5 подъезд",
                 addrId = 20290,
                 deviceID = "db275fc8-b2ea-48a8-a68e-44c4fecfe689",
@@ -48,7 +48,7 @@ class DomofonRepositoryImpl(
                 videoUrl = "https://sputnikdvr1.baza.net/db275fc8-b2ea-48a8-a68e-44c4fecfe689/embed.html?dvr=true&token=YmE4M2RmYjExOTAwOTVjMDIyNWM2YTI4Y2ExYjgyN2MwN2RlMjYyOC4xNzE2MjE1OTM1",
                 isSelected = true
             ),
-            Sputnik(
+            SputnikSelected(
                 title = "Ярославская (ул.) 42, 1 подъезд",
                 addrId = 20290,
                 deviceID = "0ff068a2-38cc-47cd-acec-ce27cc9ec2a0",
@@ -60,7 +60,7 @@ class DomofonRepositoryImpl(
                 videoUrl = "https://sputnikdvr1.baza.net/0ff068a2-38cc-47cd-acec-ce27cc9ec2a0/embed.html?dvr=true&token=OGYwZjYxYzg2OWQzMzQ1MzdjZGYwYzYzZWZmY2Q2OWI1NjA0MzcwMC4xNzE2MjE1OTM1",
                 isSelected = false
             ),
-            Sputnik(
+            SputnikSelected(
                 title = "Ярославская (ул.) 42, 2 подъезд",
                 addrId = 20290,
                 deviceID = "7905fec2-32bf-4584-b7ce-08f95e2434b5",
@@ -72,7 +72,7 @@ class DomofonRepositoryImpl(
                 videoUrl = "https://sputnikdvr1.baza.net/7905fec2-32bf-4584-b7ce-08f95e2434b5/embed.html?dvr=true&token=YzVhOWMyYTk2YjBiNDZkOTE0OTAzNmE3NmY3M2E1ZGQ3Y2VmNmEwZi4xNzE2MjE1OTM1",
                 isSelected = false
             ),
-            Sputnik(
+            SputnikSelected(
                 title = "Ярославская (ул.) 42, 3 подъезд",
                 addrId = 20290,
                 deviceID = "13ddce5f-71be-41da-9e6c-4726ce5cfdf3",
@@ -84,7 +84,7 @@ class DomofonRepositoryImpl(
                 videoUrl = "https://sputnikdvr1.baza.net/13ddce5f-71be-41da-9e6c-4726ce5cfdf3/embed.html?dvr=true&token=ZTgyYjcwMjE2NTc2OTc1ODA4OTNlZjBjOGRmMTdmMjZmN2I5MWJhYi4xNzE2MjE1OTM1",
                 isSelected = false
             ),
-            Sputnik(
+            SputnikSelected(
                 title = "Ярославская (ул.) 42, 4 подъезд",
                 addrId = 20290,
                 deviceID = "6acb8c95-28ff-4e7c-a33a-d48c11725756",

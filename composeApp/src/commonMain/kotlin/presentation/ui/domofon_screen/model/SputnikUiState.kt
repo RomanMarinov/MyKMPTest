@@ -1,7 +1,9 @@
 package presentation.ui.domofon_screen.model
 
-import data.domofon.remote.model.Sputnik
+import domain.model.user_info.Domofon
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SputnikUiState(
-    val sputnik: List<Sputnik>
+    val domofon: Domofon
 )

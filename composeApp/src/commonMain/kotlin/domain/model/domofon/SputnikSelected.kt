@@ -1,6 +1,6 @@
-package data.domofon.remote.model
+package domain.model.domofon
 
-data class Sputnik(
+data class SputnikSelected(
     val title: String,
     val addrId: Int,
     val deviceID: String,

@@ -39,10 +39,12 @@ fun WebViewScreen(
     videoUrl: String?,
 ) {
     val decodedUrl = UrlEncoderUtil.decode(videoUrl ?: "")
+   // val decodedAddress = UrlEncoderUtil.decode(address ?: "")
 
     Logger.d { "webview =" + decodedUrl }
 
     val webViewState = remember { WebViewState(WebContent.Url(decodedUrl)) }
+    //val webViewAddress = remember { WebViewState(WebContent.Url(decodedAddress)) }
     val webViewNavigator = rememberWebViewNavigator()
     val webViewJsBridge = remember { WebViewJsBridge() }
 
@@ -65,6 +67,8 @@ fun WebViewScreen(
                         navHostController.popBackStack()
                     }
             )
+
+
             Text(
                 text = address ?: "",
                 color = Color.White,

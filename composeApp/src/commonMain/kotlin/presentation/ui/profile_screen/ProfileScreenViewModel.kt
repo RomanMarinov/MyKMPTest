@@ -2,6 +2,7 @@ package presentation.ui.profile_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import data.auth.local.AppPreferencesRepository
 import domain.model.auth.FingerprintBody
 import domain.repository.AuthRepository
@@ -20,6 +21,7 @@ class ProfileScreenViewModel(
     val logout: StateFlow<Boolean?> = _logout
 
     fun logout(fingerprint: String) {
+        Logger.d("4444 ProfileScreenViewModel logout fingerprint=" + fingerprint)
         viewModelScope.launch(Dispatchers.IO) {
             val result = authRepository.logOut(
                 FingerprintBody(

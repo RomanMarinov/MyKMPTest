@@ -62,12 +62,23 @@ fun ProfileContentWithRefresh(
     onRefresh: Any,
     navHostController: NavHostController,
     paddingValue: PaddingValues,
+    onMoveToAuthActivity: () -> Unit,
     viewModel: ProfileScreenViewModel = koinInject()
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val snackBarHostState = remember { SnackbarHostState() }
     var isLoading = remember { mutableStateOf(true) }
 
+    val logout by viewModel.logout.collectAsStateWithLifecycle()
+    logout?.let {
+        if (it) {
+            Logger.d("4444 LogoutPlatform().Logout()")
+            onMoveToAuthActivity()
+            // LogoutPlatform().Logout()
+        } else {
+            Logger.d("4444 не получается lgout")
+        }
+    }
 
 //    LaunchedEffect(moveToAuthScreen) {
 //        if (moveToAuthScreen != null && moveToAuthScreen == true) {
@@ -104,8 +115,8 @@ fun ProfileContentWithRefresh(
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
                 .padding(
-                bottom = paddingValue.calculateBottomPadding()
-            )
+                    bottom = paddingValue.calculateBottomPadding()
+                )
         ) {
             profileNameCard(
                 name = "Имя",
@@ -778,10 +789,11 @@ fun LazyListScope.profileSettingCard() {
     }
 }
 
-fun LazyListScope.profileExit(viewModel: ProfileScreenViewModel) {
+fun LazyListScope.profileExit(
+    viewModel: ProfileScreenViewModel
+) {
     item {
         val clickState = remember { mutableStateOf(false) }
-        val logout by viewModel.logout.collectAsStateWithLifecycle()
 
         Box(
             modifier = Modifier
@@ -818,14 +830,7 @@ fun LazyListScope.profileExit(viewModel: ProfileScreenViewModel) {
         if (clickState.value) {
             val fingerprint = AuthPlatform().getFingerprint()
             viewModel.logout(fingerprint = fingerprint)
-        }
-
-        logout?.let {
-            if (it) {
-                LogoutPlatform().Logout()
-            } else {
-                Logger.d("4444 не получается lgout")
-            }
+            clickState.value = false
         }
     }
 }

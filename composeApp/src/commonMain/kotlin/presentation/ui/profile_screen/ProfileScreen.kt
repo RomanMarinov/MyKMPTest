@@ -44,7 +44,8 @@ import util.SnackBarHostHelper
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onMoveToAuthActivity: () -> Unit
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -146,7 +147,10 @@ fun ProfileScreen(
                         }
                     },
                     navHostController = navHostController,
-                    paddingValue = paddingValue
+                    paddingValue = paddingValue,
+                    onMoveToAuthActivity = {
+                        onMoveToAuthActivity()
+                    }
                 )
             }
         }

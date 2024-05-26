@@ -1,4 +1,3 @@
-
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -11,35 +10,25 @@ import presentation.ui.splash_activity.SplashActivityContent
 import util.SnackBarHostHelper
 import util.StartActivity
 
+
 fun MainViewController() = ComposeUIViewController {
 
-    val moveState = remember { mutableStateOf(false) }
+    val nextActivityState = remember { mutableStateOf(StartActivity.DEFAULT) }
     val snackBarStateAuthPhone = remember { mutableIntStateOf(-1) }
     val snackBarStateAuthWiFi = remember { mutableStateOf("") }
-    val nextActivityState = remember { mutableStateOf(StartActivity.DEFAULT) }
     val snackBarStateWarning = remember { mutableStateOf(false) }
 
     SplashActivityContent(
         onMoveToNextActivity = {
-            nextActivityState.value = it
+            nextActivityState.value = it // или AUTH_ACTIVITY или MAIN_ACTIVITY
         }
     )
-
-    if (snackBarStateAuthWiFi.value.isNotEmpty()) {
-        SnackBarHostHelper.WithOkButton(
-            message = snackBarStateAuthWiFi.value,
-//            onAction = {
-//                snackBarStateAuthWiFi.value = ""
-//            }
-        )
-    }
-
-    Logger.d("4444 nextActivityState.value=" + nextActivityState.value)
+    // по идее всегда должна быть true после первой иниц
     when (nextActivityState.value) {
         StartActivity.AUTH_ACTIVITY -> {
             AuthActivityContent(
                 onMoveToMainActivity = {
-                    moveState.value = true
+                    nextActivityState.value = StartActivity.MAIN_ACTIVITY
                 },
                 onShowSnackBarAuthPhone = {
                     snackBarStateAuthPhone.intValue = it
@@ -51,51 +40,49 @@ fun MainViewController() = ComposeUIViewController {
                     snackBarStateWarning.value = it
                 }
             )
-
-            when (snackBarStateAuthPhone.intValue) {
-                404 -> {
-                    Logger.d("4444 MainViewController 404 С указанного номера не было звонка")
-                    SnackBarHostHelper.WithOkButton(
-                        message = "С указанного номера не было звонка",
-//                onAction = {
-//                    snackBarStateAuthPhone.intValue - 1
-//                }
-                    )
-                }
-
-                0 -> {
-                    Logger.d("4444 MainViewController 0 Ошибка авторизации")
-                    SnackBarHostHelper.WithOkButton(
-                        message = "Ошибка авторизации",
-//                onAction = {
-//                    snackBarStateAuthPhone.intValue - 1
-//                }
-                    )
-                }
-            }
-
-            if(snackBarStateWarning.value) {
-                SnackBarHostHelper.ShortShortTime(
-                    message = "Проверьте правильность введенного номера",
-                    onFinishTime = {
-                        snackBarStateWarning.value = false
-                    }
-                )
-            }
         }
 
-        StartActivity.HOME_ACTIVITY -> {
-            App()
+        StartActivity.MAIN_ACTIVITY -> {
+            App(
+                onMoveToAuthActivity = {
+                    nextActivityState.value = StartActivity.AUTH_ACTIVITY
+                }
+            )
         }
 
         StartActivity.DEFAULT -> { // ничего }
         }
     }
 
-    if (moveState.value) {
+    when (snackBarStateAuthPhone.intValue) {
+        404 -> {
+            Logger.d("4444 MainViewController 404 С указанного номера не было звонка")
+            SnackBarHostHelper.WithOkButton(
+                message = "С указанного номера не было звонка"
+            )
+        }
 
-        Logger.d("4444 moveState.value=" + moveState.value)
-        App()
+        0 -> {
+            Logger.d("4444 MainViewController 0 Ошибка авторизации")
+            SnackBarHostHelper.WithOkButton(
+                message = "Ошибка авторизации"
+            )
+        }
+    }
+
+    if (snackBarStateWarning.value) {
+        SnackBarHostHelper.ShortShortTime(
+            message = "Проверьте правильность введенного номера",
+            onFinishTime = {
+                snackBarStateWarning.value = false
+            }
+        )
+    }
+
+    if (snackBarStateAuthWiFi.value.isNotEmpty()) {
+        SnackBarHostHelper.WithOkButton(
+            message = snackBarStateAuthWiFi.value
+        )
     }
 }
 
@@ -104,4 +91,3 @@ fun initKoin() {
         modules(commonModule())
     }
 }
-

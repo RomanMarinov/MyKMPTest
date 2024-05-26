@@ -54,7 +54,7 @@ class SplashActivity : ComponentActivity() {
                     finish()
                 }
 
-                StartActivity.HOME_ACTIVITY -> {
+                StartActivity.MAIN_ACTIVITY -> {
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
                     //App()

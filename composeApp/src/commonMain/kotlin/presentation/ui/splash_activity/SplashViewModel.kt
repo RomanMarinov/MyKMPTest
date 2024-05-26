@@ -47,7 +47,7 @@ class SplashViewModel(
                 val response = authRepository.refreshTokenSync()
                 if (response?.status?.isSuccess() == true) {
                     registerFirebase()
-                    _nextScreen.value = StartActivity.HOME_ACTIVITY
+                    _nextScreen.value = StartActivity.MAIN_ACTIVITY
                     Logger.d("4444 REFRESH HOME_ACTIVITY")
                 } else if (response?.status?.isSuccess() == false || response == null) {
                     _nextScreen.value = StartActivity.AUTH_ACTIVITY
@@ -56,7 +56,7 @@ class SplashViewModel(
             } else { // если токен актуален, то регистрируем FireBase и переходим на главную страницу
                 Logger.d("REFRESH AccessToken актуален, регистрируем Firebase - SplashScreen/checkTokenAndRefresh()")
                 registerFirebase()
-                _nextScreen.value = StartActivity.HOME_ACTIVITY
+                _nextScreen.value = StartActivity.MAIN_ACTIVITY
             }
         }
     }

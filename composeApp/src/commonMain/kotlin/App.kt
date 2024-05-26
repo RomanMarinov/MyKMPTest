@@ -3,8 +3,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -21,8 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -39,12 +39,12 @@ import mykmptest.composeapp.generated.resources.ic_navbar_map
 import mykmptest.composeapp.generated.resources.ic_navbar_outdoor
 import mykmptest.composeapp.generated.resources.map_name_nav
 import mykmptest.composeapp.generated.resources.outdoor_name_nav
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import util.ColorCustomResources
+import util.NavHostScreenScenes
 import util.ScreenRoute
 
 data class BottomNavigationItem(
@@ -57,10 +57,13 @@ data class BottomNavigationItem(
 )
 
 @Composable
-fun App() {
+fun App(
+    onMoveToAuthActivity: () -> Unit
+) {
     KoinContext {
-        AppContent()
-
+        AppContent(onMoveToAuthActivity = {
+            onMoveToAuthActivity()
+        })
     }
 }
 
@@ -74,11 +77,11 @@ fun GetCurrentEntry(
     onEntryChanged(currentRoute?.route ?: "")
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 @Preview
-fun AppContent() {
-    // KoinContext{
+fun AppContent(
+    onMoveToAuthActivity: () -> Unit
+) {
     MaterialTheme {
 
         val currentEntryState = remember { mutableStateOf("") }
@@ -158,7 +161,11 @@ fun AppContent() {
                                 .fillMaxWidth()
                             // .shadow(elevation = 8.dp, shape = RoundedCornerShape(16.dp)),
                         ) {
-                            NavigationBar {
+                            NavigationBar(
+                                modifier = Modifier
+                                    .shadow(8.dp),
+                                containerColor = Color.White
+                            ) {
 
                                 items.forEachIndexed { index, item ->
                                     NavigationBarItem(
@@ -173,8 +180,8 @@ fun AppContent() {
                                         label = {
                                             Text(
                                                 text = item.title,
-                                                fontSize = if (index == selectedItemIndex) 11.sp
-                                                else 10.sp
+                                                fontSize = if (index == selectedItemIndex) 12.sp
+                                                else 11.sp
                                             )
                                         },
                                         icon = {
@@ -191,20 +198,14 @@ fun AppContent() {
                                             unselectedIconColor = ColorCustomResources.colorBazaMainBlue,
                                             unselectedTextColor = ColorCustomResources.colorBazaMainBlue,
                                             indicatorColor = Color.LightGray
-                                        ),
-
                                         )
-
+                                    )
                                 }
-
-
                             }
                         }
                     }
                 }
-
             ) { paddingValues ->
-
                 // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
                 Box(
 
@@ -222,15 +223,14 @@ fun AppContent() {
 //                    ) {
 //
 //                    }
-                    NavHostScreenScenes(navHostController = navHostController)
+                    NavHostScreenScenes(
+                        navHostController = navHostController,
+                        onMoveToAuthActivity = {
+                            onMoveToAuthActivity()
+                        }
+                    )
                 }
             }
-            //   }
         }
-
-        val lazyListState: LazyListState = rememberLazyListState()
-        //     }
-        //     }
     }
-
 }

@@ -1,7 +1,7 @@
 package domain.repository
 
-import data.domofon.remote.model.Sputnik
+import domain.model.domofon.SputnikSelected
 
 interface DomofonRepository {
-    suspend fun getDomofon() : List<Sputnik>
+    suspend fun getDomofon() : List<SputnikSelected>
 }

@@ -61,7 +61,11 @@ kotlin {
 //            // api(libs.precompose.molecule) // For Molecule intergration
 //            api(libs.precompose.viewmodel) // For ViewModel intergration
             // api(libs.precompose.koin) // For Koin intergration
-            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
+            //implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha01")
+//            implementation("androidx.navigation:navigation-compose:2.8.0-beta01")
+            implementation(libs.kotlinx.serialization.json)
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha07")
+
 
 //            ////////////////////////
 //            // CompositionLocal LocalLifecycleOwner not present
