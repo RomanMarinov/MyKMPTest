@@ -50,6 +50,7 @@ import mykmptest.composeapp.generated.resources.ic_plus
 import mykmptest.composeapp.generated.resources.ic_share
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
+import presentation.ui.add_address.AddAddressBottomSheet
 import util.ColorCustomResources
 import util.ScreenRoute
 import util.navigateToWebViewHelper
@@ -91,7 +92,9 @@ fun GroupedContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
-                    TopTitleContentGroup()
+                    TopTitleContentGroup(
+                        navHostController = navHostController
+                    )
                 }
 
                 items(listSputnikByFullControl) { sputnik ->
@@ -113,7 +116,12 @@ fun GroupedContent(
 }
 
 @Composable
-fun TopTitleContentGroup() {
+fun TopTitleContentGroup(
+    navHostController: NavHostController
+) {
+
+    val isOpenBottomSheet = remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         // horizontalArrangement = Arrangement.Start,
@@ -157,8 +165,7 @@ fun TopTitleContentGroup() {
                     Row(
                         modifier = Modifier
                             .clickable {
-
-
+                                isOpenBottomSheet.value = true
                             }
                             .fillMaxHeight()
                             .padding(start = 8.dp),
@@ -183,6 +190,16 @@ fun TopTitleContentGroup() {
                 }
             }
         }
+    }
+
+    if (isOpenBottomSheet.value) {
+        AddAddressBottomSheet(
+            fromScreen = ScreenRoute.DomofonScreen.route,
+            openBottomSheet = {
+                isOpenBottomSheet.value = false
+            },
+            navHostController = navHostController
+        )
     }
 }
 

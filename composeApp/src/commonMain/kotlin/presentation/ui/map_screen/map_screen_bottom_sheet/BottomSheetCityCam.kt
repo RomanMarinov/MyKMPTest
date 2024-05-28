@@ -67,8 +67,6 @@ fun BottomSheetCityCam(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     if (openBottomSheetState) {
-
-
         ModalBottomSheet(
             modifier = Modifier
                 .fillMaxWidth(),

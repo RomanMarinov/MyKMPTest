@@ -1,5 +1,6 @@
 package di
 
+import data.add_address.remote.AddAddressRepositoryImpl
 import data.auth.local.AppPreferencesRepository
 import data.auth.remote.AuthRepositoryImpl
 import data.domofon.remote.DomofonRepositoryImpl
@@ -7,6 +8,7 @@ import data.home.remote.HomeRepositoryImpl
 import data.outdoor.remote.OutdoorRepositoryImpl
 import data.public_info.remote.CommonRepositoryImpl
 import data.user_info.remote.UserInfoRepositoryImpl
+import domain.repository.AddAddressRepository
 import domain.repository.AuthRepository
 import domain.repository.CommonRepository
 import domain.repository.DomofonRepository
@@ -43,7 +45,9 @@ val repositoryModule = module {
 
     single { AppPreferencesRepository(get()) }
 
-  //  single { KtorAuthInterceptor(get(), get()) }
+    single<AddAddressRepository> { AddAddressRepositoryImpl(get()) }  withOptions {
+        createdAtStart()
+    }
 
 
 }
