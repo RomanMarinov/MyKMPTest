@@ -119,7 +119,7 @@ kotlin {
             implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.2")
 
 //            implementation("com.google.accompanist:accompanist-webview:0.34.0")
-
+            implementation("com.google.accompanist:accompanist-permissions:0.35.1-alpha")
 
 //            implementation("dev.icerock.moko:resources:0.23.0")
             //implementation("org.osmdroid:osmdroid-android:6.1.11")

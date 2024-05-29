@@ -3,6 +3,7 @@ package presentation.ui.add_address
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
+import data.add_address.remote.dto.AddAddressResponseDTO
 import data.add_address.remote.dto.CheckAddressResponseDTO
 import domain.add_address.AddAddressBody
 import domain.add_address.AddAddressResponse
@@ -66,8 +67,11 @@ class AddAddressViewModel(
                     flat = flat
                 )
             )
-            val result = response?.body<AddAddressResponse>()
-            _addAddressResponse.value = result
+
+            Logger.d("4444 response=" + response?.body())
+
+            val result = response?.body<AddAddressResponseDTO>()
+            _addAddressResponse.value = result?.mapToDomain()
         }
     }
 

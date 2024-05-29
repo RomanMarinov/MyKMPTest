@@ -14,15 +14,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -65,7 +65,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import domain.add_address.AddAddressResponse
 import kotlinx.coroutines.delay
@@ -74,6 +73,8 @@ import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_close
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
+import presentation.ui.attach_photo.AttachPhotoBottomSheet
+import presentation.ui.request_address.RequestAddressBottomSheet
 import util.ColorCustomResources
 import util.ScreenRoute
 
@@ -85,12 +86,16 @@ enum class CheckData {
     APPROVED, NOT_APPROVED, DEFAULT
 }
 
+enum class ScreenBottomSheet {
+    ATTACH_BSH, REQUEST_BSH, DEFAULT
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAddressBottomSheet(
     fromScreen: String,
     openBottomSheet: (Boolean) -> Unit,
-    navHostController: NavHostController
+   // navHostController: NavHostController
 ) {
     val openBottomSheetState by rememberSaveable { mutableStateOf(true) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -106,16 +111,20 @@ fun AddAddressBottomSheet(
             onDismissRequest = { openBottomSheet(false) },
             sheetState = bottomSheetState,
             dragHandle = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-
-                        .background(Color.White),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    BottomSheetDefaults.DragHandle()
-                }
-            }
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//
+//                        .background(Color.White),
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    BottomSheetDefaults.DragHandle()
+//                }
+            },
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -127,16 +136,16 @@ fun AddAddressBottomSheet(
 //                        .fillMaxWidth()
 //                        .padding(top = 16.dp),
 //                ) {
-//                    TopTitle(
-//                        openBottomSheet = {
-//                            openBottomSheet(it)
-//                        }
-//                    )
+                TopTitle(
+                    openBottomSheet = {
+                        openBottomSheet(it)
+                    }
+                )
                 AutoComplete(
                     fromScreen = fromScreen,
-                    navHostController = navHostController
+                    //navHostController = navHostController
                 )
-                //  }
+//                  }
 
 //                AddAddressTransformation(
 //                    inputTextPhoneNumber = inputTextPhoneNumber.value,
@@ -158,35 +167,70 @@ fun TopTitle(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
+        //horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Card(
+        Row(
             modifier = Modifier
-                .padding(end = 16.dp)
-                .size(34.dp),
-            //    .align(Alignment.CenterEnd)
-            shape = RoundedCornerShape(5.dp),
-            colors = CardDefaults.cardColors(containerColor = ColorCustomResources.colorBackgroundClose),
+                .fillMaxWidth()
+                .weight(2f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
         ) {
-            Box(
+            Text(
+                text = "Добавление адреса",
+                color = Color.Black,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            Card(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        openBottomSheet(false)
-                    },
-                contentAlignment = Alignment.Center,
+                    .size(34.dp),
+                //    .align(Alignment.CenterEnd)
+                shape = RoundedCornerShape(5.dp),
+                colors = CardDefaults.cardColors(containerColor = ColorCustomResources.colorBackgroundClose),
             ) {
-                Icon(
-                    // close
+                Box(
                     modifier = Modifier
-                        .size(24.dp),
-                    imageVector = vectorResource(Res.drawable.ic_close),
-                    contentDescription = null,
-                )
+                        .fillMaxSize()
+                        .clickable {
+                            openBottomSheet(false)
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        // close
+                        modifier = Modifier
+                            .size(24.dp),
+                        imageVector = vectorResource(Res.drawable.ic_close),
+                        contentDescription = null,
+                    )
+                }
             }
         }
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Text(
+            text = "Введите Ваш адрес и номер квартиры",
+            color = Color.Black
+        )
     }
 }
 
@@ -196,7 +240,7 @@ fun TopTitle(
 fun AutoComplete(
     fromScreen: String,
     viewModel: AddAddressViewModel = koinInject(),
-    navHostController: NavHostController
+  //  navHostController: NavHostController
 ) {
     val addresses by viewModel.addresses.collectAsStateWithLifecycle()
     val errorNetwork by viewModel.errorNetwork.collectAsStateWithLifecycle()
@@ -206,7 +250,8 @@ fun AutoComplete(
     var addressText by remember { mutableStateOf("") }
     var flatNumberText by remember { mutableStateOf("") }
 
-    var positionDropList by remember { mutableIntStateOf(-1) }
+    val addrId = remember { mutableIntStateOf(-1) }
+    val oper = remember { mutableStateOf("") }
 
     var isFocusedAddress by remember { mutableStateOf(false) }
     var isFocusedFlatNumber by remember { mutableStateOf(false) }
@@ -228,9 +273,12 @@ fun AutoComplete(
     val isApprovedData = remember { mutableStateOf(CheckData.DEFAULT) }
 
     val isDvrOrDomofonAvailable = remember { mutableStateOf(false) }
+    val isNextTransitionBottomSheet = remember { mutableStateOf(ScreenBottomSheet.DEFAULT) }
 
     LaunchedEffect(addressText) {
         Logger.d("4444 addressText=" + addressText)
+        isApprovedData.value = CheckData.DEFAULT
+        isNextTransitionBottomSheet.value = ScreenBottomSheet.DEFAULT
         if (addressText.length <= 2) { // срабатывает каждый раз когда меньше 3 символов набрано
             expandedAddresses = false
             isShowTextFieldAndButton.value = false
@@ -285,53 +333,96 @@ fun AutoComplete(
     }
 
     LaunchedEffect(isApprovedData.value) {
-        when(isApprovedData.value) {
+        when (isApprovedData.value) {
             CheckData.APPROVED -> {
-                val addressId = addresses[positionDropList].addr_id
-                val oper = addresses[positionDropList].oper
+                Logger.d("4444 addresses проверка=" + addresses)
                 val address = addressText
                 val flat = flatNumberText
 
                 viewModel.getAddressById(
-                    addressId = addressId,
-                    oper = oper,
+                    addressId = addrId.value,
+                    oper = oper.value,
                     address = address,
                     flat = flat
                 )
             }
+
             CheckData.NOT_APPROVED -> {
                 // снак бар мол попробуйте выполнить запрос еще раз
             }
-            CheckData.DEFAULT -> { }
+
+            CheckData.DEFAULT -> {}
         }
     }
 
     LaunchedEffect(addAddressResponse) {
-        when(fromScreen) {
-            ScreenRoute.DomofonScreen.route -> {
-                isDvrOrDomofonAvailable.value = addAddressResponse?.data?.domofon ?: false
-            }
-            ScreenRoute.OutdoorScreen.route -> {
-                isDvrOrDomofonAvailable.value = addAddressResponse?.data?.dvr ?: false
-            }
-            ScreenRoute.ProfileScreen.route -> {
-                isDvrOrDomofonAvailable.value = true
-            }
-        }
+        Logger.d("4444 addAddressResponse fromScreen=" + fromScreen)
 
-        val addressString = getAddressString(addAddressResponse)
-        if (isDvrOrDomofonAvailable.value) {
+        addAddressResponse?.let {
+            when (fromScreen) {
+                ScreenRoute.DomofonScreen.route -> {
+                    isDvrOrDomofonAvailable.value = addAddressResponse?.data?.domofon ?: false
+                    Logger.d("4444 addAddressResponse domofon isDvrOrDomofonAvailable.value=" + isDvrOrDomofonAvailable.value)
+                }
 
-            val res = addAddressResponse?.data
+                ScreenRoute.OutdoorScreen.route -> {
+                    isDvrOrDomofonAvailable.value = addAddressResponse?.data?.dvr ?: false
+                    Logger.d("4444 addAddressResponse dvr isDvrOrDomofonAvailable.value=" + isDvrOrDomofonAvailable.value)
+                }
 
-         //   navHostController.navigate()
-//            openAttachDocScreen(address = addressString, addedAddress = addedAddress?.data, navigationFrom = args.from)
-        } else {
-          //  navHostController.navigate()
-//            openDomofonRequestScreen(address = addressString, addedAddress = addedAddress?.data, navigationFrom = args.from)
+                ScreenRoute.ProfileScreen.route -> {
+                    isDvrOrDomofonAvailable.value = true
+                    Logger.d("4444 addAddressResponse profile isDvrOrDomofonAvailable.value=" + isDvrOrDomofonAvailable.value)
+                }
+            }
+
+            //            openDomofonRequestScreen(address = addressString, addedAddress = addedAddress?.data, navigationFrom = args.from)
+            //isTransitionAttachPhotoBottomSheet.value = isDvrOrDomofonAvailable.value
+
+
+
+            if (isDvrOrDomofonAvailable.value) {
+                isNextTransitionBottomSheet.value = ScreenBottomSheet.ATTACH_BSH
+            } else {
+                isNextTransitionBottomSheet.value = ScreenBottomSheet.REQUEST_BSH
+            }
         }
     }
 
+    when(isNextTransitionBottomSheet.value) {
+        ScreenBottomSheet.ATTACH_BSH -> {
+
+
+            val addressString = getAddressString(addAddressResponse)
+            val dataAddress = addAddressResponse?.data
+
+
+            Logger.d("4444 addressString=" + addressString)
+            Logger.d("4444 dataAddress=" + dataAddress)
+
+            AttachPhotoBottomSheet(
+                address = addressString,
+                dataAddress = dataAddress,
+                navigationFrom = fromScreen,
+                openBottomSheet = {
+
+                }
+            )
+        }
+        ScreenBottomSheet.REQUEST_BSH -> {
+            val addressString = getAddressString(addAddressResponse)
+            val dataAddress = addAddressResponse?.data
+            RequestAddressBottomSheet(
+                address = addressString,
+                dataAddress = dataAddress,
+                navigationFrom = fromScreen,
+                openBottomSheet = {
+
+                }
+            )
+        }
+        ScreenBottomSheet.DEFAULT -> { }
+    }
 
     DisposableEffect(Unit) {
         Logger.d("4444 DisposableEffect сработал фокус на адресе")
@@ -420,7 +511,7 @@ fun AutoComplete(
                     },
                     placeholder = {
                         Text(
-                            text = "Начните вводить улицу...",
+                            text = "Город, улица, дом",
                             color = Color.Gray
                         )
                     }
@@ -527,8 +618,7 @@ fun AutoComplete(
                         onClick = {
                             isApprovedData.value = checkData(
                                 addressText = addressText,
-                                flatNumberText = flatNumberText,
-                                positionDropList = positionDropList
+                                flatNumberText = flatNumberText
                             )
                         },
                         enabled = isEnabled,
@@ -555,7 +645,7 @@ fun AutoComplete(
                 AnimatedVisibility(visible = expandedAddresses) {
                     Card(
                         modifier = Modifier
-                            .padding(top = 16.dp),
+                            .padding(top = 16.dp).imePadding(),
 //                        .width(textFieldSize.width.dp)
                         elevation = CardDefaults.cardElevation(),
                         shape = RoundedCornerShape(10.dp),
@@ -568,7 +658,7 @@ fun AutoComplete(
                                 .padding(top = 16.dp, bottom = 16.dp),
                         ) {
                             if (addresses.isNotEmpty()) {
-                                itemsIndexed(addresses) { index, address ->
+                                items(addresses) {address ->
                                     CategoryItems(
                                         title = address.toString(), // Здесь вы можете использовать нужное поле адреса
                                         onSelect = {
@@ -576,7 +666,10 @@ fun AutoComplete(
                                                 addressText = ""
                                                 delay(100L)
                                                 addressText = it
-                                                positionDropList = index
+
+                                                addrId.value = address.addr_id
+                                                oper.value = address.oper
+
                                                 // expandedAddresses = false
                                                 // Logger.d("4444 попытка закрыть выпадающий список")
                                                 Logger.d("4444 onSelect =" + it)
@@ -655,12 +748,11 @@ fun ProgressBarErrorNetwork() {
 
 private fun checkData(
     addressText: String,
-    flatNumberText: String,
-    positionDropList: Int
+    flatNumberText: String
 ): CheckData {
     return if (addressText.matches(REGEX_ADDRESS)
         && flatNumberText.matches(REGEX_APT)
-        && positionDropList != -1) {
+    ) {
         CheckData.APPROVED
     } else {
         CheckData.NOT_APPROVED

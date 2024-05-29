@@ -60,7 +60,11 @@ fun BottomSheetOrder(
                 .fillMaxWidth(),
             onDismissRequest = { openBottomSheet(false) },
             sheetState = bottomSheetState,
-            dragHandle = { }
+            dragHandle = { },
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp
+            )
         ) {
             Column(
                 modifier = Modifier
@@ -165,23 +169,23 @@ fun OrderContent() {
             horizontalArrangement = Arrangement.Center
         ) {
 
-            ElevatedButton(
-                modifier = Modifier
-                    //.fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 30.dp, bottom = 30.dp),
-//                .shadow(2.dp, RoundedCornerShape(2.dp)),
-                shape = RoundedCornerShape(8.dp),
+                ElevatedButton(
+                    modifier = Modifier
+                        //.fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 30.dp, bottom = 30.dp),
+    //                .shadow(2.dp, RoundedCornerShape(2.dp)),
+                    shape = RoundedCornerShape(8.dp),
 
-                onClick = {
+                    onClick = {
 
-                },
-                content = { Text("Отправить") },
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = Color.White,
-                    containerColor = ColorCustomResources.colorBazaMainBlue
-                ),
-                //shape = RoundedCornerShape(10.dp)
-            )
+                    },
+                    content = { Text("Отправить") },
+                    colors = ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                        containerColor = ColorCustomResources.colorBazaMainBlue
+                    ),
+                    //shape = RoundedCornerShape(10.dp)
+                )
 
         }
     }

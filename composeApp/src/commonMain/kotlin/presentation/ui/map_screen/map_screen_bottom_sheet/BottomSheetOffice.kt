@@ -66,7 +66,11 @@ fun BottomSheetOffice(
               //  .height(500.dp),
             onDismissRequest = { openBottomSheet(false) },
             sheetState = bottomSheetState,
-            dragHandle = { }
+            dragHandle = { },
+            shape = RoundedCornerShape(
+                topStart = 20.dp,
+                topEnd = 20.dp
+            )
         ) {
             Column(
                 modifier = Modifier

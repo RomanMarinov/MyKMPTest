@@ -70,10 +70,13 @@ fun HomeScreen(
 //                    ),
                     title = {
                         Column(horizontalAlignment = Alignment.Start) {
-
                             var name = ""
                             userInfo?.data?.profile?.firstName?.let {
-                                name = ", $it"
+                                name = if (it.isNotEmpty()) {
+                                    ", $it"
+                                } else {
+                                    ""
+                                }
                             } ?: run {
                                 name = ""
                             }

@@ -16,7 +16,6 @@ sealed class ScreenRoute(val route: String) {
         }
     }
 
-
     ////////
 //    object ChatScreen : ScreenRoute("chat_screen/{$RECIPIENT_NAME}/{$RECIPIENT_PHONE}/{$SENDER_PHONE}") {
 //        fun withArgs(recipientName: String, recipientPhone: String, senderPhone: String) : String {

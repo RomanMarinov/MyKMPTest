@@ -22,8 +22,12 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Нужен доступ к вашей камере, чтобы сфотографировать документ</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Этому приложению требуется местопложение когда используется карта</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Нужен доступ к вашей библиотеке фотографий, чтобы прикрепить фото документа</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

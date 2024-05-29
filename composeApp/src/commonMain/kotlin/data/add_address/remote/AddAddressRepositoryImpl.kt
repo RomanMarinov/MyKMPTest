@@ -1,5 +1,6 @@
 package data.add_address.remote
 
+import co.touchlab.kermit.Logger
 import data.add_address.remote.dto.AddAddressBodyDTO
 import data.add_address.remote.dto.AddressDeleteResponseDTO
 import domain.add_address.AddAddressBody
@@ -50,6 +51,7 @@ class AddAddressRepositoryImpl(
            return response
         } catch (e: Exception) {
            e.printStackTrace()
+           Logger.d("4444 try catch getAddressById e=" + e)
            //logManager.writeLogToDB("Ошибка получения инфо по адресу c addrId = '${body.addrId}': ${e.javaClass.simpleName}")
            //logManager.writeLogToDB(e.stackTraceToString())
            null

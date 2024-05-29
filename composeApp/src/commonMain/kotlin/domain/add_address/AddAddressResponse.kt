@@ -8,7 +8,7 @@ data class Data(
     val id: Int,
     val addrId: Int,
     val city: String,
-    val flat: String,
+    val flat: Int,
     val home: String,
     val oper: String,
     val street: String,
