@@ -3,6 +3,7 @@ package di
 //import presentation.ui.map_screen.MapScreenViewModel
 import org.koin.dsl.module
 import presentation.ui.add_address.AddAddressViewModel
+import presentation.ui.attach_photo.AttachPhotoViewModel
 import presentation.ui.auth_activity.AuthActivityViewModel
 import presentation.ui.domofon_screen.DomofonScreenViewModel
 import presentation.ui.help_screen.HelpScreenViewModel
@@ -32,6 +33,8 @@ val viewModelModule = module {
     factory { ProfileScreenViewModel(get(), get()) }
 
     factory { AddAddressViewModel(get()) }
+
+    factory { AttachPhotoViewModel(get(), get()) }
 
 }
 

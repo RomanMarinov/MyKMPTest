@@ -44,6 +44,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import domain.add_address.Data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -55,6 +56,10 @@ import mykmptest.composeapp.generated.resources.ic_attach_camera
 import mykmptest.composeapp.generated.resources.ic_back
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.koinInject
+import presentation.ui.add_adress_result.AddAddressResultBottomSheet
+import presentation.ui.add_adress_result.model.ResultSendPhoto
+import presentation.ui.attach_photo.model.Photo
 import presentation.ui.attach_photo.platform.PermissionCallback
 import presentation.ui.attach_photo.platform.PermissionStatus
 import presentation.ui.attach_photo.platform.PermissionType
@@ -62,6 +67,9 @@ import presentation.ui.attach_photo.platform.createPermissionsManager
 import presentation.ui.attach_photo.platform.rememberCameraManager
 import presentation.ui.attach_photo.platform.rememberGalleryManager
 import util.ColorCustomResources
+import util.ProgressBarHelper
+import util.SnackBarHostHelper
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,8 +77,13 @@ fun AttachPhotoBottomSheet(
     address: String,
     dataAddress: Data?,
     navigationFrom: String,
-    openBottomSheet: (Boolean) -> Unit
+    onShowCurrentBottomSheet: (Boolean) -> Unit,
+    onShowPreviousBottomSheet: (Boolean) -> Unit,
+    viewModel: AttachPhotoViewModel = koinInject()
 ) {
+    val resultSendPhoto by viewModel.resultSendPhoto.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
+
     val openBottomSheetState by rememberSaveable { mutableStateOf(true) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -79,64 +92,83 @@ fun AttachPhotoBottomSheet(
     val interactionSource = remember { MutableInteractionSource() }
     val inputTextPhoneNumber = remember { mutableStateOf("") }
     val isEnableAttachSendButton = remember { mutableStateOf(false) }
-
+    var imageByteArray by remember { mutableStateOf<ByteArray?>(null) }
+    val snackBarStateWarning = remember { mutableStateOf(false) }
+    var isShowProgressBarSendPhoto by remember { mutableStateOf(false) }
+    val isShowResultBottomSheet = remember { mutableStateOf(false) }
 
     if (openBottomSheetState) {
         ModalBottomSheet(
             modifier = Modifier
                 .fillMaxWidth(),
-//            containerColor = Color.White, не
-//            contentColor = Color.White,
-            onDismissRequest = { openBottomSheet(false) },
-            sheetState = bottomSheetState,
-            dragHandle = {
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//
-//                        .background(Color.White),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    BottomSheetDefaults.DragHandle()
-//                }
+            onDismissRequest = {
+                onShowCurrentBottomSheet(false)
             },
+            sheetState = bottomSheetState,
+            dragHandle = { },
             shape = RoundedCornerShape(
                 topStart = 20.dp,
                 topEnd = 20.dp
             )
         ) {
-            Column(
-                modifier = Modifier
-
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .padding(16.dp)
-            ) {
-
-                LazyColumn(
-                    state = lazyListState
+            Box {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                        .padding(16.dp)
                 ) {
-                    item {
-                        AttachTopTitle(
-                            openBottomSheet = {
+                    LazyColumn(
+                        state = lazyListState
+                    ) {
+                        item {
+                            AttachTopTitle(
+                                openBottomSheet = {
+                                    onShowCurrentBottomSheet(it)
+                                }
+                            )
+                            AttachAddressTitle(address = address)
+                            AttachAvailableServicesContent()
+                            AttachContent()
+                            AttachPhoto(
+                                isShowProgressBarSendPhoto = isShowProgressBarSendPhoto,
+                                onAttachPhoto = {
+                                    isScrollToLastIndex.value = it.isAttach
+                                    isEnableAttachSendButton.value = it.isAttach
+                                    imageByteArray = it.imageByteArray
+                                }
+                            )
+                        }
+                        item {
+                            AttachSendButton(
+                                isEnable = isEnableAttachSendButton.value,
+                                onClick = {
 
-                            }
-                        )
-                        AttachAddressTitle(address = address)
-                        AttachAvailableServicesContent()
-                        AttachContent()
-                        AttachPhoto(
-                            onAttachPhoto = {
-                                isScrollToLastIndex.value = it
-                                isEnableAttachSendButton.value = it
-                            }
-                        )
+                                    isShowProgressBarSendPhoto = true
+                                    // тут надо делать проверку и запрос (отпарвку фото ури)
+                                    dataAddress?.id?.let {
+                                        // 67279
+//                                        viewModel.sendPhoto(imageByteArray = imageByteArray, addrId = 67279)
+                                        viewModel.sendPhoto(
+                                            imageByteArray = imageByteArray,
+                                            addrId = it
+                                        )
+//                                        viewModel.sendPhoto(imageByteArray = imageByteArray, addrId = dataAddress.addrId, res)
+                                    }
+                                    //viewModel.checkPhoneLinkedAndSendPhoto()
+                                }
+                            )
+                        }
                     }
-                    item {
-                        AttachSendButton(
-                            isEnable = isEnableAttachSendButton.value
-                        )
-                    }
+                }
+
+                if (snackBarStateWarning.value) {
+                    SnackBarHostHelper.ShortShortTime(
+                        message = "Проверьте правильность введенного номера",
+                        onFinishTime = {
+                            snackBarStateWarning.value = false
+                        }
+                    )
                 }
             }
         }
@@ -146,6 +178,37 @@ fun AttachPhotoBottomSheet(
                 delay(100)
                 lazyListState.animateScrollToItem(1)
             }
+        }
+
+        LaunchedEffect(resultSendPhoto) {
+            if (resultSendPhoto == ResultSendPhoto.SUCCESS) {
+                isShowProgressBarSendPhoto = false
+                isShowResultBottomSheet.value = true
+            }
+            if (resultSendPhoto == ResultSendPhoto.FAILURE) {
+                isShowProgressBarSendPhoto = false
+                isShowResultBottomSheet.value = true
+            }
+        }
+
+        if (isShowResultBottomSheet.value) {
+            AddAddressResultBottomSheet(
+                resultSendPhoto = resultSendPhoto,
+                onShowBottomSheet = {
+                    scope.launch {
+                        isShowResultBottomSheet.value = it // закроет текущий
+
+                        if (resultSendPhoto == ResultSendPhoto.SUCCESS) {  // закроет предыдущий
+                            delay(300L)
+                            onShowPreviousBottomSheet(false)
+                        }
+//                        if (resultSendPhoto == ResultSendPhoto.FAILURE) {  // закроет текущий
+//                            delay(500L)
+//                            onShowBottomSheet(true)
+//                        }
+                    }
+                }
+            )
         }
     }
 }
@@ -441,10 +504,12 @@ fun AttachContent() {
 
 @Composable
 fun AttachPhoto(
-    onAttachPhoto: (Boolean) -> Unit
+    isShowProgressBarSendPhoto: Boolean,
+    onAttachPhoto: (Photo) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
+    var imageByteArray by remember { mutableStateOf<ByteArray?>(null) }
     var imageSourceOptionDialog by remember { mutableStateOf(value = false) }
     var launchCamera by remember { mutableStateOf(value = false) }
     var launchGallery by remember { mutableStateOf(value = false) }
@@ -475,6 +540,7 @@ fun AttachPhoto(
     val cameraManager = rememberCameraManager {
         coroutineScope.launch {
             val bitmap = withContext(Dispatchers.Default) {
+                imageByteArray = it?.toByteArray()
                 it?.toImageBitmap()
             }
             imageBitmap = bitmap
@@ -484,9 +550,11 @@ fun AttachPhoto(
     val galleryManager = rememberGalleryManager {
         coroutineScope.launch {
             val bitmap = withContext(Dispatchers.Default) {
+                imageByteArray = it?.toByteArray()
                 it?.toImageBitmap()
             }
             imageBitmap = bitmap
+
         }
     }
     if (imageSourceOptionDialog) {
@@ -551,15 +619,33 @@ fun AttachPhoto(
             horizontalArrangement = Arrangement.Center
         ) {
             imageBitmap?.let {
-                Image(
-                    bitmap = it, // прикрепленное изображение документа
-                    contentDescription = null,
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 100.dp), // Минимальная высота, чтобы гарантировать что изображение не будет слишком маленьким
-                    contentScale = ContentScale.FillWidth // Растягивает изображение по ширине контейнера, сохраняя соотношение сторон
-                )
-                onAttachPhoto(true)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        bitmap = it, // прикрепленное изображение документа
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 100.dp), // Минимальная высота, чтобы гарантировать что изображение не будет слишком маленьким
+                        contentScale = ContentScale.FillWidth // Растягивает изображение по ширине контейнера, сохраняя соотношение сторон
+                    )
+                    imageByteArray?.let { img ->
+                        onAttachPhoto(
+                            Photo(
+                                isAttach = true,
+                                imageByteArray = img
+                            )
+                        )
+                    }
+                    imageByteArray?.let {
+                        if (isShowProgressBarSendPhoto) {
+                            ProgressBarHelper.Start(color = ColorCustomResources.colorBazaMainBlue)
+                        }
+                    }
+                }
             } ?: run {
                 Image(
                     modifier = Modifier
@@ -575,7 +661,6 @@ fun AttachPhoto(
             }
         }
     }
-
 
 
 //
@@ -639,13 +724,13 @@ fun AttachPhoto(
 
 @Composable
 fun AttachSendButton(
-    isEnable: Boolean
+    isEnable: Boolean,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
-
         ElevatedButton(
             enabled = isEnable,
             modifier = Modifier
@@ -653,9 +738,8 @@ fun AttachSendButton(
                 .padding(start = 16.dp, end = 16.dp, top = 30.dp, bottom = 30.dp),
             //                .shadow(2.dp, RoundedCornerShape(2.dp)),
             shape = RoundedCornerShape(8.dp),
-
             onClick = {
-
+                onClick()
             },
             content = { Text("Отправить на проверку") },
             colors = ButtonDefaults.buttonColors(

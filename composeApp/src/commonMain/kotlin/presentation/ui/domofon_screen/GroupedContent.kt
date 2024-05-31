@@ -40,7 +40,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import domain.add_address.Data
 import domain.model.user_info.Sputnik
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -51,7 +50,7 @@ import mykmptest.composeapp.generated.resources.ic_plus
 import mykmptest.composeapp.generated.resources.ic_share
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
-import presentation.ui.attach_photo.AttachPhotoBottomSheet
+import presentation.ui.add_address.AddAddressBottomSheet
 import util.ColorCustomResources
 import util.ScreenRoute
 import util.navigateToWebViewHelper
@@ -120,8 +119,7 @@ fun GroupedContent(
 fun TopTitleContentGroup(
     navHostController: NavHostController
 ) {
-
-    val isOpenBottomSheet = remember { mutableStateOf(false) }
+    val isShowBottomSheet = remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -166,7 +164,7 @@ fun TopTitleContentGroup(
                     Row(
                         modifier = Modifier
                             .clickable {
-                                isOpenBottomSheet.value = true
+                                isShowBottomSheet.value = true
                             }
                             .fillMaxHeight()
                             .padding(start = 8.dp),
@@ -193,26 +191,13 @@ fun TopTitleContentGroup(
         }
     }
 
-    if (isOpenBottomSheet.value) {
-        val dataAddress = Data(id=65617, addrId=20290, city="Вологда", flat=241, home="42", oper="baza", street="Ярославская (ул.)", verificationStatus="VERIFIED", inet=true, ktv=true, domofon=true, dvr=false)
-        val addressString = "Вологда, Ярославская (ул.), 42 - 241"
-
-        AttachPhotoBottomSheet(
-            address = addressString,
-            dataAddress = dataAddress,
-            navigationFrom = ScreenRoute.DomofonScreen.route,
-            openBottomSheet = {
-
+    if (isShowBottomSheet.value) {
+        AddAddressBottomSheet(
+            fromScreen = ScreenRoute.DomofonScreen.route,
+            onShowCurrentBottomSheet = {
+                isShowBottomSheet.value = it
             }
         )
-
-
-//        AddAddressBottomSheet(
-//            fromScreen = ScreenRoute.DomofonScreen.route,
-//            openBottomSheet = {
-//                isOpenBottomSheet.value = false
-//            }
-//        )
     }
 }
 

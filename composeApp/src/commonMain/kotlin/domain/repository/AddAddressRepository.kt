@@ -8,4 +8,7 @@ interface AddAddressRepository {
     suspend fun checkAddress(checkAddressBody: CheckAddressBody): HttpResponse?
     suspend fun getAddressById(addAddressBody: AddAddressBody): HttpResponse?
     suspend fun deleteAddress(id: Int): Boolean?
+
+
+    suspend fun uploadImage(imageByteArray: ByteArray, id: Int): HttpResponse?
 }

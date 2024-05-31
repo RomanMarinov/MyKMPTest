@@ -79,8 +79,8 @@ fun DomofonScreen(
         if (it.size >= 3) {
             onShowGroupStateFirst.value = true
         }
-
     }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -188,7 +188,6 @@ fun DomofonScreen(
                             bottom = paddingValue.calculateBottomPadding()
                         )
                 ) {
-                    val groupItems: Map<Int, List<Sputnik>>? = items?.groupBy { it.addrId }
                     groupItems?.let {
                         //listGroup ->
                         if (it.size in 1..2) {

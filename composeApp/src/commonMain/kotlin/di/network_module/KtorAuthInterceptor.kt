@@ -40,8 +40,9 @@ class KtorAuthInterceptor(
     override fun install(plugin: KtorAuthInterceptor, scope: HttpClient) {
         scope.requestPipeline.intercept(HttpRequestPipeline.Render) { response ->
             Logger.d("4444 KtorAuthInterceptor  install context.url=" + context.url.build())
-            if (context.url.toString().contains(USER_PREFIX)
-                || context.url.toString().contains(LOGOUT_PREFIX)) {
+            if (context.url.toString().contains(USER_PREFIX, true)
+                || context.url.toString().contains(LOGOUT_PREFIX, true)
+                || context.url.toString().contains(VERIFICATION_PREFIX, true)) {
                 // обновляем токены, если accessToken протух
                 val isItTimeToRefreshToken = TextUtils.isItTimeToUpdateToken(
                     appPreferencesRepository.fetchInitialPreferences().accessToken

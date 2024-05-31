@@ -8,12 +8,17 @@ import domain.add_address.CheckAddressBody
 import domain.repository.AddAddressRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+
 
 class AddAddressRepositoryImpl(
     private val httpClient: HttpClient
@@ -39,7 +44,7 @@ class AddAddressRepositoryImpl(
         val id = addAddressBody.addrId
 
        return try {
-            val response = httpClient.post("user/address/{$id}") {
+            val response = httpClient.post("user/address/$id") {
                 contentType(ContentType.Application.Json)
                 setBody(body = addAddressBodyDTO)
             }
@@ -60,7 +65,7 @@ class AddAddressRepositoryImpl(
 
 
     override suspend fun deleteAddress(id: Int): Boolean {
-        val response = httpClient.post("user/address/{$id}") {
+        val response = httpClient.post("user/address/$id") {
             contentType(ContentType.Application.Json)
         }
         return if (response.status.isSuccess()) {
@@ -72,6 +77,189 @@ class AddAddressRepositoryImpl(
             false
         }
     }
+
+/////////////////////////
+    // этот в какой момент сработал
+override suspend fun uploadImage(imageByteArray: ByteArray, id: Int): HttpResponse? {
+    Logger.d("uploadImage imageByteArray size=${imageByteArray.size} id=$id")
+    return try {
+        val response: HttpResponse = httpClient.submitFormWithBinaryData(
+            url = "verification/address/$id",
+            formData = formData {
+                append("description", "Ktor logo")
+                append("image", imageByteArray, Headers.build {
+                    append(HttpHeaders.ContentType, "application/octet-stream")
+                    append(HttpHeaders.ContentDisposition, "form-data; name=\"image\"; filename=\"image.png\"")
+                })
+            }
+        )
+        if (response.status.isSuccess()) {
+            Logger.d("4444 uploadImage OK")
+            val code = response.status
+            val successContent = response.body<String>()
+            val headers = response.headers
+            val description = response.status.description
+            Logger.d("4444 uploadImage OK code=$code")
+            Logger.d("4444 uploadImage OK successContent=$successContent")
+            Logger.d("4444 uploadImage OK headers=$headers")
+            Logger.d("4444 uploadImage OK description=$description")
+        } else {
+            Logger.d("4444 uploadImage FAILURE")
+            val code = response.status
+            val errorContent = response.body<String>()
+            val headers = response.headers
+            val description = response.status.description
+            Logger.d("4444 uploadImage FAILURE code=$code")
+            Logger.d("4444 uploadImage FAILURE errorContent=$errorContent")
+            Logger.d("4444 uploadImage FAILURE headers=$headers")
+            Logger.d("4444 uploadImage FAILURE description=$description")
+        }
+//            response
+        response
+    } catch (e: Exception) {
+        // Обработка ошибки, если нужно
+        Logger.d(" try catch 4444 uploadImage e=" + e)
+        e.printStackTrace()
+        null
+    }
+}
+
+
+
+
+//    override suspend fun uploadImage(imageByteArray: ByteArray, id: Int): HttpResponse? {
+//        Logger.d("uploadImage imageByteArray size=${imageByteArray.size} id=$id")
+//        return try {
+//////////////////////////////
+////            val response: HttpResponse = httpClient.submitFormWithBinaryData(
+////                url = "verification/address/$id",
+////                formData = formData {
+////                    append("description", "Ktor logo1")
+////                    append("image", imageByteArray, Headers.build {
+////                        append(HttpHeaders.ContentType, "application/octet-stream")
+////                        append(HttpHeaders.ContentDisposition, "form-data; name=\"image1\"; filename=\"image1.png\"")
+////                    })
+////                }
+////            )
+/////////////////////////////
+//
+////            val res = InputByFilepath().getByteArray(imageByteArray)
+////            val response: HttpResponse = httpClient.submitFormWithBinaryData(
+////                url = "verification/address/$id",
+////                formData = formData {
+////                    append("description", "Ktor logo")
+////                    append("image", res, Headers.build {
+////                        append(HttpHeaders.ContentType, "image/png")
+////                        append(HttpHeaders.ContentDisposition, "filename=\"ktor_logo.png\"")
+////                    })
+////                }
+////            )
+///////////////////
+//          //  val res = InputByFilepath().getByteArray()
+//            val data: List<PartData> = formData {
+//                appendInput(
+//                    key = "yourKey",
+//                    block = { res },
+//                    headers = Headers.build {
+//                        append(
+//                            HttpHeaders.ContentType,
+//                            ContentType.Application.OctetStream.toString()
+//                        )
+//                        append(
+//                            HttpHeaders.ContentDisposition, ContentDisposition.File
+//                                .withParameter(ContentDisposition.Parameters.FileName, "fileName")
+//                                .toString()
+//                        )
+//                    }
+//                )
+//            }
+//            val response = httpClient.submitFormWithBinaryData(
+//                url = "verification/address/$id",
+//                formData = data)
+//
+//
+//
+//
+////            val response = httpClient.post("verification/address/{$id}") {
+////                contentType(ContentType.Application.OctetStream)
+////                setBody(body = imageByteArray)
+////            }
+//            if (response.status.isSuccess()) {
+//                Logger.d("4444 uploadImage OK")
+//            } else {
+//                Logger.d("4444 uploadImage FAILURE")
+//                val code = response.status
+//                val errorContent = response.body<String>()
+//                val headers = response.headers
+//                val description = response.status.description
+//                Logger.d("4444 uploadImage FAILURE code=$code")
+//                Logger.d("4444 uploadImage FAILURE errorContent=$errorContent")
+//                Logger.d("4444 uploadImage FAILURE headers=$headers")
+//                Logger.d("4444 uploadImage FAILURE description=$description")
+//            }
+////            response
+//            response
+//        } catch (e: Exception) {
+//            // Обработка ошибки, если нужно
+//            Logger.d(" try catch 4444 uploadImage e=" + e)
+//            e.printStackTrace()
+//            null
+//        }
+//    }
+
+    //////////////////////////
+
+
+//    override suspend fun uploadImage(imageByteArray: ByteArray, id: Int): HttpResponse? {
+//        Logger.d("uploadImage imageByteArray=" + imageByteArray + " id=" + id)
+//
+//
+//        val fileName = "fileName"
+//
+//        return try {
+//            val response = httpClient.post("verification/address/{$id}") {
+//                setBody(body = MultiPartFormDataContent(
+//                    formData {
+//                        append(
+//                            "document",
+//                            imageByteArray,
+//                            Headers.build {
+//                                append(HttpHeaders.ContentType, "images/*") // Mime type required
+//                                append(HttpHeaders.ContentDisposition, "filename=$fileName") // Filename in content disposition required
+//                            }
+//                        )
+//                    }
+//                ))
+//            }
+//            if (response.status.isSuccess()) {
+//                Logger.d("4444 uploadImage OK")
+//            } else {
+//                Logger.d("4444 uploadImage NOT OK")
+//            }
+//            response
+//
+//
+//
+//
+////            val response = httpClient.post("verification/address/{$id}") {
+////                contentType(ContentType.Application.OctetStream)
+////                setBody(body = imageByteArray)
+////            }
+////            if (response.status.isSuccess()) {
+////                Logger.d("4444 uploadImage OK")
+////            } else {
+////                Logger.d("4444 uploadImage NOT OK")
+////            }
+////            response
+//        } catch (e: Exception) {
+//            // Обработка ошибки, если нужно
+//            Logger.d(" try catch 4444 uploadImage e=" + e)
+//            e.printStackTrace()
+//            null
+//        }
+//    }
+
+    ////////////////////////
 
 //    override suspend fun getAddressById(
 //        body: AddAddressBody
@@ -94,4 +282,36 @@ class AddAddressRepositoryImpl(
 //            null
 //        }
 //    }
+
+
+//    suspend fun uploadImage(token: String, byteArray: ByteArray) {
+//        httpClient.submitFormWithBinaryData(
+//            url(MainEndpoints.UPDATE_PROFILE_PIC),
+//            formData {
+//                append("photo", byteArray, Headers.build {
+//                    println("Original size ${byteArray.size} bytes")
+//                    append(HttpHeaders.ContentType, "image/jpg")
+//                    append(HttpHeaders.ContentDisposition, "filename=image.jpg")
+//                }
+//                )
+//            }) {
+//            header("Authorization", token)
+//            onUpload { bytesSentTotal, contentLength ->
+//                println("Sent $bytesSentTotal bytes from $contentLength")
+//            }
+//        }
+//    }
+
+//        suspend fun sendPhoto() {
+//            val response: HttpResponse = httpClient.submitFormWithBinaryData(
+//                url = "http://localhost:8080/upload",
+//                formData = formData {
+//                    append("description", "Ktor logo")
+//                    append("image", File("ktor_logo.png").readBytes(), Headers.build {
+//                        append(HttpHeaders.ContentType, "image/png")
+//                        append(HttpHeaders.ContentDisposition, "filename=\"ktor_logo.png\"")
+//                    })
+//                }
+//            )
+//        }
 }

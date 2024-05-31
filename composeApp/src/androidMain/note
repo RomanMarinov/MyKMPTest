@@ -1,0 +1,2 @@
+uploadImage OK code=200 OK
+uploadImage OK successContent={"data":{"id":67316,"oper":"baza","addrId":20290,"flat":241,"verificationStatus":"WAITING","city":"Вологда","street":"Ярославская (ул.)","home":"42","dvr":false,"inet":true,"ktv":true,"domofon":true}}

@@ -52,6 +52,10 @@ class MainActivity : ComponentActivity() {
             LifecycleOwnerMainActivity()
         }
     }
+
+
+
+
 }
 
 @Composable

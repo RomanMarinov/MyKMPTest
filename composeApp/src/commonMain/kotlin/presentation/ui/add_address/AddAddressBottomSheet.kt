@@ -26,7 +26,6 @@ import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -52,7 +51,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -74,53 +72,35 @@ import mykmptest.composeapp.generated.resources.ic_close
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
 import presentation.ui.attach_photo.AttachPhotoBottomSheet
+import presentation.ui.domofon_screen.model.CheckData
+import presentation.ui.domofon_screen.model.ScreenBottomSheet
 import presentation.ui.request_address.RequestAddressBottomSheet
 import util.ColorCustomResources
+import util.ProgressBarHelper
 import util.ScreenRoute
 
 
 private val REGEX_ADDRESS = ".*,.*,.*".toRegex()
 private val REGEX_APT = "^\\d*".toRegex()
 
-enum class CheckData {
-    APPROVED, NOT_APPROVED, DEFAULT
-}
-
-enum class ScreenBottomSheet {
-    ATTACH_BSH, REQUEST_BSH, DEFAULT
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAddressBottomSheet(
     fromScreen: String,
-    openBottomSheet: (Boolean) -> Unit,
-   // navHostController: NavHostController
+    onShowCurrentBottomSheet: (Boolean) -> Unit
 ) {
     val openBottomSheetState by rememberSaveable { mutableStateOf(true) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val inputTextPhoneNumber = remember { mutableStateOf("") }
     if (openBottomSheetState) {
         ModalBottomSheet(
             modifier = Modifier
                 .fillMaxWidth(),
-//            containerColor = Color.White, не
-//            contentColor = Color.White,
-            onDismissRequest = { openBottomSheet(false) },
-            sheetState = bottomSheetState,
-            dragHandle = {
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//
-//                        .background(Color.White),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    BottomSheetDefaults.DragHandle()
-//                }
+            onDismissRequest = {
+                onShowCurrentBottomSheet(false)
             },
+            sheetState = bottomSheetState,
+            dragHandle = { },
             shape = RoundedCornerShape(
                 topStart = 20.dp,
                 topEnd = 20.dp
@@ -131,31 +111,17 @@ fun AddAddressBottomSheet(
                     .fillMaxSize()
                     .background(Color.White)
             ) {
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(top = 16.dp),
-//                ) {
                 TopTitle(
-                    openBottomSheet = {
-                        openBottomSheet(it)
+                    onShowCurrentBottomSheet = {
+                        onShowCurrentBottomSheet(it)
                     }
                 )
                 AutoComplete(
                     fromScreen = fromScreen,
-                    //navHostController = navHostController
+                    onShowCurrentBottomSheet = {
+                        onShowCurrentBottomSheet(it)
+                    }
                 )
-//                  }
-
-//                AddAddressTransformation(
-//                    inputTextPhoneNumber = inputTextPhoneNumber.value,
-//                    errorLineColorClick = Color.Red,
-//                    onInputTextPhoneNumber = {
-//                        inputTextPhoneNumber.value = it
-//                    },
-//                    onErrorLineColor = {},
-//                    onShowWarning = {}
-//                )
             }
         }
     }
@@ -163,7 +129,7 @@ fun AddAddressBottomSheet(
 
 @Composable
 fun TopTitle(
-    openBottomSheet: (Boolean) -> Unit
+    onShowCurrentBottomSheet: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -204,7 +170,7 @@ fun TopTitle(
                     modifier = Modifier
                         .fillMaxSize()
                         .clickable {
-                            openBottomSheet(false)
+                            onShowCurrentBottomSheet(false)
                         },
                     contentAlignment = Alignment.Center,
                 ) {
@@ -240,7 +206,7 @@ fun TopTitle(
 fun AutoComplete(
     fromScreen: String,
     viewModel: AddAddressViewModel = koinInject(),
-  //  navHostController: NavHostController
+    onShowCurrentBottomSheet: (Boolean) -> Unit
 ) {
     val addresses by viewModel.addresses.collectAsStateWithLifecycle()
     val errorNetwork by viewModel.errorNetwork.collectAsStateWithLifecycle()
@@ -335,6 +301,7 @@ fun AutoComplete(
     LaunchedEffect(isApprovedData.value) {
         when (isApprovedData.value) {
             CheckData.APPROVED -> {
+
                 Logger.d("4444 addresses проверка=" + addresses)
                 val address = addressText
                 val flat = flatNumberText
@@ -354,6 +321,10 @@ fun AutoComplete(
             CheckData.DEFAULT -> {}
         }
     }
+//
+//    if (isApprovedData.value == CheckData.APPROVED) {
+//        ProgressBarHelper.Start(color = ColorCustomResources.colorBazaMainBlue)
+//    }
 
     LaunchedEffect(addAddressResponse) {
         Logger.d("4444 addAddressResponse fromScreen=" + fromScreen)
@@ -376,10 +347,8 @@ fun AutoComplete(
                 }
             }
 
-            //            openDomofonRequestScreen(address = addressString, addedAddress = addedAddress?.data, navigationFrom = args.from)
-            //isTransitionAttachPhotoBottomSheet.value = isDvrOrDomofonAvailable.value
-
-
+            // openDomofonRequestScreen(address = addressString, addedAddress = addedAddress?.data, navigationFrom = args.from)
+            // isTransitionAttachPhotoBottomSheet.value = isDvrOrDomofonAvailable.value
 
             if (isDvrOrDomofonAvailable.value) {
                 isNextTransitionBottomSheet.value = ScreenBottomSheet.ATTACH_BSH
@@ -389,26 +358,32 @@ fun AutoComplete(
         }
     }
 
-    when(isNextTransitionBottomSheet.value) {
+    when (isNextTransitionBottomSheet.value) {
         ScreenBottomSheet.ATTACH_BSH -> {
-
+            isApprovedData.value = CheckData.DEFAULT
 
             val addressString = getAddressString(addAddressResponse)
             val dataAddress = addAddressResponse?.data
-
-
-            Logger.d("4444 addressString=" + addressString)
-            Logger.d("4444 dataAddress=" + dataAddress)
+            Logger.d("4444 проверка addressString=" + addressString)
+            Logger.d("4444 проверка dataAddress=" + dataAddress)
+            Logger.d("4444 проверка verificationStatus=" + dataAddress?.verificationStatus)
 
             AttachPhotoBottomSheet(
                 address = addressString,
                 dataAddress = dataAddress,
                 navigationFrom = fromScreen,
-                openBottomSheet = {
-
+                onShowCurrentBottomSheet = {
+                    isNextTransitionBottomSheet.value = ScreenBottomSheet.DEFAULT
+                },
+                onShowPreviousBottomSheet = {
+                    scope.launch {
+                        delay(300L)
+                        onShowCurrentBottomSheet(false)
+                    }
                 }
             )
         }
+
         ScreenBottomSheet.REQUEST_BSH -> {
             val addressString = getAddressString(addAddressResponse)
             val dataAddress = addAddressResponse?.data
@@ -421,7 +396,8 @@ fun AutoComplete(
                 }
             )
         }
-        ScreenBottomSheet.DEFAULT -> { }
+
+        ScreenBottomSheet.DEFAULT -> {}
     }
 
     DisposableEffect(Unit) {
@@ -458,6 +434,18 @@ fun AutoComplete(
                 }
             )
     ) {
+
+        val widthBorderAddress = if (addressText.matches(REGEX_ADDRESS)) {
+            2.dp
+        } else {
+            1.dp
+        }
+        val colorBorderAddress = if (addressText.matches(REGEX_ADDRESS)) {
+            ColorCustomResources.colorBazaMainBlue
+        } else {
+            Color.Gray
+        }
+
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 TextField(
@@ -466,7 +454,7 @@ fun AutoComplete(
                         .height(55.dp)
                         .border(
                             width = 1.dp,
-                            color = Color.Black,
+                            color = colorBorderAddress,
                             shape = RoundedCornerShape(10.dp)
                         )
 //                        .onGloballyPositioned { coordinates ->
@@ -524,12 +512,23 @@ fun AutoComplete(
             }
 
             if (errorNetwork) {
-                ProgressBarErrorNetwork()
+                ProgressBarHelper.Start(color = ColorCustomResources.colorBazaMainBlue)
             }
 
 
             if (isShowTextFieldAndButton.value) {
                 Logger.d("4444 открылись форма для номер и кнопка")
+                val widthBorderFlat = if (flatNumberText.isNotEmpty()) {
+                    2.dp
+                } else {
+                    1.dp
+                }
+                val colorBorderFlat = if (flatNumberText.isNotEmpty()) {
+                    ColorCustomResources.colorBazaMainBlue
+                } else {
+                    Color.Gray
+                }
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -543,7 +542,7 @@ fun AutoComplete(
                             .height(55.dp)
                             .border(
                                 width = 1.dp,
-                                color = Color.Black,
+                                color = colorBorderFlat,
                                 shape = RoundedCornerShape(10.dp)
                             )
                             .onGloballyPositioned { coordinates ->
@@ -637,6 +636,10 @@ fun AutoComplete(
                 }
                 isExecuteRequestFocus.value = true
                 Logger.d("4444 инит свойства для фокуса на номер=" + isExecuteRequestFocus.value)
+
+                if (isApprovedData.value == CheckData.APPROVED) {
+                    ProgressBarHelper.Start(color = ColorCustomResources.colorBazaMainBlue)
+                }
             }
 
             if (expandedAddresses) {
@@ -658,7 +661,7 @@ fun AutoComplete(
                                 .padding(top = 16.dp, bottom = 16.dp),
                         ) {
                             if (addresses.isNotEmpty()) {
-                                items(addresses) {address ->
+                                items(addresses) { address ->
                                     CategoryItems(
                                         title = address.toString(), // Здесь вы можете использовать нужное поле адреса
                                         onSelect = {
@@ -722,26 +725,6 @@ fun InvalidInput() {
             text = "Некорректный ввод",
             color = Color.Red,
             fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-fun ProgressBarErrorNetwork() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        CircularProgressIndicator(
-            modifier = Modifier
-                .size(55.dp),
-            color = ColorCustomResources.colorBazaMainBlue,
-            strokeWidth = 4.dp,
-            trackColor = Color.White,
-            strokeCap = StrokeCap.Square
         )
     }
 }
