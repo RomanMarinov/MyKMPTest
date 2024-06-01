@@ -59,7 +59,7 @@ import util.navigateToWebViewHelper
 import util.shimmerEffect
 
 @Composable
-fun NotGroupedContent(
+fun NotGroupedContentFrom(
 //    lazyListState: LazyListState,
     items: List<Sputnik>,
     snackbarHostState: SnackbarHostState,
@@ -85,7 +85,7 @@ fun NotGroupedContent(
         }
 
         items(items) { sputnik ->
-            ContentLazyListItem(
+            ContentLazyListItemFrom(
                 sputnik = sputnik,
                 snackbarHostState = snackbarHostState,
                 navHostController = navHostController,
@@ -96,7 +96,7 @@ fun NotGroupedContent(
 }
 
 @Composable
-fun ContentLazyListItemTop(
+fun ContentLazyListItemTopFrom(
     navHostController: NavHostController
 ) {
 
@@ -224,7 +224,7 @@ fun ContentLazyListItemTop(
 
 
 @Composable
-fun ContentLazyListItem(
+fun ContentLazyListItemFrom(
     sputnik: Sputnik,
     //snackBarState: Boolean,
     snackbarHostState: SnackbarHostState,

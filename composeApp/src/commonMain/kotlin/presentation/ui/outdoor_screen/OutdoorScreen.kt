@@ -3,6 +3,7 @@ package presentation.ui.outdoor_screen
 //import mykmptest.composeapp.generated.resources.ic_outdoor_create_shortcut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -46,11 +47,9 @@ import util.ScreenRoute
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun OutdoorScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
-    viewModel: OutdoorScreenViewModel = koinInject(),
-    //viewModel: OutdoorScreenViewModel = koinViewModel()
-    // viewModel: OutdoorScreenViewModel =
-
+    viewModel: OutdoorScreenViewModel = koinInject()
 ) {
     Logger.d { " 4444 OutdoorScreen opened" }
 
@@ -132,14 +131,12 @@ fun OutdoorScreen(
 
                 )
             }
-        ) { paddingValue ->
+        ) { outdoorTopBarPaddingValue ->
 
             Column(
                 modifier = Modifier
-                    .padding(paddingValue)
-                    .padding(
-                        bottom = paddingValue.calculateBottomPadding()
-                    )
+                    .padding(top = outdoorTopBarPaddingValue.calculateTopPadding())
+                    .padding(bottom = bottomNavigationPaddingValue.calculateBottomPadding())
                     .background(ColorCustomResources.colorBackgroundMain)
 
             ) {
@@ -154,7 +151,7 @@ fun OutdoorScreen(
                         }
                     },
                     navHostController = navHostController,
-                    paddingValue = paddingValue
+                   // paddingValue = paddingValue
                 )
             }
         }

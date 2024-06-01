@@ -63,8 +63,9 @@ import util.ScreenRoute
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InternetTvScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
-    viewModel: InternetTvScreenViewModel = koinInject(),
+    viewModel: InternetTvScreenViewModel = koinInject()
     //viewModel: OutdoorScreenViewModel = koinViewModel()
     // viewModel: OutdoorScreenViewModel =
 
@@ -140,14 +141,13 @@ fun InternetTvScreen(
 
                 )
             }
-        ) { paddingValue ->
+        ) { internetTvTopBarPaddingValue ->
 
             Column(
                 modifier = Modifier
-                    .padding(paddingValue)
-                    .padding(
-                        bottom = paddingValue.calculateBottomPadding()
-                    )
+                    .fillMaxSize()
+                    .padding(top = internetTvTopBarPaddingValue.calculateTopPadding())
+                    .padding(bottom = bottomNavigationPaddingValue.calculateBottomPadding())
                     .background(ColorCustomResources.colorBackgroundMain)
 
             ) {
@@ -161,8 +161,7 @@ fun InternetTvScreen(
 //                            isRefreshing = false
 //                        }
 //                    },
-                    navHostController = navHostController,
-                    paddingValue = paddingValue
+                    navHostController = navHostController
                 )
 
 //                TopControl2(

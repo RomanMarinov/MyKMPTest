@@ -2,6 +2,7 @@ package presentation.ui.profile_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,6 +45,7 @@ import util.SnackBarHostHelper
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
     onMoveToAuthActivity: () -> Unit
 ) {
@@ -125,14 +127,12 @@ fun ProfileScreen(
 
                 )
             }
-        ) { paddingValue ->
+        ) { profileToBarPaddingValue ->
 
             Column(
                 modifier = Modifier
-                    .padding(paddingValue)
-                    .padding(
-                        bottom = paddingValue.calculateBottomPadding()
-                    )
+                    .padding(top = profileToBarPaddingValue.calculateTopPadding())
+                    .padding(bottom = bottomNavigationPaddingValue.calculateBottomPadding())
                     .background(ColorCustomResources.colorBackgroundMain)
 
             ) {
@@ -147,7 +147,6 @@ fun ProfileScreen(
                         }
                     },
                     navHostController = navHostController,
-                    paddingValue = paddingValue,
                     onMoveToAuthActivity = {
                         onMoveToAuthActivity()
                     }

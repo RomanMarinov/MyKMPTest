@@ -6,10 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -70,7 +69,7 @@ fun HomeContentWithRefresh(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
     navHostController: NavHostController,
-    paddingValue: PaddingValues,
+    //paddingValue: PaddingValues,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -97,8 +96,8 @@ fun HomeContentWithRefresh(
     Box(
         modifier = modifier
             .nestedScroll(pullToRefreshState.nestedScrollConnection)
-            .navigationBarsPadding()
-            .padding(bottom = paddingValue.calculateBottomPadding())
+            //.navigationBarsPadding()
+            //.padding(bottom = paddingValue.calculateBottomPadding())
 //            .background(
 //                Brush.linearGradient(
 //                    colors = colorsList,
@@ -108,7 +107,9 @@ fun HomeContentWithRefresh(
 //            )
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxSize()
+                //.padding(bottom = paddingValue.calculateBottomPadding()
+             //   )
         ) {
             homePersonalAccountCard(
                 openBottomSheet = {
@@ -122,7 +123,10 @@ fun HomeContentWithRefresh(
             homeMobileCard(navHostController = navHostController)
             homeOutdoorCard(navHostController = navHostController)
             homeMapCard(navHostController = navHostController)
-            homeDomofonCard(navHostController = navHostController)
+            homeDomofonCard(
+                navHostController = navHostController,
+            //    paddingValue = paddingValue
+            )
         }
 
         if (pullToRefreshState.isRefreshing) {
@@ -514,7 +518,10 @@ fun LazyListScope.homeMapCard(navHostController: NavHostController) {
     }
 }
 
-fun LazyListScope.homeDomofonCard(navHostController: NavHostController) {
+fun LazyListScope.homeDomofonCard(
+    navHostController: NavHostController,
+   // paddingValue: PaddingValues
+) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),

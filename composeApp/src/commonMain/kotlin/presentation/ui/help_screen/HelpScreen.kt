@@ -2,6 +2,7 @@ package presentation.ui.help_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -46,8 +47,9 @@ import util.ScreenRoute
 @OptIn(ExperimentalResourceApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HelpScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
-    viewModel: HelpScreenViewModel = koinInject(),
+    viewModel: HelpScreenViewModel = koinInject()
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -130,14 +132,12 @@ fun HelpScreen(
                         .shadow(4.dp)
                 )
             }
-        ) { paddingValue ->
+        ) { helpTopBarPaddingValue ->
 
             Column(
                 modifier = Modifier
-                    .padding(paddingValue)
-                    .padding(
-                        bottom = paddingValue.calculateBottomPadding()
-                    )
+                    .padding(top = helpTopBarPaddingValue.calculateTopPadding())
+                    .padding(bottom = bottomNavigationPaddingValue.calculateBottomPadding())
                     .background(ColorCustomResources.colorBackgroundMain)
             ) {
                 HelpContentWithRefresh(
@@ -151,8 +151,7 @@ fun HelpScreen(
                             isRefreshing = false
                         }
                     },
-                    navHostController = navHostController,
-                    paddingValue = paddingValue
+                    navHostController = navHostController
                 )
             }
         }

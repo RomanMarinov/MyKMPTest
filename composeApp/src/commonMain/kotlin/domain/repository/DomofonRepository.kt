@@ -1,7 +1,7 @@
 package domain.repository
 
-import domain.model.domofon.SputnikSelected
+import domain.model.domofon.unlock.DomofonUnlockResponse
 
 interface DomofonRepository {
-    suspend fun getDomofon() : List<SputnikSelected>
+    suspend fun sendOpenDomofon(deviceId: String): DomofonUnlockResponse?
 }

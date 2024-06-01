@@ -55,8 +55,6 @@ object SnackBarHostHelper {
         }
     }
 
-
-
     @Composable
     fun ShortShortTime(
         message: String,
@@ -66,14 +64,11 @@ object SnackBarHostHelper {
         if (isSnackBarVisible) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    //.fillMaxWidth()
-                    .padding(bottom = 22.dp)
-                    .navigationBarsPadding(),
+                    .fillMaxSize(),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 Snackbar(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(start = 16.dp, bottom = 16.dp, end = 16.dp),
                     actionOnNewLine = true
                 ) {
                     Text(text = message)

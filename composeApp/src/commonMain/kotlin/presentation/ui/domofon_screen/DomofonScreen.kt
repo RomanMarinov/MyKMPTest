@@ -3,9 +3,9 @@ package presentation.ui.domofon_screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,8 +37,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
+import co.touchlab.kermit.Logger
 import domain.model.user_info.Sputnik
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -48,20 +51,26 @@ import mykmptest.composeapp.generated.resources.ic_profile
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
+import presentation.ui.domofon_screen.model.UnLockState
 import util.ColorCustomResources
 import util.ScreenRoute
+import util.SnackBarHostHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DomofonScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
     viewModel: DomofonScreenViewModel = koinInject()
 ) {
 
     val sputnikUiState by viewModel.domofonUiState.collectAsState()
+    val statusDomofonUnlockDoor by viewModel.statusDomofonUnlockDoor.collectAsStateWithLifecycle()
     val items = sputnikUiState?.domofon?.sputnik
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    Logger.d("4444 statusDomofonUnlockDoor=" + statusDomofonUnlockDoor)
 
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -169,24 +178,22 @@ fun DomofonScreen(
                     scrollBehavior = scrollBehavior
                 )
             }
-        ) { paddingValue ->
+        ) { domofonTopBarPaddingValue ->
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValue)
-                    .padding(
-                        bottom = paddingValue.calculateBottomPadding()
-                    )
+                    .padding(top = domofonTopBarPaddingValue.calculateTopPadding())
+                    .padding(bottom = bottomNavigationPaddingValue.calculateBottomPadding())
                     .background(ColorCustomResources.colorBackgroundMain)
             ) {
                 Box(
                     modifier = Modifier
                         .nestedScroll(pullToRefreshState.nestedScrollConnection)
-                        .navigationBarsPadding()
-                        .padding(
-                            bottom = paddingValue.calculateBottomPadding()
-                        )
+//                        .navigationBarsPadding()
+//                        .padding(
+//                            bottom = paddingValue.calculateBottomPadding()
+//                        )
                 ) {
                     groupItems?.let {
                         //listGroup ->
@@ -195,22 +202,37 @@ fun DomofonScreen(
                                 //lazyListState = lazyListState,
                                 items = items,
                                 snackbarHostState = snackbarHostState,
-                                navHostController = navHostController
+                                navHostController = navHostController,
+                                viewModel = viewModel
                             )
                         }
                         if (it.size >= 3) {
+                            val addrIdFromGroup = remember { mutableIntStateOf(-1) }
+
                             if (onShowGroupState.value) {
                                 GroupedContent(
                                     onShowGroup = { bool ->
                                         onShowGroupState.value = bool
                                     },
+                                    onAddrId = { addrId ->
+                                        addrIdFromGroup.value = addrId
+                                    },
+                                    viewModel = viewModel,
+                                    onShowSnackBarUnlockDoorStatus = {
+
+                                        // isShowSnackBarUnlockDoorStatus.value = status
+                                    },
                                     navHostController = navHostController
                                 )
                             } else {
-                                NotGroupedContent(
-                                    items = items,
+                                // сюда отдавать список подъездов только одного адреса
+                                val listFilterByAddrId = items.filter { sputnikItem ->  sputnikItem.addrId == addrIdFromGroup.value }
+
+                                NotGroupedContentFrom(
+                                    items = listFilterByAddrId,
                                     snackbarHostState = snackbarHostState,
-                                    navHostController = navHostController
+                                    navHostController = navHostController,
+                                    viewModel = viewModel
                                 )
                             }
                         }
@@ -240,6 +262,29 @@ fun DomofonScreen(
                             .align(Alignment.TopCenter),
                         containerColor = Color.White
                     )
+
+                    when (statusDomofonUnlockDoor) {
+                        UnLockState.OPENED_DOOR -> {
+                            SnackBarHostHelper.ShortShortTime(
+                                message = "Дверь открыта",
+                                onFinishTime = {
+                                    viewModel.resetSnackBarUnLockState()
+                                }
+                            )
+                        }
+
+                        UnLockState.ERROR_OPEN -> {
+                            SnackBarHostHelper.ShortShortTime(
+                                message = "Ошибка открытия двери",
+                                onFinishTime = {
+                                    viewModel.resetSnackBarUnLockState()
+                                }
+                            )
+                        }
+
+                        UnLockState.DEFAULT -> {}
+                        null -> {}
+                    }
                 }
             }
         }

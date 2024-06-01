@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,7 +48,6 @@ import mykmptest.composeapp.generated.resources.ic_play
 import mykmptest.composeapp.generated.resources.ic_plus
 import mykmptest.composeapp.generated.resources.ic_share
 import org.jetbrains.compose.resources.vectorResource
-import org.koin.compose.koinInject
 import presentation.ui.add_address.AddAddressBottomSheet
 import util.ColorCustomResources
 import util.ScreenRoute
@@ -59,7 +57,9 @@ import util.shimmerEffect
 @Composable
 fun GroupedContent(
     onShowGroup: (Boolean) -> Unit,
-    viewModel: DomofonScreenViewModel = koinInject(),
+    onAddrId: (Int) -> Unit,
+    viewModel: DomofonScreenViewModel,
+    onShowSnackBarUnlockDoorStatus: (Boolean) -> Unit,
     navHostController: NavHostController
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
@@ -87,8 +87,11 @@ fun GroupedContent(
             LazyColumn(
                 state = lazyListState,
                 contentPadding = PaddingValues(16.dp),
-                modifier = Modifier.navigationBarsPadding()
-                    .fillMaxSize().navigationBarsPadding(),
+                modifier = Modifier
+                    //.navigationBarsPadding()
+                    .fillMaxSize()
+                    //.navigationBarsPadding()
+                ,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
@@ -107,7 +110,13 @@ fun GroupedContent(
                         onShowGroup = {
                             onShowGroup(it)
                         },
-                        navHostController = navHostController
+                        onAddrId = {
+                                   onAddrId(it)
+                        },
+                        onShowSnackBarUnlockDoorStatus = {
+                            onShowSnackBarUnlockDoorStatus(it)
+                        },
+                        navHostController = navHostController, viewModel = viewModel
                     )
                 }
             }
@@ -206,10 +215,15 @@ fun ContentGroup(
     sputnikControl: Sputnik,
     listSputnik: List<Sputnik>,
     onShowGroup: (Boolean) -> Unit,
-    navHostController: NavHostController
+    onAddrId: (Int) -> Unit,
+    navHostController: NavHostController,
+    onShowSnackBarUnlockDoorStatus: (Boolean) -> Unit,
+    viewModel: DomofonScreenViewModel
 ) {
 
     val isOpenDoor = remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
 
     Card(
         modifier = Modifier
@@ -221,7 +235,7 @@ fun ContentGroup(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .navigationBarsPadding()
+               // .navigationBarsPadding()
                 .background(Color.White)
                 .padding(16.dp)
         ) {
@@ -261,13 +275,12 @@ fun ContentGroup(
                                 //.fillMaxWidth()
                                 .height(40.dp),
                             shape = RoundedCornerShape(100.dp),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                             colors = CardDefaults.cardColors(containerColor = ColorCustomResources.colorBazaMainBlue),
                         ) {
                             Row(
                                 modifier = Modifier
                                     .clickable {
-
 
                                     }
                                     .fillMaxHeight()
@@ -340,8 +353,12 @@ fun ContentGroup(
 //                            animationSpec = shimmerAnimationSpec
 //                        )
                             .clickable {
-
-
+                                navigateToWebViewHelper(
+                                    navHostController = navHostController,
+                                    route = ScreenRoute.DomofonScreen.route,
+                                    address = sputnikControl.title,
+                                    videoUrl = sputnikControl.videoUrl
+                                )
                             }
                     )
 
@@ -380,7 +397,12 @@ fun ContentGroup(
                                     .size(80.dp)
                                     .clip(RoundedCornerShape(20.dp))
                                     .clickable {
-                                        isOpenDoor.value = true
+                                        viewModel.onClickUnLock(deviceId = sputnikControl.deviceID)
+//                                        scope.launch {
+//                                            onShowSnackBarUnlockDoorStatus(true)
+//                                            delay(500L)
+//
+//                                        }
                                     }
                             )
                         }
@@ -397,8 +419,8 @@ fun ContentGroup(
                 ElevatedButton(
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
-                            onShowGroup(false)
-//                        isTransitionNotGroupedLazyList.value = true
+                        onShowGroup(false)
+                        onAddrId(sputnikControl.addrId)
                     },
                     content = {
                         Text(

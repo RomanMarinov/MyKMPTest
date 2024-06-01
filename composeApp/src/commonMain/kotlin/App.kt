@@ -205,7 +205,7 @@ fun AppContent(
                         }
                     }
                 }
-            ) { paddingValues ->
+            ) { bottomNavigationPaddingValue ->
                 // передаем падинг чтобы список BottomNavigationBar не накладывался по поверх списка
                 Box(
 
@@ -224,6 +224,7 @@ fun AppContent(
 //
 //                    }
                     NavHostScreenScenes(
+                        bottomNavigationPaddingValue = bottomNavigationPaddingValue,
                         navHostController = navHostController,
                         onMoveToAuthActivity = {
                             onMoveToAuthActivity()

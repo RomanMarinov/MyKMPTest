@@ -4,6 +4,7 @@ import data.add_address.remote.AddAddressRepositoryImpl
 import data.auth.local.AppPreferencesRepository
 import data.auth.remote.AuthRepositoryImpl
 import data.domofon.remote.DomofonRepositoryImpl
+import data.history_call.remote.HistoryCallRepositoryImpl
 import data.home.remote.HomeRepositoryImpl
 import data.outdoor.remote.OutdoorRepositoryImpl
 import data.public_info.remote.CommonRepositoryImpl
@@ -12,6 +13,7 @@ import domain.repository.AddAddressRepository
 import domain.repository.AuthRepository
 import domain.repository.CommonRepository
 import domain.repository.DomofonRepository
+import domain.repository.HistoryCallRepository
 import domain.repository.HomeRepository
 import domain.repository.OutdoorRepository
 import domain.repository.UserInfoRepository
@@ -49,6 +51,9 @@ val repositoryModule = module {
         createdAtStart()
     }
 
+    single<HistoryCallRepository> { HistoryCallRepositoryImpl(get()) }  withOptions {
+        createdAtStart()
+    }
 
 }
 

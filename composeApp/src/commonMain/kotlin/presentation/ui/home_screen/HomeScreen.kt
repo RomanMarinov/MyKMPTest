@@ -4,6 +4,7 @@ package presentation.ui.home_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,6 +41,7 @@ import util.TextUtils
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
     viewModel: HomeScreenViewModel = koinInject()
 ) {
@@ -114,13 +116,13 @@ fun HomeScreen(
                         .shadow(4.dp)
                 )
             },
-
-        ) { paddingValue ->
+        ) { homeTopBarPaddingValue ->
 
             Column(
                 modifier = Modifier.fillMaxSize()
-                    .padding(paddingValue)
-                    .padding(bottom = paddingValue.calculateBottomPadding())
+                    .padding(top = homeTopBarPaddingValue.calculateTopPadding())
+                    .padding(bottom = bottomNavigationPaddingValue.calculateBottomPadding())
+                    //.padding(top = paddingValues.calculateTopPadding())
                     .background(ColorCustomResources.colorBackgroundMain)
             ) {
 
@@ -136,9 +138,46 @@ fun HomeScreen(
                         }
                     },
                     navHostController = navHostController,
-                    paddingValue = paddingValue
+                   // paddingValue = paddingValues
                 )
             }
         }
    // }
 }
+
+
+//Scaffold(
+//modifier = Modifier
+//.fillMaxSize(),
+//topBar = {
+//    TopAppBar(
+//        title = {
+//
+//        },
+//        actions = {
+//        },
+//        modifier = Modifier
+//            .shadow(4.dp)
+//    )
+//},
+//
+//) {
+//    paddingValue ->
+//
+//    Column(
+//        modifier = Modifier.fillMaxSize()
+//            .padding(paddingValue)
+//            .padding(bottom = paddingValue.calculateBottomPadding())
+//            .background(ColorCustomResources.colorBackgroundMain)
+//    ) {
+//
+//        LazyColumn(
+//            modifier = Modifier.fillMaxWidth()
+//                .padding(bottom = paddingValue.calculateBottomPadding())
+//        ) {
+//
+//        }
+//    }
+//}
+
+

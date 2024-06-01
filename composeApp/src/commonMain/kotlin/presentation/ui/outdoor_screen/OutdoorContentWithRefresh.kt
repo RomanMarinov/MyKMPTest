@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,10 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
@@ -53,7 +50,6 @@ import kotlinx.coroutines.launch
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_play
 import mykmptest.composeapp.generated.resources.ic_plus_square
-import mykmptest.composeapp.generated.resources.outdoor_add_address
 import mykmptest.composeapp.generated.resources.outdoor_create_shortcut
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
@@ -72,8 +68,7 @@ fun OutdoorContentWithRefresh(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
     lazyListState: LazyListState = rememberLazyListState(),
-    navHostController: NavHostController,
-    paddingValue: PaddingValues,
+    navHostController: NavHostController
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -84,18 +79,21 @@ fun OutdoorContentWithRefresh(
 
     Box(
         modifier = modifier
-            .navigationBarsPadding()
+            //.navigationBarsPadding()
             .nestedScroll(pullToRefreshState.nestedScrollConnection)
-            .navigationBarsPadding()
-            .padding(
-                bottom = paddingValue.calculateBottomPadding()
-            )
+//            .navigationBarsPadding()
+//            .padding(
+//                bottom = paddingValue.calculateBottomPadding()
+//            )
     ) {
         LazyColumn(
             state = lazyListState,
             contentPadding = PaddingValues(16.dp),
-            modifier = Modifier.navigationBarsPadding()
-                .fillMaxSize().navigationBarsPadding(),
+            modifier = Modifier
+            //    .navigationBarsPadding()
+                .fillMaxSize()
+              //  .navigationBarsPadding()
+            ,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(items) { dvr ->
@@ -103,23 +101,6 @@ fun OutdoorContentWithRefresh(
                     dvr = dvr,
                     snackbarHostState = snackbarHostState,
                     navHostController = navHostController
-                )
-            }
-
-            item {
-                ElevatedButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    onClick = {
-
-                    },
-                    content = { Text(stringResource(Res.string.outdoor_add_address)) },
-                    colors = ButtonDefaults.buttonColors(
-                        contentColor = Color.White,
-                        containerColor = ColorCustomResources.colorBazaMainBlue
-                    )
                 )
             }
         }
@@ -170,7 +151,8 @@ fun OutdoorContentWithRefresh(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter).navigationBarsPadding()
+                .align(Alignment.BottomCenter)
+                //.navigationBarsPadding()
             // .padding(paddingValue)
         )
 
@@ -188,7 +170,9 @@ fun ContentLazyList(
     navHostController: NavHostController,
 ) {
 
-    Column(modifier = Modifier.fillMaxWidth().navigationBarsPadding()) {
+    Column(modifier = Modifier.fillMaxWidth()
+    //    .navigationBarsPadding()
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             // horizontalArrangement = Arrangement.Start,

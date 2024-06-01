@@ -5,12 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -55,9 +53,7 @@ import util.ColorCustomResources
 fun InternetTvContentWithRefresh(
     locationsInternetTv: List<String>,
     navHostController: NavHostController,
-    viewModel: InternetTvScreenViewModel = koinInject(),
-    paddingValue: PaddingValues,
-
+    viewModel: InternetTvScreenViewModel = koinInject()
     ) {
     var expanded by remember { mutableStateOf(false) }
     var labelClick by remember { mutableStateOf("г. Вологда") }
@@ -136,12 +132,12 @@ fun InternetTvContentWithRefresh(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+           // .padding(16.dp)
     ) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(16.dp),
             text = "Выберите город"
         )
 
@@ -149,6 +145,7 @@ fun InternetTvContentWithRefresh(
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
                     .onGloballyPositioned { coordinates ->
                         dropdownMenuWidth = with(localDensity) {
                             (coordinates.size.width / density).toInt()
@@ -202,7 +199,7 @@ fun InternetTvContentWithRefresh(
 //                    modifier = Modifier.background(color = Color.Transparent),
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                offset = DpOffset(0.dp, 0.dp),
+                offset = DpOffset(16.dp, 0.dp),
                 //scrollState = ,
                 content = {
                     locationsInternetTv.forEachIndexed { index, title ->
@@ -234,17 +231,20 @@ fun InternetTvContentWithRefresh(
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(bottom = paddingValue.calculateBottomPadding()),
+                .fillMaxSize()
+
+//                .navigationBarsPadding()
+//                .padding(bottom = paddingValue.calculateBottomPadding())
+            ,
             state = lazyListState,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            //verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(16.dp)
+                    ,
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {

@@ -42,7 +42,8 @@ class KtorAuthInterceptor(
             Logger.d("4444 KtorAuthInterceptor  install context.url=" + context.url.build())
             if (context.url.toString().contains(USER_PREFIX, true)
                 || context.url.toString().contains(LOGOUT_PREFIX, true)
-                || context.url.toString().contains(VERIFICATION_PREFIX, true)) {
+                || context.url.toString().contains(VERIFICATION_PREFIX, true)
+                || context.url.toString().contains(DOMOFON_PREFIX, true)) {
                 // обновляем токены, если accessToken протух
                 val isItTimeToRefreshToken = TextUtils.isItTimeToUpdateToken(
                     appPreferencesRepository.fetchInitialPreferences().accessToken

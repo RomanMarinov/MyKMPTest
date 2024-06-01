@@ -19,6 +19,7 @@
 
     <string name="internet_tv_title">Интернет и ТВ</string>
     <string name="profile_title">Профиль</string>
+    <string name="history_call_title">История звонков</string>
 
 <!--    home-->
     <string name="home_personal_account">Добавить новый лицевой счет или уже существующий для оплаты услуг за своих близких</string>

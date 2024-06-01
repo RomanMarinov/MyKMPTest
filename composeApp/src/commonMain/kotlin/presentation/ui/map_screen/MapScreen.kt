@@ -1,6 +1,7 @@
 package presentation.ui.map_screen
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -44,6 +45,7 @@ import util.Strings
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
 @Composable
 fun MapScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
     viewModel: MapScreenViewModel = koinInject(),
 ) {

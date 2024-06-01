@@ -3,6 +3,7 @@ package presentation.ui.webview_screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,9 +35,10 @@ import org.jetbrains.compose.resources.vectorResource
 
 @Composable
 fun WebViewScreen(
+    bottomNavigationPaddingValue: PaddingValues,
     navHostController: NavHostController,
     address: String?,
-    videoUrl: String?,
+    videoUrl: String?
 ) {
     val decodedUrl = UrlEncoderUtil.decode(videoUrl ?: "")
    // val decodedAddress = UrlEncoderUtil.decode(address ?: "")

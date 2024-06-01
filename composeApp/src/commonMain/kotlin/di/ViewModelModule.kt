@@ -7,6 +7,7 @@ import presentation.ui.attach_photo.AttachPhotoViewModel
 import presentation.ui.auth_activity.AuthActivityViewModel
 import presentation.ui.domofon_screen.DomofonScreenViewModel
 import presentation.ui.help_screen.HelpScreenViewModel
+import presentation.ui.history_call.HistoryCallScreenViewModel
 import presentation.ui.home_screen.HomeScreenViewModel
 import presentation.ui.internet_tv_screen.InternetTvScreenViewModel
 import presentation.ui.map_screen.MapScreenViewModel
@@ -20,7 +21,7 @@ val viewModelModule = module {
 
     factory { HomeScreenViewModel(get()) }
     factory { OutdoorScreenViewModel(get()) }
-    factory { DomofonScreenViewModel(get()) }
+    factory { DomofonScreenViewModel(get(), get()) }
     factory { MapScreenViewModel(get()) }
     factory { HelpScreenViewModel(get()) }
 
@@ -35,6 +36,8 @@ val viewModelModule = module {
     factory { AddAddressViewModel(get()) }
 
     factory { AttachPhotoViewModel(get(), get()) }
+
+    factory { HistoryCallScreenViewModel(get(), get()) }
 
 }
 
