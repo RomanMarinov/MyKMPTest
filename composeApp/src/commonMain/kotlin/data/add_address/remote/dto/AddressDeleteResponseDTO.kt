@@ -2,7 +2,9 @@ package data.add_address.remote.dto
 
 import domain.add_address.AddressDeleteResponse
 import domain.add_address.DataDelete
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AddressDeleteResponseDTO(
     val data: DataDeleteDTO
 ) {
@@ -13,6 +15,7 @@ data class AddressDeleteResponseDTO(
     }
 }
 
+@Serializable
 data class DataDeleteDTO(
     val result: Boolean
 ) {

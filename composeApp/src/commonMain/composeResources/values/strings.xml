@@ -19,6 +19,7 @@
 
     <string name="internet_tv_title">Интернет и ТВ</string>
     <string name="profile_title">Профиль</string>
+    <string name="addresses_title">Адреса</string>
     <string name="history_call_title">История звонков</string>
 
 <!--    home-->
@@ -34,8 +35,13 @@
 
 
     <string name="outdoor_add_address">Добавить адрес</string>
-    <string name="outdoor_create_shortcut">На рабочий стол</string>
+    <string name="outdoor_create_shortcut">Создать ярлык</string>
 
+<!--    domofon-->
+    <string name="domofon_present_top" translatable="false">С Умным Домофоном можно:</string>
+    <string name="domofon_present_desc" translatable="false">&#8226; Открывать дверь подъезда со смартфона\n&#8226; Принимать видеозвонки\n&#8226; Смотреть историю звонков\n&#8226; Наблюдать за придомовой территорией и парковкой\n&#8226; Скачивать записи видео из архива камер</string>
+    <string name="overlay_permission_notification" translatable="false">Получать уведомление во время звонка с домофона на заблокированном экране смартфона (ВАЖНО)</string>
+    <string name="overlay_permission_call" translatable="false">Получать изображение с камеры домофона во время звонка на заблокированном экране смартфона (ВАЖНО)</string>
 
 
     <string name="help_title_first">Часто задаваемые вопросы</string>

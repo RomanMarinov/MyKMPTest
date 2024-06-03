@@ -53,6 +53,7 @@ import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.koinInject
 import presentation.ui.auth_activity.AuthPlatform
 import util.ColorCustomResources
+import util.ScreenRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,7 +111,7 @@ fun ProfileContentWithRefresh(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp)
+                //.padding(bottom = 16.dp)
 //                .padding(
 //                    bottom = paddingValue.calculateBottomPadding()
 //                )
@@ -135,7 +136,9 @@ fun ProfileContentWithRefresh(
                 //    navigator = navigator
             )
 
-            profileYourAddressesCard()
+            profileYourAddressesCard(
+                navHostController = navHostController
+            )
             profileDeviceAndAccessCard()
             profileUKCard()
             profileSettingCard()
@@ -177,7 +180,7 @@ fun LazyListScope.profileNameCard(
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
             Column(
                 modifier = Modifier
@@ -269,7 +272,7 @@ fun LazyListScope.profilePhoneNumberCard() {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
 
             Row(
@@ -351,7 +354,7 @@ fun LazyListScope.profilePersonAccountCard() {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
 
             Row(
@@ -431,7 +434,7 @@ fun LazyListScope.profilePaymentServiceCard() {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
 
             Row(
@@ -495,13 +498,15 @@ fun LazyListScope.profilePaymentServiceCard() {
     }
 }
 
-fun LazyListScope.profileYourAddressesCard() {
+fun LazyListScope.profileYourAddressesCard(
+    navHostController: NavHostController
+) {
     item {
         ElevatedCard(
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
 
             Row(
@@ -509,7 +514,7 @@ fun LazyListScope.profileYourAddressesCard() {
                     .fillMaxWidth()
                     .background(Color.White)
                     .clickable {
-                        //openBottomSheet(true)
+                        navHostController.navigate(ScreenRoute.AddressScreen.route)
                     },
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -581,7 +586,7 @@ fun LazyListScope.profileDeviceAndAccessCard() {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
 
             Row(
@@ -651,7 +656,7 @@ fun LazyListScope.profileUKCard() {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
 
             Row(
@@ -722,7 +727,7 @@ fun LazyListScope.profileSettingCard() {
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         ) {
 
             Row(
@@ -794,7 +799,7 @@ fun LazyListScope.profileExit(
 
         Box(
             modifier = Modifier
-                .padding(start = 16.dp)
+                .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .clickable {
                     clickState.value = true

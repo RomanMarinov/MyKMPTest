@@ -18,6 +18,7 @@ import presentation.ui.internet_tv_screen.InternetTvScreen
 import presentation.ui.map_screen.MapScreen
 import presentation.ui.outdoor_screen.OutdoorScreen
 import presentation.ui.profile_screen.ProfileScreen
+import presentation.ui.profile_screen.address_screen.AddressScreen
 import presentation.ui.webview_screen.WebViewScreen
 
 
@@ -133,6 +134,14 @@ fun NavHostScreenScenes(
             route = ScreenRoute.HistoryCallScreen.route
         ) {
             HistoryCallScreen(
+                bottomNavigationPaddingValue = bottomNavigationPaddingValue,
+                navHostController = navHostController)
+        }
+
+        composable(
+            route = ScreenRoute.AddressScreen.route
+        ) {
+            AddressScreen(
                 bottomNavigationPaddingValue = bottomNavigationPaddingValue,
                 navHostController = navHostController)
         }

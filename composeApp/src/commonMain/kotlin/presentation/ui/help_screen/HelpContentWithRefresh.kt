@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -231,7 +232,10 @@ fun LazyListScope.helpContentListFaq(
 //                    .clip(RoundedCornerShape(10.dp))
 //                    .border(1.dp, Color.LightGray, RoundedCornerShape(10.dp)) // Добавление границы
 //                    .background(color = Color.White)
-                            .clickable {
+                            .clickable(
+                                indication = null, // Убираем визуальный эффект клика
+                                interactionSource = remember { MutableInteractionSource() } // Не забываем про interactionSource
+                            ) {
                                 contentExpanded = !contentExpanded
                             }
                             .animateContentSize(),

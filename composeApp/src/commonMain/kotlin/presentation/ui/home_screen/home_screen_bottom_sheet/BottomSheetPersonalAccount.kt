@@ -65,8 +65,6 @@ fun BottomSheetPersonalAccount(
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     if (openBottomSheetState) {
-
-
         ModalBottomSheet(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -129,12 +127,9 @@ fun BottomSheetPersonalAccount(
                     }
                 }
 
-
                 Box(modifier = Modifier.fillMaxWidth()) {
                     ViewPager()
                 }
-
-
             }
         }
     }

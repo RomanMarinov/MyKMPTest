@@ -512,7 +512,10 @@ fun AutoComplete(
             }
 
             if (errorNetwork) {
-                ProgressBarHelper.Start(color = ColorCustomResources.colorBazaMainBlue)
+                ProgressBarHelper.Start(
+                    trackColor = Color.White,
+                    mainColor = ColorCustomResources.colorBazaMainBlue
+                )
             }
 
 
@@ -637,9 +640,20 @@ fun AutoComplete(
                 isExecuteRequestFocus.value = true
                 Logger.d("4444 инит свойства для фокуса на номер=" + isExecuteRequestFocus.value)
 
-                if (isApprovedData.value == CheckData.APPROVED) {
-                    ProgressBarHelper.Start(color = ColorCustomResources.colorBazaMainBlue)
-                }
+//                if (isApprovedData.value == CheckData.APPROVED) {
+//                    ProgressBarHelper.Start(
+//                        trackColor = Color.White,
+//                        mainColor = ColorCustomResources.colorBazaMainBlue
+//                    )
+//                }
+            }
+
+            Logger.d("4444 isApprovedData.value=" + isApprovedData.value)
+            if (isApprovedData.value == CheckData.APPROVED) {
+                ProgressBarHelper.Start(
+                    trackColor = Color.White,
+                    mainColor = ColorCustomResources.colorBazaMainBlue
+                )
             }
 
             if (expandedAddresses) {

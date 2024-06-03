@@ -66,6 +66,8 @@ import presentation.ui.attach_photo.platform.PermissionType
 import presentation.ui.attach_photo.platform.createPermissionsManager
 import presentation.ui.attach_photo.platform.rememberCameraManager
 import presentation.ui.attach_photo.platform.rememberGalleryManager
+import presentation.ui.attach_photo.utils.GetColorService
+import presentation.ui.attach_photo.utils.GetIconService
 import util.ColorCustomResources
 import util.ProgressBarHelper
 import util.SnackBarHostHelper
@@ -128,7 +130,10 @@ fun AttachPhotoBottomSheet(
                                 }
                             )
                             AttachAddressTitle(address = address)
-                            AttachAvailableServicesContent()
+                            AttachAvailableServicesContent(
+                                dataAddress = dataAddress,
+                                viewModel = viewModel
+                            )
                             AttachContent()
                             AttachPhoto(
                                 isShowProgressBarSendPhoto = isShowProgressBarSendPhoto,
@@ -199,7 +204,7 @@ fun AttachPhotoBottomSheet(
                         isShowResultBottomSheet.value = it // закроет текущий
 
                         if (resultSendPhoto == ResultSendPhoto.SUCCESS) {  // закроет предыдущий
-                            delay(300L)
+                            delay(100L)
                             onShowPreviousBottomSheet(false)
                         }
 //                        if (resultSendPhoto == ResultSendPhoto.FAILURE) {  // закроет текущий
@@ -295,8 +300,21 @@ fun AttachAddressTitle(address: String) {
     }
 }
 
+
+
+
+
+
 @Composable
-fun AttachAvailableServicesContent() {
+fun AttachAvailableServicesContent(
+    dataAddress: Data?,
+    viewModel: AttachPhotoViewModel
+) {
+
+    // на доработке от бэкенда
+//    val sputnikCamerasCount by viewModel.sputnikCamerasCount.collectAsState()
+//    viewModel.getCountCameras(dataAddress = dataAddress)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -329,9 +347,10 @@ fun AttachAvailableServicesContent() {
                 Icon(
                     // close
                     modifier = Modifier
-                        .size(24.dp),
-                    imageVector = vectorResource(Res.drawable.ic_back),
+                        .size(30.dp),
+                    imageVector = GetIconService(dataAddress = dataAddress).iconInternetTv,
                     contentDescription = null,
+                    tint = GetColorService(dataAddress = dataAddress).colorInternetTv
                 )
             }
 
@@ -387,9 +406,10 @@ fun AttachAvailableServicesContent() {
                 Icon(
                     // close
                     modifier = Modifier
-                        .size(24.dp),
-                    imageVector = vectorResource(Res.drawable.ic_back),
+                        .size(30.dp),
+                    imageVector = GetIconService(dataAddress = dataAddress).iconVision,
                     contentDescription = null,
+                    tint = GetColorService(dataAddress = dataAddress).colorVision
                 )
             }
 
@@ -435,7 +455,6 @@ fun AttachAvailableServicesContent() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-
             Box(
                 modifier = Modifier
                     .size(50.dp),
@@ -444,9 +463,10 @@ fun AttachAvailableServicesContent() {
                 Icon(
                     // close
                     modifier = Modifier
-                        .size(24.dp),
-                    imageVector = vectorResource(Res.drawable.ic_back),
+                        .size(30.dp),
+                    imageVector = GetIconService(dataAddress = dataAddress).iconDomofon,
                     contentDescription = null,
+                    tint = GetColorService(dataAddress = dataAddress).colorDomofon
                 )
             }
 
@@ -642,7 +662,10 @@ fun AttachPhoto(
                     }
                     imageByteArray?.let {
                         if (isShowProgressBarSendPhoto) {
-                            ProgressBarHelper.Start(color = ColorCustomResources.colorBazaMainBlue)
+                            ProgressBarHelper.Start(
+                                trackColor = Color.White,
+                                mainColor = ColorCustomResources.colorBazaMainBlue
+                            )
                         }
                     }
                 }

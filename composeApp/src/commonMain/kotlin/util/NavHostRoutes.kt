@@ -27,5 +27,7 @@ sealed class ScreenRoute(val route: String) {
     object ProfileScreen : ScreenRoute("/profile_screen")
     object InternetTvScreen : ScreenRoute("/internet_tv_screen")
 
-    object HistoryCallScreen : ScreenRoute("/history_call")
+    object HistoryCallScreen : ScreenRoute("/history_call_screen")
+
+    object AddressScreen : ScreenRoute("/address_screen")
 }

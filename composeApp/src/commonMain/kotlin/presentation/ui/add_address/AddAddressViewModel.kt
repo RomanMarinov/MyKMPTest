@@ -72,6 +72,8 @@ class AddAddressViewModel(
 
             val result = response?.body<AddAddressResponseDTO>()
             _addAddressResponse.value = result?.mapToDomain()
+            //delay(500L)
+            //_addAddressResponse.value = null
         }
     }
 

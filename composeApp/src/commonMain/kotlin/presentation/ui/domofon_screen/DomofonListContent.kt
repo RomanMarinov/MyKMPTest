@@ -1,5 +1,6 @@
 package presentation.ui.domofon_screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import co.touchlab.kermit.Logger
 import domain.model.user_info.Sputnik
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -44,12 +47,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import mykmptest.composeapp.generated.resources.Res
+import mykmptest.composeapp.generated.resources.domofon_present_desc
+import mykmptest.composeapp.generated.resources.domofon_present_top
 import mykmptest.composeapp.generated.resources.ic_history_call
 import mykmptest.composeapp.generated.resources.ic_lock
 import mykmptest.composeapp.generated.resources.ic_play
 import mykmptest.composeapp.generated.resources.ic_plus
 import mykmptest.composeapp.generated.resources.ic_plus_square
 import mykmptest.composeapp.generated.resources.outdoor_create_shortcut
+import mykmptest.composeapp.generated.resources.smart_domophone_photo
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import presentation.ui.add_address.AddAddressBottomSheet
@@ -59,7 +66,7 @@ import util.navigateToWebViewHelper
 import util.shimmerEffect
 
 @Composable
-fun NotGroupedContent(
+fun DomofonListContent(
 //    lazyListState: LazyListState,
     items: List<Sputnik>,
     snackbarHostState: SnackbarHostState,
@@ -70,7 +77,8 @@ fun NotGroupedContent(
 
     LazyColumn(
         state = lazyListState,
-        contentPadding = PaddingValues(16.dp),
+//        contentPadding = PaddingValues(top = 16.dp, bottom = 16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp),
         modifier = Modifier
             //.navigationBarsPadding()
             .fillMaxSize()
@@ -78,10 +86,25 @@ fun NotGroupedContent(
         ,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+
+        Logger.d("4444 DomofonListContent")
+
         item {
-            ContentLazyListItemTop(
-                navHostController = navHostController
-            )
+            PermissionBannerContent()
+        }
+
+        if (items.isEmpty()) {
+            item {
+                PresentationContent()
+            }
+        }
+
+        if (items.isNotEmpty()) {
+            item {
+                ContentLazyListItemTop(
+                    navHostController = navHostController
+                )
+            }
         }
 
         items(items) { sputnik ->
@@ -96,75 +119,42 @@ fun NotGroupedContent(
 }
 
 @Composable
-fun ContentLazyListItemTop(
-    navHostController: NavHostController
-) {
-
+fun PresentationContent() {
     val isShowBottomSheet = remember { mutableStateOf(false) }
 
-    Row(
+    Column(
         modifier = Modifier
-            .fillMaxWidth(),
-        //.weight(1f),
-        verticalAlignment = Alignment.CenterVertically
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
     ) {
-        // history call
-
-        Row(
-            modifier = Modifier,
-            //.fillMaxWidth()
-            //.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start
+        Text(
+            text = stringResource(Res.string.domofon_present_top),
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = stringResource(Res.string.domofon_present_desc)
+        )
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            shape = RoundedCornerShape(10.dp),
+//            colors = CardDefaults.cardColors(containerColor = ColorCustomResources.colorBackgroundClose),
         ) {
-            Box(
-                modifier = Modifier,
-                //.fillMaxWidth(),
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                Card(
-                    modifier = Modifier
-                        //.fillMaxWidth()
-                        .height(40.dp),
-                    shape = RoundedCornerShape(100.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .clickable {
-                                navHostController.navigate(ScreenRoute.HistoryCallScreen.route)
-                            }
-                            //.fillMaxHeight()
-                            .padding(start = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(24.dp),
-                            imageVector = vectorResource(Res.drawable.ic_history_call),
-                            contentDescription = null,
-                            tint = ColorCustomResources.colorBazaMainBlue
-                        )
-                        Text(
-                            modifier = Modifier
-                                //.fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp),
-                            text = "История звонков",
-                            color = ColorCustomResources.colorBazaMainBlue
-                        )
-                    }
-                }
-            }
+            Image(
+                painter = painterResource(Res.drawable.smart_domophone_photo),
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentDescription = null,
+                contentScale = ContentScale.FillBounds
+            )
         }
-
-
 
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+            ,
             //.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
@@ -172,7 +162,7 @@ fun ContentLazyListItemTop(
             Box(
                 modifier = Modifier,
                 //.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd,
+
             ) {
                 Card(
                     modifier = Modifier
@@ -185,7 +175,8 @@ fun ContentLazyListItemTop(
                     Row(
                         modifier = Modifier
                             .clickable {
-                                isShowBottomSheet.value = true
+//                                onShowBottomSheet(true)
+                            isShowBottomSheet.value = true
                             }
                             .fillMaxHeight()
                             .padding(start = 8.dp),
@@ -210,6 +201,157 @@ fun ContentLazyListItemTop(
                 }
             }
         }
+
+        if (isShowBottomSheet.value) {
+            AddAddressBottomSheet(
+                fromScreen = ScreenRoute.DomofonScreen.route,
+                onShowCurrentBottomSheet = {
+                    isShowBottomSheet.value = it
+                }
+            )
+        }
+    }
+}
+
+/////////////////////////
+
+
+@Composable
+fun ContentLazyListItemTop(
+    navHostController: NavHostController
+) {
+
+    val isShowBottomSheet = remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp),
+        //.weight(1f),
+        verticalAlignment = Alignment.Bottom,
+        //horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        // history call
+        Row(
+            modifier = Modifier
+                .weight(1f)
+                //.weight(1f)
+                .padding(end = 8.dp)
+            ,
+            //.fillMaxWidth()
+            //.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Box(
+                modifier = Modifier,
+                //.fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Card(
+                    modifier = Modifier
+                        .heightIn(40.dp)
+                    .fillMaxWidth()
+                    //.height(40.dp)
+                    ,
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                            .clickable {
+                                navHostController.navigate(ScreenRoute.HistoryCallScreen.route)
+                            }
+                            //.fillMaxHeight()
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .size(24.dp),
+                            imageVector = vectorResource(Res.drawable.ic_history_call),
+                            contentDescription = null,
+                            tint = ColorCustomResources.colorBazaMainBlue
+                        )
+                        Text(
+                            modifier = Modifier
+                                //.fillMaxWidth()
+                                .padding(top = 8.dp),
+                            text = "История звонков",
+                            color = ColorCustomResources.colorBazaMainBlue
+                        )
+                    }
+                }
+            }
+        }
+
+
+        Row(
+            modifier = Modifier
+                .weight(1f)
+//            .fillMaxWidth()
+            .padding(start = 8.dp)
+            ,
+            //.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Box(
+                modifier = Modifier,
+                //.fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(40.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                //onShowBottomSheet(true)
+                                isShowBottomSheet.value = true
+                            }
+                            .fillMaxHeight()
+                            .padding(8.dp),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Icon(
+                            modifier = Modifier
+                                .size(24.dp),
+                            imageVector = vectorResource(Res.drawable.ic_plus),
+                            contentDescription = null,
+                            tint = ColorCustomResources.colorBazaMainBlue
+                        )
+                        Text(
+                            modifier = Modifier
+                                //.fillMaxWidth()
+                                .padding(top = 8.dp),
+                            text = "Новый адрес",
+                            color = ColorCustomResources.colorBazaMainBlue
+                        )
+                    }
+                }
+            }
+        }
+
+
+//        AddAddressButtonHelper(
+//            onShowBottomSheet = {
+//                isShowBottomSheet.value = it
+//            }
+//        )
     }
 
     if (isShowBottomSheet.value) {
@@ -223,6 +365,149 @@ fun ContentLazyListItemTop(
 }
 
 
+//////////////////////
+
+//@Composable
+//fun ContentLazyListItemTop(
+//    navHostController: NavHostController
+//) {
+//
+//    val isShowBottomSheet = remember { mutableStateOf(false) }
+//
+//    Row(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(start = 16.dp, end = 16.dp),
+//        //.weight(1f),
+//        verticalAlignment = Alignment.Bottom,
+//    ) {
+//        // history call
+//
+//        Row(
+//            modifier = Modifier
+//                .weight(1f)
+//                .padding(end = 16.dp),
+//            //.fillMaxWidth()
+//            //.weight(1f),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.Start
+//        ) {
+//            Box(
+//                modifier = Modifier,
+//                //.fillMaxWidth(),
+//                contentAlignment = Alignment.CenterStart,
+//            ) {
+//                Card(
+//                    modifier = Modifier
+//                        .heightIn(40.dp)
+//                        //.fillMaxWidth()
+//                        //.height(40.dp)
+//                    ,
+//                    shape = RoundedCornerShape(100.dp),
+//                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+//                    colors = CardDefaults.cardColors(containerColor = Color.White),
+//                ) {
+//                    Column(
+//                        modifier = Modifier
+//                            .fillMaxHeight()
+//                            .clickable {
+//                                navHostController.navigate(ScreenRoute.HistoryCallScreen.route)
+//                            }
+//                            //.fillMaxHeight()
+//                            .padding(8.dp),
+////                        horizontalArrangement = Arrangement.End
+//                    ) {
+//                        Icon(
+//                            modifier = Modifier
+//                                .size(24.dp),
+//                            imageVector = vectorResource(Res.drawable.ic_history_call),
+//                            contentDescription = null,
+//                            tint = ColorCustomResources.colorBazaMainBlue
+//                        )
+//                        Text(
+//                            modifier = Modifier
+//                                //.fillMaxWidth()
+//                                .padding(start = 8.dp, end = 8.dp),
+//                            text = "История звонков",
+//                            color = ColorCustomResources.colorBazaMainBlue
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//
+//
+//        Row(
+//            modifier = Modifier
+////            .fillMaxWidth()
+////            .padding(top = 16.dp)
+//            ,
+//            //.weight(1f),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.End
+//        ) {
+//            Box(
+//                modifier = Modifier,
+//                //.fillMaxWidth(),
+//                contentAlignment = Alignment.CenterEnd,
+//            ) {
+//                Card(
+//                    modifier = Modifier
+//                        //.fillMaxWidth()
+//                        .height(40.dp),
+//                    shape = RoundedCornerShape(100.dp),
+//                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+//                    colors = CardDefaults.cardColors(containerColor = Color.White),
+//                ) {
+//                    Row(
+//                        modifier = Modifier
+//                            .clickable {
+//                                //onShowBottomSheet(true)
+//                            isShowBottomSheet.value = true
+//                            }
+//                            .fillMaxHeight()
+//                            .padding(start = 8.dp),
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.End
+//                    ) {
+//                        Icon(
+//                            modifier = Modifier
+//                                .size(24.dp),
+//                            imageVector = vectorResource(Res.drawable.ic_plus),
+//                            contentDescription = null,
+//                            tint = ColorCustomResources.colorBazaMainBlue
+//                        )
+//                        Text(
+//                            modifier = Modifier
+//                                //.fillMaxWidth()
+//                                .padding(start = 8.dp, end = 8.dp),
+//                            text = "Новый адрес",
+//                            color = ColorCustomResources.colorBazaMainBlue
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//
+//
+////        AddAddressButtonHelper(
+////            onShowBottomSheet = {
+////                isShowBottomSheet.value = it
+////            }
+////        )
+//    }
+//
+//    if (isShowBottomSheet.value) {
+//        AddAddressBottomSheet(
+//            fromScreen = ScreenRoute.DomofonScreen.route,
+//            onShowCurrentBottomSheet = {
+//                isShowBottomSheet.value = it
+//            }
+//        )
+//    }
+//}
+
+
 @Composable
 fun ContentLazyListItem(
     sputnik: Sputnik,
@@ -234,14 +519,17 @@ fun ContentLazyListItem(
 
     var switchCheckedState by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
         //.navigationBarsPadding()
     ) {
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             // horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.Bottom
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Row(
                 modifier = Modifier
@@ -273,13 +561,14 @@ fun ContentLazyListItem(
                     Card(
                         modifier = Modifier
                             //.fillMaxWidth()
-                            .height(40.dp),
-                        shape = RoundedCornerShape(100.dp),
+                            .heightIn(40.dp),
+                        shape = RoundedCornerShape(10.dp),
                         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
                         colors = CardDefaults.cardColors(containerColor = Color.White),
                     ) {
-                        Row(
+                        Column(
                             modifier = Modifier
+                                //.fillMaxWidth()
                                 .clickable {
                                     CoroutineScope(Dispatchers.Main).launch {
                                         snackbarHostState.showSnackbar(
@@ -290,9 +579,11 @@ fun ContentLazyListItem(
                                     }
                                 }
                                 .fillMaxHeight()
-                                .padding(start = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.End
                         ) {
                             Icon(
                                 modifier = Modifier
@@ -304,7 +595,8 @@ fun ContentLazyListItem(
                             Text(
                                 modifier = Modifier
                                     //.fillMaxWidth()
-                                    .padding(start = 8.dp, end = 8.dp),
+                                //    .padding(start = 8.dp, end = 8.dp)
+                                ,
                                 text = stringResource(Res.string.outdoor_create_shortcut),
                                 color = ColorCustomResources.colorBazaMainBlue
                             )

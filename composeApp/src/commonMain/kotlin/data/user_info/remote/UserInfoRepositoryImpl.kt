@@ -11,9 +11,9 @@ class UserInfoRepositoryImpl(private val httpClient: HttpClient) : UserInfoRepos
 
     override suspend fun getUserInfo(): UserInfo {
         val response = httpClient.get("user/info")
-
-        Logger.d("4444 response=" + response)
+        //Logger.d("4444 response=" + response)
         val result = response.body<UserInfo>()
+     //   Logger.d("4444 result=" + result.data.additionalAddresses)
         return result
     }
 }

@@ -182,11 +182,11 @@ fun HistoryCallContentWithRefresh(
         snapshotFlow { lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1 }
             .collect { index ->
                 lastVisibleItemIndex = index
-               // Logger.d("4444 lastVisibleItemIndex=" + lastVisibleItemIndex)
+                // Logger.d("4444 lastVisibleItemIndex=" + lastVisibleItemIndex)
                 //Logger.d("4444 lastVisibleItemIndex historyCalls.size=" + historyCalls.size)
                 if (historyCallsSize.value > 10 && lastVisibleItemIndex == historyCallsSize.value - 1) {
                     isShowSnackBarScroll.value = true
-                  //  Logger.d("4444 lastVisibleItemIndex есть=" + lastVisibleItemIndex)
+                    //  Logger.d("4444 lastVisibleItemIndex есть=" + lastVisibleItemIndex)
                 }
             }
     }
@@ -197,12 +197,12 @@ fun HistoryCallContentWithRefresh(
 
 
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            Box {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Box {
             ElevatedCard(
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier
@@ -231,21 +231,17 @@ fun HistoryCallContentWithRefresh(
                 }
             }
 
-                if (isShowSnackBarScroll.value) {
-                    Logger.d("4444 dnwdkwndknwd")
-                    SnackBarHostHelper.ShortShortTime(
-                        message = "Архив истории звонков предоставляется за 7 дней",
-                        onFinishTime = {
-                            isShowSnackBarScroll.value = false
-                        }
-                    )
-                }
+            if (isShowSnackBarScroll.value) {
+                Logger.d("4444 dnwdkwndknwd")
+                SnackBarHostHelper.ShortShortTime(
+                    message = "Архив истории звонков предоставляется за 7 дней",
+                    onFinishTime = {
+                        isShowSnackBarScroll.value = false
+                    }
+                )
+            }
         }
-
-
-
     }
-
 
     LaunchedEffect(isTransitionWebViewScreen.value) {
         if (isTransitionWebViewScreen.value) {
@@ -257,7 +253,6 @@ fun HistoryCallContentWithRefresh(
             )
         }
     }
-
 }
 
 @Composable

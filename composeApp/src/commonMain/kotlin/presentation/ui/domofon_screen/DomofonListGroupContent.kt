@@ -25,7 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,18 +44,19 @@ import io.kamel.image.asyncPainterResource
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_lock
 import mykmptest.composeapp.generated.resources.ic_play
-import mykmptest.composeapp.generated.resources.ic_plus
 import mykmptest.composeapp.generated.resources.ic_share
 import org.jetbrains.compose.resources.vectorResource
 import presentation.ui.add_address.AddAddressBottomSheet
+import util.AddAddressButtonHelper
 import util.ColorCustomResources
 import util.ScreenRoute
 import util.navigateToWebViewHelper
 import util.shimmerEffect
 
 @Composable
-fun GroupedContent(
-    onShowGroup: (Boolean) -> Unit,
+fun DomofonListGroupContent(
+    items: List<Sputnik>?, // МОЖЕТ НАДО УБРАТЬ
+    onGoDomofonContentList: () -> Unit,
     onAddrId: (Int) -> Unit,
     viewModel: DomofonScreenViewModel,
     onShowSnackBarUnlockDoorStatus: (Boolean) -> Unit,
@@ -66,8 +66,8 @@ fun GroupedContent(
     val scope = rememberCoroutineScope()
     val lazyListState = rememberLazyListState()
 
-    val sputnikUiState by viewModel.domofonUiState.collectAsState()
-    val items = sputnikUiState?.domofon?.sputnik
+//    val sputnikUiState by viewModel.domofonUiState.collectAsState()
+//    val items = sputnikUiState?.domofon?.sputnik
     val snackbarHostState = remember { SnackbarHostState() }
     val groupItems: Map<Int, List<Sputnik>>? = items?.groupBy { it.addrId }
     groupItems?.let {
@@ -86,14 +86,19 @@ fun GroupedContent(
         ) {
             LazyColumn(
                 state = lazyListState,
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(bottom = 16.dp),
                 modifier = Modifier
                     //.navigationBarsPadding()
                     .fillMaxSize()
-                    //.navigationBarsPadding()
+                //.navigationBarsPadding()
                 ,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+
+                item {
+                    PermissionBannerContent()
+                }
+
                 item {
                     TopTitleContentGroup(
                         navHostController = navHostController
@@ -104,14 +109,14 @@ fun GroupedContent(
                     val listSputnikItem: List<Sputnik> =
                         groupItems1.flatten().filter { it.addrId == sputnik.addrId }
 
-                    ContentGroup(
+                    GroupContentItem(
                         sputnikControl = sputnik,
                         listSputnik = listSputnikItem,
-                        onShowGroup = {
-                            onShowGroup(it)
+                        onGoDomofonContentList = {
+                            onGoDomofonContentList()
                         },
                         onAddrId = {
-                                   onAddrId(it)
+                            onAddrId(it)
                         },
                         onShowSnackBarUnlockDoorStatus = {
                             onShowSnackBarUnlockDoorStatus(it)
@@ -131,9 +136,11 @@ fun TopTitleContentGroup(
     val isShowBottomSheet = remember { mutableStateOf(false) }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp),
         // horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.Bottom
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier
@@ -150,54 +157,11 @@ fun TopTitleContentGroup(
             )
         }
 
-        Row(
-            modifier = Modifier,
-            //.fillMaxWidth()
-            //.weight(1f),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
-        ) {
-            Box(
-                modifier = Modifier,
-                //.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                Card(
-                    modifier = Modifier
-                        //.fillMaxWidth()
-                        .height(40.dp),
-                    shape = RoundedCornerShape(100.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .clickable {
-                                isShowBottomSheet.value = true
-                            }
-                            .fillMaxHeight()
-                            .padding(start = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(24.dp),
-                            imageVector = vectorResource(Res.drawable.ic_plus),
-                            contentDescription = null,
-                            tint = ColorCustomResources.colorBazaMainBlue
-                        )
-                        Text(
-                            modifier = Modifier
-                                //.fillMaxWidth()
-                                .padding(start = 16.dp, end = 8.dp),
-                            text = "Новый адрес",
-                            color = ColorCustomResources.colorBazaMainBlue
-                        )
-                    }
-                }
+        AddAddressButtonHelper(
+            onShowBottomSheet = {
+                isShowBottomSheet.value = it
             }
-        }
+        )
     }
 
     if (isShowBottomSheet.value) {
@@ -211,10 +175,10 @@ fun TopTitleContentGroup(
 }
 
 @Composable
-fun ContentGroup(
+fun GroupContentItem(
     sputnikControl: Sputnik,
     listSputnik: List<Sputnik>,
-    onShowGroup: (Boolean) -> Unit,
+    onGoDomofonContentList: () -> Unit,
     onAddrId: (Int) -> Unit,
     navHostController: NavHostController,
     onShowSnackBarUnlockDoorStatus: (Boolean) -> Unit,
@@ -227,7 +191,8 @@ fun ContentGroup(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp),
         shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(containerColor = ColorCustomResources.colorBazaMainBlue),
@@ -235,7 +200,7 @@ fun ContentGroup(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-               // .navigationBarsPadding()
+                // .navigationBarsPadding()
                 .background(Color.White)
                 .padding(16.dp)
         ) {
@@ -419,7 +384,7 @@ fun ContentGroup(
                 ElevatedButton(
                     shape = RoundedCornerShape(8.dp),
                     onClick = {
-                        onShowGroup(false)
+                        onGoDomofonContentList()
                         onAddrId(sputnikControl.addrId)
                     },
                     content = {
@@ -443,7 +408,7 @@ fun ContentGroup(
 private fun getTitle(size: Int): String {
     var title = ""
     if (size == 1) {
-        title = "По этому адресу Вам доступно $size камера"
+        title = "По этому адресу Вам доступна $size камера"
     }
     if (size in 2..4) {
         title = "По этому адресу Вам доступно $size камеры"

@@ -8,6 +8,7 @@ import domain.add_address.CheckAddressBody
 import domain.repository.AddAddressRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.post
@@ -64,18 +65,30 @@ class AddAddressRepositoryImpl(
     }
 
 
-    override suspend fun deleteAddress(id: Int): Boolean {
-        val response = httpClient.post("user/address/$id") {
-            contentType(ContentType.Application.Json)
-        }
-        return if (response.status.isSuccess()) {
+    override suspend fun deleteAddress(id: Int): Boolean? {
+        Logger.d("4444  deleteAddress id=" + id)
+        return try {
+            val response = httpClient.delete("user/address/$id") {
+                contentType(ContentType.Application.Json)
+            }
+            return if (response.status.isSuccess()) {
 //            logManager.writeLogToDB("Успешно удалили адрес с id = $id")
-            val result = response.body<AddressDeleteResponseDTO>().mapToDomain()
-            result.data.result ?: true
-        } else {
-            //logManager.writeLogToDB("Ошибка удаления адреса с id = $id")
-            false
+                val result = response.body<AddressDeleteResponseDTO>().mapToDomain()
+
+
+                result.data.result ?: true
+            } else {
+                //logManager.writeLogToDB("Ошибка удаления адреса с id = $id")
+                false
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Logger.d("4444 try catch deleteAddress e=" + e)
+            //logManager.writeLogToDB("Ошибка получения инфо по адресу c addrId = '${body.addrId}': ${e.javaClass.simpleName}")
+            //logManager.writeLogToDB(e.stackTraceToString())
+            null
         }
+
     }
 
 /////////////////////////
