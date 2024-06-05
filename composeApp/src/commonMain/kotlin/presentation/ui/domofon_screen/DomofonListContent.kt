@@ -69,6 +69,7 @@ import util.shimmerEffect
 fun DomofonListContent(
 //    lazyListState: LazyListState,
     items: List<Sputnik>,
+    isLoading: Boolean,
     snackbarHostState: SnackbarHostState,
     navHostController: NavHostController,
     viewModel: DomofonScreenViewModel
@@ -93,7 +94,9 @@ fun DomofonListContent(
             PermissionBannerContent()
         }
 
-        if (items.isEmpty()) {
+
+
+        if (!isLoading && (items.isEmpty())) {
             item {
                 PresentationContent()
             }
@@ -107,7 +110,9 @@ fun DomofonListContent(
             }
         }
 
-        items(items) { sputnik ->
+        val itemsSortByFullControl = items.sortedBy { it.fullControl }.reversed()
+
+        items(itemsSortByFullControl) { sputnik ->
             ContentLazyListItem(
                 sputnik = sputnik,
                 snackbarHostState = snackbarHostState,

@@ -18,12 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
@@ -31,8 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.ic_back
 import mykmptest.composeapp.generated.resources.ic_profile
@@ -61,10 +57,15 @@ fun OutdoorScreen(
 
 //    val outDoors by viewModel.outDoorsUiState.collectAsState()
     val outDoorsUiState by viewModel.outDoorsUiState.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
-    var isRefreshing by remember { mutableStateOf(false) }
+//    var isRefreshing by remember { mutableStateOf(isLoading) }
     val scope = rememberCoroutineScope()
 
+    LaunchedEffect(outDoorsUiState) {
+        Logger.d("4444 LaunchedEffect ")
+      //  isRefreshing = false
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -142,13 +143,18 @@ fun OutdoorScreen(
             ) {
                 OutdoorContentWithRefresh(
                     items = outDoorsUiState.outdoors,
-                    isRefreshing = isRefreshing,
+                    isRefreshing = isLoading,
                     onRefresh = {
-                        scope.launch {
-                            isRefreshing = true
-                            delay(2000L)
-                            isRefreshing = false
-                        }
+
+
+                       // isRefreshing = true
+                        viewModel.getOutdoors(isLoading = true)
+
+//                        scope.launch {
+//                            isRefreshing = true
+//                            delay(2000L)
+//                            isRefreshing = false
+//                        }
                     },
                     navHostController = navHostController,
                    // paddingValue = paddingValue

@@ -147,6 +147,8 @@ kotlin {
             //
           //  implementation("com.squareup.okio:okio:3.9.0")
 
+            implementation("com.google.accompanist:accompanist-swiperefresh:0.34.0")
+
         }
 
         iosMain {

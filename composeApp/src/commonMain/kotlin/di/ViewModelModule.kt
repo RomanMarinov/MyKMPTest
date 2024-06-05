@@ -34,12 +34,15 @@ val viewModelModule = module {
 
     factory { ProfileScreenViewModel(get(), get()) }
 
-    factory { AddAddressViewModel(get()) }
+    factory { AddAddressViewModel(get(), get()) }
 
     factory { AttachPhotoViewModel(get(), get()) }
 
     factory { HistoryCallScreenViewModel(get(), get()) }
 
     factory { AddressesScreenViewModel(get(), get()) }
+
+//    factory { RequestAddressViewModel(get()) }
+
 }
 

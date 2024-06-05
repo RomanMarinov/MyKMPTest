@@ -73,27 +73,15 @@ fun OutdoorContentWithRefresh(
     val pullToRefreshState = rememberPullToRefreshState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    /////////////////////////////////////////////
-//    помотреть тут где я на шару писал navigationBarsPadding
-/////////////////////////////////////////////////
-
     Box(
         modifier = modifier
-            //.navigationBarsPadding()
             .nestedScroll(pullToRefreshState.nestedScrollConnection)
-//            .navigationBarsPadding()
-//            .padding(
-//                bottom = paddingValue.calculateBottomPadding()
-//            )
     ) {
         LazyColumn(
             state = lazyListState,
             contentPadding = PaddingValues(16.dp),
             modifier = Modifier
-            //    .navigationBarsPadding()
-                .fillMaxSize()
-              //  .navigationBarsPadding()
-            ,
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(items) { dvr ->
@@ -122,11 +110,11 @@ fun OutdoorContentWithRefresh(
         PullToRefreshContainer(
             state = pullToRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
-
-            )
+            containerColor = Color.White,
+            contentColor = ColorCustomResources.colorBazaMainBlue
+        )
 
         SnackbarHost(
-
             hostState = snackbarHostState,
             snackbar = {
                 Snackbar(
@@ -152,7 +140,7 @@ fun OutdoorContentWithRefresh(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                //.navigationBarsPadding()
+            //.navigationBarsPadding()
             // .padding(paddingValue)
         )
 
@@ -170,8 +158,9 @@ fun ContentLazyList(
     navHostController: NavHostController,
 ) {
 
-    Column(modifier = Modifier.fillMaxWidth()
-    //    .navigationBarsPadding()
+    Column(
+        modifier = Modifier.fillMaxWidth()
+        //    .navigationBarsPadding()
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),

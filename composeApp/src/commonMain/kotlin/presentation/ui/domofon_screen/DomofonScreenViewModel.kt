@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import presentation.ui.domofon_screen.model.SputnikUiState
@@ -28,12 +29,17 @@ class DomofonScreenViewModel(
     private var _statusDomofonUnlockDoor: MutableStateFlow<UnLockState> = MutableStateFlow(UnLockState.DEFAULT)
     val statusDomofonUnlockDoor: StateFlow<UnLockState> = _statusDomofonUnlockDoor
 
+    private var _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+
     init {
         getSputnik()
     }
 
-    private fun getSputnik() {
+    fun getSputnik() {
         viewModelScope.launch {
+            _isLoading.value = true
             val domofons: Domofon? = userInfoRepository.getUserInfo().data.domofon
 
             Logger.d("4444 sputnikUiState=" + domofons?.sputnik)
@@ -43,6 +49,7 @@ class DomofonScreenViewModel(
                     it?.copy(domofon = domof)
                 }
             }
+            _isLoading.value = false
         }
     }
 

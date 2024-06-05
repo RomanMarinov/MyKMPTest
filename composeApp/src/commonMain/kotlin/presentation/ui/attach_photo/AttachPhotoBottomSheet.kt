@@ -125,7 +125,7 @@ fun AttachPhotoBottomSheet(
                     ) {
                         item {
                             AttachTopTitle(
-                                openBottomSheet = {
+                                onShowAttachBottomSheet = {
                                     onShowCurrentBottomSheet(it)
                                 }
                             )
@@ -220,7 +220,7 @@ fun AttachPhotoBottomSheet(
 
 @Composable
 fun AttachTopTitle(
-    openBottomSheet: (Boolean) -> Unit
+    onShowAttachBottomSheet: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -252,7 +252,7 @@ fun AttachTopTitle(
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable {
-                                openBottomSheet(false)
+                                onShowAttachBottomSheet(false)
                             },
                         contentAlignment = Alignment.Center,
                     ) {

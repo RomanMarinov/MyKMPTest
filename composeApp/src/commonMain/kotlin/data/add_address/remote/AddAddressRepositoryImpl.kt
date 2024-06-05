@@ -3,8 +3,11 @@ package data.add_address.remote
 import co.touchlab.kermit.Logger
 import data.add_address.remote.dto.AddAddressBodyDTO
 import data.add_address.remote.dto.AddressDeleteResponseDTO
+import data.add_address.remote.dto.service_request.ServiceRequestBodyDTO
+import data.add_address.remote.dto.service_request.ServiceRequestResponseDTO
 import domain.add_address.AddAddressBody
 import domain.add_address.CheckAddressBody
+import domain.add_address.service_request.ServiceRequestBody
 import domain.repository.AddAddressRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -44,23 +47,23 @@ class AddAddressRepositoryImpl(
         )
         val id = addAddressBody.addrId
 
-       return try {
+        return try {
             val response = httpClient.post("user/address/$id") {
                 contentType(ContentType.Application.Json)
                 setBody(body = addAddressBodyDTO)
             }
-           if (response.status.isSuccess()) {
+            if (response.status.isSuccess()) {
 //               logManager.writeLogToDB("Успешно получили инфо по адресу c addrId = '${body.addrId}'")
-           } else {
+            } else {
 //               logManager.writeLogToDB("Ошибка получения инфо по адресу c addrId = '${body.addrId}'")
-           }
-           return response
+            }
+            return response
         } catch (e: Exception) {
-           e.printStackTrace()
-           Logger.d("4444 try catch getAddressById e=" + e)
-           //logManager.writeLogToDB("Ошибка получения инфо по адресу c addrId = '${body.addrId}': ${e.javaClass.simpleName}")
-           //logManager.writeLogToDB(e.stackTraceToString())
-           null
+            e.printStackTrace()
+            Logger.d("4444 try catch getAddressById e=" + e)
+            //logManager.writeLogToDB("Ошибка получения инфо по адресу c addrId = '${body.addrId}': ${e.javaClass.simpleName}")
+            //logManager.writeLogToDB(e.stackTraceToString())
+            null
         }
     }
 
@@ -91,53 +94,78 @@ class AddAddressRepositoryImpl(
 
     }
 
-/////////////////////////
+    /////////////////////////
     // этот в какой момент сработал
-override suspend fun uploadImage(imageByteArray: ByteArray, id: Int): HttpResponse? {
-    Logger.d("uploadImage imageByteArray size=${imageByteArray.size} id=$id")
-    return try {
-        val response: HttpResponse = httpClient.submitFormWithBinaryData(
-            url = "verification/address/$id",
-            formData = formData {
-                append("description", "Ktor logo")
-                append("image", imageByteArray, Headers.build {
-                    append(HttpHeaders.ContentType, "application/octet-stream")
-                    append(HttpHeaders.ContentDisposition, "form-data; name=\"image\"; filename=\"image.png\"")
-                })
+    override suspend fun uploadImage(imageByteArray: ByteArray, id: Int): HttpResponse? {
+        Logger.d("uploadImage imageByteArray size=${imageByteArray.size} id=$id")
+        return try {
+            val response: HttpResponse = httpClient.submitFormWithBinaryData(
+                url = "verification/address/$id",
+                formData = formData {
+                    append("description", "Ktor logo")
+                    append("image", imageByteArray, Headers.build {
+                        append(HttpHeaders.ContentType, "application/octet-stream")
+                        append(
+                            HttpHeaders.ContentDisposition,
+                            "form-data; name=\"image\"; filename=\"image.png\""
+                        )
+                    })
+                }
+            )
+            if (response.status.isSuccess()) {
+                Logger.d("4444 uploadImage OK")
+                val code = response.status
+                val successContent = response.body<String>()
+                val headers = response.headers
+                val description = response.status.description
+                Logger.d("4444 uploadImage OK code=$code")
+                Logger.d("4444 uploadImage OK successContent=$successContent")
+                Logger.d("4444 uploadImage OK headers=$headers")
+                Logger.d("4444 uploadImage OK description=$description")
+            } else {
+                Logger.d("4444 uploadImage FAILURE")
+                val code = response.status
+                val errorContent = response.body<String>()
+                val headers = response.headers
+                val description = response.status.description
+                Logger.d("4444 uploadImage FAILURE code=$code")
+                Logger.d("4444 uploadImage FAILURE errorContent=$errorContent")
+                Logger.d("4444 uploadImage FAILURE headers=$headers")
+                Logger.d("4444 uploadImage FAILURE description=$description")
             }
-        )
-        if (response.status.isSuccess()) {
-            Logger.d("4444 uploadImage OK")
-            val code = response.status
-            val successContent = response.body<String>()
-            val headers = response.headers
-            val description = response.status.description
-            Logger.d("4444 uploadImage OK code=$code")
-            Logger.d("4444 uploadImage OK successContent=$successContent")
-            Logger.d("4444 uploadImage OK headers=$headers")
-            Logger.d("4444 uploadImage OK description=$description")
-        } else {
-            Logger.d("4444 uploadImage FAILURE")
-            val code = response.status
-            val errorContent = response.body<String>()
-            val headers = response.headers
-            val description = response.status.description
-            Logger.d("4444 uploadImage FAILURE code=$code")
-            Logger.d("4444 uploadImage FAILURE errorContent=$errorContent")
-            Logger.d("4444 uploadImage FAILURE headers=$headers")
-            Logger.d("4444 uploadImage FAILURE description=$description")
-        }
 //            response
-        response
-    } catch (e: Exception) {
-        // Обработка ошибки, если нужно
-        Logger.d(" try catch 4444 uploadImage e=" + e)
-        e.printStackTrace()
-        null
+            response
+        } catch (e: Exception) {
+            // Обработка ошибки, если нужно
+            Logger.d(" try catch 4444 uploadImage e=" + e)
+            e.printStackTrace()
+            null
+        }
     }
-}
 
+    override suspend fun sendServiceRequest(body: ServiceRequestBody): Int? {
+        val serviceRequestDTO: ServiceRequestBodyDTO = body.mapToData()
+        return try {
+//        logManager.writeLogToDB("Отправляем заявку на подключение для авторизованного абонента")
+            val response = httpClient.post("public/connection_request") {
+                contentType(ContentType.Application.Json)
+                setBody(body = serviceRequestDTO)
+            }
+            //       ServiceRequestResponse
+            if (response.status.isSuccess()) {
+                val result = response.body<ServiceRequestResponseDTO>()
+                return result.mapToDomain().data.ticketId
+            } else {
+                return null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            //logManager.writeLogToDB("Ошибка отправки заявки на подключение для авторизованного абонента: ${e.javaClass.simpleName}")
+            //logManager.writeLogToDB(e.stackTraceToString())
+            null
+        }
 
+    }
 
 
 //    override suspend fun uploadImage(imageByteArray: ByteArray, id: Int): HttpResponse? {

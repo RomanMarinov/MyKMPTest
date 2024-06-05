@@ -63,4 +63,14 @@
 <!--    attachPhoto-->
     <string name="attach_content">Осталось прикрепить фото документа, подтверждающего факт Вашего проживания либо владения имуществом.\nЭто может быть свидетельство о праве собственности, договор аренды или страница прописки в паспорте.</string>
 
+
+<!--    requestResultBottomSheet-->
+    <string name="domofon_request_result_details" translatable="false">Наш сотрудник свяжется с вами в ближайшее время для уточнения технической возможности и условий подключения Умного Домофона.</string>
+    <string name="dvr_request_result_details" translatable="false">Наш сотрудник свяжется с вами в ближайшее время для уточнения технической возможности и условий подключения Дворовой камеры.</string>
+    <string name="photo_sent_successfully" translatable="false">Фото успешно отправлено!</string>
+    <string name="wait_request_result_details" translatable="false">Ожидайте смс о подтверждении вашего адреса.</string>
+    <string name="wait_static_ip_request_result_details" translatable="false">Ожидайте смс о подтверждении заявки, и звонок от нашего сотрудника.</string>
+
+    <string name="failed_to_send_service_request" translatable="false">Ой! Не удалось оставить заявку</string>
+    <string name="try_one_more_time_later" translatable="false">Попробуйте еще раз позже</string>
 </resources>

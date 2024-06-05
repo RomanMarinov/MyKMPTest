@@ -174,6 +174,9 @@ fun TopTitleContentGroup(
     }
 }
 
+
+
+
 @Composable
 fun GroupContentItem(
     sputnikControl: Sputnik,
@@ -186,7 +189,7 @@ fun GroupContentItem(
 ) {
 
     val isOpenDoor = remember { mutableStateOf(false) }
-
+    val isShare = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
     Card(
@@ -246,7 +249,7 @@ fun GroupContentItem(
                             Row(
                                 modifier = Modifier
                                     .clickable {
-
+                                        isShare.value = true
                                     }
                                     .fillMaxHeight()
                                     .padding(8.dp)
@@ -402,6 +405,9 @@ fun GroupContentItem(
                 )
             }
         }
+    }
+
+    if (isShare.value) {
     }
 }
 

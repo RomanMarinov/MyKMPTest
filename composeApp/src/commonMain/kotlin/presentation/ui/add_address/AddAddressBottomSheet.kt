@@ -212,6 +212,7 @@ fun AutoComplete(
     val errorNetwork by viewModel.errorNetwork.collectAsStateWithLifecycle()
     val addAddressResponse by viewModel.addAddressResponse.collectAsStateWithLifecycle()
 
+    Logger.d("4444 addAddressResponse=" + addAddressResponse)
     val scope = rememberCoroutineScope()
     var addressText by remember { mutableStateOf("") }
     var flatNumberText by remember { mutableStateOf("") }
@@ -362,39 +363,52 @@ fun AutoComplete(
         ScreenBottomSheet.ATTACH_BSH -> {
             isApprovedData.value = CheckData.DEFAULT
 
-            val addressString = getAddressString(addAddressResponse)
-            val dataAddress = addAddressResponse?.data
-            Logger.d("4444 проверка addressString=" + addressString)
-            Logger.d("4444 проверка dataAddress=" + dataAddress)
-            Logger.d("4444 проверка verificationStatus=" + dataAddress?.verificationStatus)
 
-            AttachPhotoBottomSheet(
-                address = addressString,
-                dataAddress = dataAddress,
-                navigationFrom = fromScreen,
-                onShowCurrentBottomSheet = {
-                    isNextTransitionBottomSheet.value = ScreenBottomSheet.DEFAULT
-                },
-                onShowPreviousBottomSheet = {
-                    scope.launch {
-                        delay(300L)
-                        onShowCurrentBottomSheet(false)
+            addAddressResponse?.let {
+                val addressString = getAddressString(it)
+                val dataAddress = it.data
+                AttachPhotoBottomSheet(
+                    address = addressString,
+                    dataAddress = dataAddress,
+                    navigationFrom = fromScreen,
+                    onShowCurrentBottomSheet = {
+                        isNextTransitionBottomSheet.value = ScreenBottomSheet.DEFAULT
+                        // сбросить поток чтобы повторно мог открыть ATTACH_BSH с тем же адресом если че
+                        viewModel.resetFlowAddAddressResponse()
+                    },
+                    onShowPreviousBottomSheet = {
+                        scope.launch {
+                            delay(100L)
+                            onShowCurrentBottomSheet(false)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
 
         ScreenBottomSheet.REQUEST_BSH -> {
-            val addressString = getAddressString(addAddressResponse)
-            val dataAddress = addAddressResponse?.data
-            RequestAddressBottomSheet(
-                address = addressString,
-                dataAddress = dataAddress,
-                navigationFrom = fromScreen,
-                openBottomSheet = {
+            isApprovedData.value = CheckData.DEFAULT
 
-                }
-            )
+            addAddressResponse?.let {
+                val addressString = getAddressString(it)
+                val dataAddress = it.data
+                RequestAddressBottomSheet(
+                    address = addressString,
+                    dataAddress = dataAddress,
+                    navigationFrom = fromScreen,
+                    onShowCurrentBottomSheet = {
+                        isNextTransitionBottomSheet.value = ScreenBottomSheet.DEFAULT
+                        viewModel.resetFlowAddAddressResponse()
+                    },
+                    onShowPreviousBottomSheet = {
+                        scope.launch {
+                            delay(100L)
+                            onShowCurrentBottomSheet(false)
+                        }
+                    },
+                    viewModel = viewModel
+                )
+            }
         }
 
         ScreenBottomSheet.DEFAULT -> {}
@@ -618,6 +632,13 @@ fun AutoComplete(
                             .padding(bottom = 16.dp),
                         shape = RoundedCornerShape(8.dp),
                         onClick = {
+                          //  Logger.d("4444  click isApprovedData.value=" + isApprovedData.value)
+                           // isApprovedData.value = CheckData.DEFAULT
+//                            Logger.d("4444  click checkData=" + checkData(
+//                                addressText = addressText,
+//                                flatNumberText = flatNumberText
+//                            ))
+
                             isApprovedData.value = checkData(
                                 addressText = addressText,
                                 flatNumberText = flatNumberText

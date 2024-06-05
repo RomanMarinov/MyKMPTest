@@ -42,7 +42,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import co.touchlab.kermit.Logger
 import domain.model.user_info.Sputnik
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mykmptest.composeapp.generated.resources.Res
 import mykmptest.composeapp.generated.resources.domofon_title
@@ -56,253 +55,9 @@ import util.ColorCustomResources
 import util.ScreenRoute
 import util.SnackBarHostHelper
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun DomofonScreen(
-//    bottomNavigationPaddingValue: PaddingValues,
-//    navHostController: NavHostController,
-//    viewModel: DomofonScreenViewModel = koinInject()
-//) {
-//
-//    val sputnikUiState by viewModel.domofonUiState.collectAsState()
-//    val items: List<Sputnik>? = sputnikUiState?.domofon?.sputnik
-//    val statusDomofonUnlockDoor by viewModel.statusDomofonUnlockDoor.collectAsStateWithLifecycle()
-//    var isRefreshing by remember { mutableStateOf(false) }
-//    val scope = rememberCoroutineScope()
-//
-//    Logger.d("4444 statusDomofonUnlockDoor=" + statusDomofonUnlockDoor)
-//
-//    val pullToRefreshState = rememberPullToRefreshState()
-//    val snackbarHostState = remember { SnackbarHostState() }
-//
-//    var isLoading by remember { mutableStateOf(true) }
-//
-//    val isShowGroupState = remember { mutableStateOf(true) }
-//    val isShowGroupStateFirst = remember { mutableStateOf(false) }
-//
-//    val groupItems: Map<Int, List<Sputnik>>? = items?.groupBy { it.addrId }
-//    groupItems?.let {
-//        if (it.size == 0) {
-//            Logger.d("4444 проверка 0")
-//        }
-//        if (it.size in 1..2) {
-//            Logger.d("4444 проверка 1-2")
-//            isShowGroupStateFirst.value = false
-//        }
-//        if (it.size >= 3) {
-//            Logger.d("4444 проверка 3")
-//            isShowGroupStateFirst.value = true
-//        }
-//    }
-//
-//    Surface(
-//        modifier = Modifier.fillMaxSize(),
-//        color = MaterialTheme.colorScheme.background
-//    ) {
-//        val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-//
-//        Scaffold(
-//            modifier = Modifier
-//                .fillMaxSize(),
-//            // .nestedScroll(scrollBehavior.nestedScrollConnection),
-//            topBar = {
-//                TopAppBar(
-//                    // modifier = Modifier.height(20.dp),
-////               colors = TopAppBarDefaults.smallTopAppBarColors(
-////                  containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-////               ),
-//                    title = {
-//                        Text(
-//                            modifier = Modifier
-//                                .fillMaxWidth(),
-//                            text = stringResource(Res.string.domofon_title),
-//                            textAlign = TextAlign.Center,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//
-//                    },
-//                    navigationIcon = {
-//                        IconButton(
-//                            onClick = {
-//                                // <3
-//                                if (!isShowGroupStateFirst.value) {
-//                                    navHostController.navigate(
-//                                        ScreenRoute.HomeScreen.route,
-//                                        NavOptions.Builder().setPopUpTo(
-//                                            // The destination of popUpTo
-//                                            route = ScreenRoute.HomeScreen.route,
-//                                            // Whether the popUpTo destination should be popped from the back stack.
-//                                            inclusive = false,
-//                                        ).build()
-//                                    )
-//                                } else { // >=3
-//                                    if (isShowGroupState.value) { // стоит на группе
-//                                        navHostController.navigate(
-//                                            ScreenRoute.HomeScreen.route,
-//                                            NavOptions.Builder().setPopUpTo(
-//                                                // The destination of popUpTo
-//                                                route = ScreenRoute.HomeScreen.route,
-//                                                // Whether the popUpTo destination should be popped from the back stack.
-//                                                inclusive = false,
-//                                            ).build()
-//                                        )
-//                                    } else { // стоит не на группе
-//                                        isShowGroupState.value = true
-//                                    }
-//                                }
-//                            }
-//                        ) {
-//                            Icon(
-//                                modifier = Modifier
-//                                    //.padding(),
-//                                    //.systemBarsPadding() // Добавить отступ от скрытого статус-бара
-//                                    .size(35.dp),
-//                                // .clip(RoundedCornerShape(50)),
-//                                imageVector = vectorResource(Res.drawable.ic_back),
-//                                contentDescription = "Go back",
-//
-//                                )
-//                        }
-//                    },
-//                    actions = {
-//                        IconButton(
-//                            onClick = {
-//                                navHostController.navigate(ScreenRoute.ProfileScreen.route)
-//                            }
-//                        ) {
-//                            Icon(
-//                                imageVector = vectorResource(Res.drawable.ic_profile),
-//                                contentDescription = "Open profile",
-//                                modifier = Modifier
-//                                    .size(24.dp)
-//                            )
-//                        }
-//                    },
-//                    modifier = Modifier
-//                        .shadow(4.dp),
-//                    scrollBehavior = scrollBehavior
-//                )
-//            }
-//        ) { domofonTopBarPaddingValue ->
-//
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(top = domofonTopBarPaddingValue.calculateTopPadding())
-//                    .padding(bottom = bottomNavigationPaddingValue.calculateBottomPadding())
-//                    .background(ColorCustomResources.colorBackgroundMain)
-//            ) {
-//                Box(
-//                    modifier = Modifier
-//                        .nestedScroll(pullToRefreshState.nestedScrollConnection)
-////                        .navigationBarsPadding()
-////                        .padding(
-////                            bottom = paddingValue.calculateBottomPadding()
-////                        )
-//                ) {
-//                    groupItems?.let {
-//                        //listGroup ->
-//                        if (it.size in 1..2) {
-//                            NotGroupedContent(
-//                                //lazyListState = lazyListState,
-//                                items = items,
-//                                snackbarHostState = snackbarHostState,
-//                                navHostController = navHostController,
-//                                viewModel = viewModel
-//                            )
-//                        }
-//                        if (it.size >= 3) {
-//                            val addrIdFromGroup = remember { mutableIntStateOf(-1) }
-//
-//                            if (isShowGroupState.value) {
-//                                GroupedContent(
-//                                    items = items,
-//                                    onShowGroup = { bool ->
-//                                        isShowGroupState.value = bool
-//                                    },
-//                                    onAddrId = { addrId ->
-//                                        addrIdFromGroup.value = addrId
-//                                    },
-//                                    viewModel = viewModel,
-//                                    onShowSnackBarUnlockDoorStatus = {
-//
-//                                        // isShowSnackBarUnlockDoorStatus.value = status
-//                                    },
-//                                    navHostController = navHostController
-//                                )
-//                            } else {
-//                                // сюда отдавать список подъездов только одного адреса
-//                                val listFilterByAddrId = items.filter { sputnikItem ->  sputnikItem.addrId == addrIdFromGroup.value }
-//
-//                                NotGroupedContentFrom(
-//                                    items = listFilterByAddrId,
-//                                    snackbarHostState = snackbarHostState,
-//                                    navHostController = navHostController,
-//                                    viewModel = viewModel
-//                                )
-//                            }
-//                        }
-//                    }
-//
-//                    if (pullToRefreshState.isRefreshing) {
-//                        LaunchedEffect(true) {
-//                            scope.launch {
-//                                isRefreshing = true
-//                                delay(2000L)
-//                                isRefreshing = false
-//                            }
-//                        }
-//                    }
-//
-//                    LaunchedEffect(isRefreshing) {
-//                        if (isRefreshing) {
-//                            pullToRefreshState.startRefresh()
-//                        } else {
-//                            pullToRefreshState.endRefresh()
-//                        }
-//                    }
-//
-//                    PullToRefreshContainer(
-//                        state = pullToRefreshState,
-//                        modifier = Modifier
-//                            .align(Alignment.TopCenter),
-//                        containerColor = Color.White
-//                    )
-//
-//                    when (statusDomofonUnlockDoor) {
-//                        UnLockState.OPENED_DOOR -> {
-//                            SnackBarHostHelper.ShortShortTime(
-//                                message = "Дверь открыта",
-//                                onFinishTime = {
-//                                    viewModel.resetSnackBarUnLockState()
-//                                }
-//                            )
-//                        }
-//
-//                        UnLockState.ERROR_OPEN -> {
-//                            SnackBarHostHelper.ShortShortTime(
-//                                message = "Ошибка открытия двери",
-//                                onFinishTime = {
-//                                    viewModel.resetSnackBarUnLockState()
-//                                }
-//                            )
-//                        }
-//                        UnLockState.DEFAULT -> {}
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-
-
-///////////////////////////////////
-
-
 enum class DomofonContent {
     LIST_GROUP, LIST, LIST_ZERO, DEFAULT
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -315,13 +70,16 @@ fun DomofonScreen(
     val sputnikUiState by viewModel.domofonUiState.collectAsState()
     val items: List<Sputnik> = sputnikUiState?.domofon?.sputnik ?: emptyList()
     val statusDomofonUnlockDoor by viewModel.statusDomofonUnlockDoor.collectAsStateWithLifecycle()
+
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+
     var isRefreshing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-
     val pullToRefreshState = rememberPullToRefreshState()
+//    var isLoading by remember { mutableStateOf(true) }
+
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var isLoading by remember { mutableStateOf(true) }
     val domofonContentState = remember { mutableStateOf(DomofonContent.DEFAULT) }
 //    val domofonContentState = remember { mutableStateOf(DomofonContent.DEFAULT) }
     val addrIdFromGroup = remember { mutableIntStateOf(-1) }
@@ -329,8 +87,13 @@ fun DomofonScreen(
 //    val isShowGroupStateFirst = remember { mutableStateOf(false) }
     val countGroup = remember { mutableStateOf(-1) }
 
-
     val groupItems: Map<Int, List<Sputnik>>? = items?.groupBy { it.addrId }
+
+
+
+
+
+
 
     LaunchedEffect(groupItems) {
         groupItems?.let {
@@ -466,9 +229,14 @@ fun DomofonScreen(
                         if (it.size == 0 && domofonContentState.value == DomofonContent.LIST_ZERO) {
                             Logger.d("4444 пусто domofonContentState.value=" + domofonContentState.value)
 
+//                            PermissionBannerContent()
+//                            PresentationContent()
+//                            ContentLazyListItemTop(navHostController = navHostController)
+
                             DomofonListContent(
                                 //lazyListState = lazyListState,
                                 items = items,
+                                isLoading = isLoading,
                                 snackbarHostState = snackbarHostState,
                                 navHostController = navHostController,
                                 viewModel = viewModel
@@ -480,6 +248,7 @@ fun DomofonScreen(
                             DomofonListContent(
                                 //lazyListState = lazyListState,
                                 items = items,
+                                isLoading = isLoading,
                                 snackbarHostState = snackbarHostState,
                                 navHostController = navHostController,
                                 viewModel = viewModel
@@ -515,6 +284,7 @@ fun DomofonScreen(
                                 DomofonListContent(
                                     //lazyListState = lazyListState,
                                     items = listFilterByAddrId,
+                                    isLoading = isLoading,
                                     snackbarHostState = snackbarHostState,
                                     navHostController = navHostController,
                                     viewModel = viewModel
@@ -523,12 +293,19 @@ fun DomofonScreen(
                         }
                     }
 
+
+
+                    // Обновление состояния загрузки при изменении состояния во ViewModel
+                    LaunchedEffect(items) {
+                       // isLoading = false
+                    }
+
                     if (pullToRefreshState.isRefreshing) {
                         LaunchedEffect(true) {
                             scope.launch {
-                                isRefreshing = true
-                                delay(2000L)
-                                isRefreshing = false
+//                                isRefreshing = true // загрузка началась
+//                                viewModel.getSputnik()
+//                                isRefreshing = false // загрузка завершилась
                             }
                         }
                     }
@@ -547,6 +324,9 @@ fun DomofonScreen(
                             .align(Alignment.TopCenter),
                         containerColor = Color.White
                     )
+
+
+
 
                     when (statusDomofonUnlockDoor) {
                         UnLockState.OPENED_DOOR -> {
